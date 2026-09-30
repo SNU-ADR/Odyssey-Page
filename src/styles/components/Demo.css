@@ -277,3 +277,170 @@
   .metric-media-grid .demo-placeholder,
   .rendering-comparison .demo-placeholder { min-height: 180px; }
 }
+
+
+.metric-video-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-left: 66px;
+}
+
+.metric-video-card {
+  overflow: hidden;
+  border: 1px solid rgba(211, 132, 69, 0.24);
+  border-radius: 14px;
+  background: rgba(24, 19, 16, 0.96);
+}
+
+.metric-video-heading {
+  min-height: 76px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 17px 12px;
+}
+
+.metric-video-heading > span,
+.metric-video-card--pending > div > span {
+  color: var(--color-accent);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.metric-video-heading h4,
+.metric-video-card--pending h4 {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 1rem;
+}
+
+.metric-video-heading p {
+  margin: 5px 0 0;
+  color: var(--color-text-muted);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.metric-video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #090706;
+  object-fit: contain;
+}
+
+.metric-video-card--pending {
+  min-height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+  border-style: dashed;
+  text-align: center;
+}
+
+.metric-video-card--pending h4 {
+  margin: 12px 0 8px;
+}
+
+.metric-video-card--pending p {
+  max-width: 430px;
+  margin: 0 auto;
+  color: var(--color-text-muted);
+  font-size: 0.86rem;
+  line-height: 1.65;
+}
+
+.metric-diagram-intro {
+  margin: 30px 0 14px 66px;
+}
+
+.metric-diagram-intro h4 {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 1.12rem;
+}
+
+.metric-diagram-intro p {
+  margin: 6px 0 0;
+  color: var(--color-text-muted);
+  font-size: 0.84rem;
+  line-height: 1.55;
+}
+
+.penalty-diagrams {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin: 0 0 22px 66px;
+}
+
+.penalty-case-card {
+  overflow: hidden;
+  border: 1px solid rgba(211, 132, 69, 0.2);
+  border-radius: 14px;
+  background: rgba(24, 19, 16, 0.94);
+}
+
+.penalty-case-heading {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 14px 16px 10px;
+}
+
+.penalty-case-heading span {
+  flex: 0 0 auto;
+  color: var(--color-accent);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.penalty-case-heading h4 {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 0.92rem;
+}
+
+.penalty-case-card > svg {
+  display: block;
+  width: calc(100% - 20px);
+  height: auto;
+  margin: 0 10px;
+  border-radius: 10px;
+}
+
+.penalty-case-card > p {
+  min-height: 3.2em;
+  margin: 0;
+  padding: 10px 16px 15px;
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+  line-height: 1.55;
+}
+
+.penalty-svg-alert {
+  fill: #ff8379;
+  font-family: Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.penalty-svg-note {
+  fill: #b9a99a;
+  font-family: Arial, sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.1px;
+}
+
+@media (max-width: 640px) {
+  .metric-diagram-intro,
+  .penalty-diagrams { width: 100%; margin-left: 0; }
+  .penalty-diagrams { grid-template-columns: 1fr; gap: 10px; }
+  .penalty-case-card > p { min-height: 0; }
+}
