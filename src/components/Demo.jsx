@@ -313,7 +313,7 @@ const Demo = () => {
             {
               key: 'SDC',
               title: ko ? 'SD 경로 이탈' : 'SD route departure',
-              detail: ko ? '경로와 궤적이 갈라지는 시점 · sim step 167' : 'Route and rollout diverge · sim step 167',
+              detail: ko ? '경로와 궤적이 갈라지는 시점 · sim step 120' : 'Route and rollout diverge · sim step 120',
               src: 'metric-sdc-bev.mp4', poster: 'metric-sdc-poster.jpg',
             },
             {
@@ -328,8 +328,8 @@ const Demo = () => {
                 <span>{item.key}</span>
                 <div><h4>{item.title}</h4><p>{item.detail}</p></div>
               </div>
-              <video className="metric-video" poster={`${process.env.PUBLIC_URL}/videos/${item.poster}`} controls playsInline loop muted preload="metadata" aria-label={item.title}>
-                <source src={`${process.env.PUBLIC_URL}/videos/${item.src}`} type={item.src.endsWith('.webm') ? 'video/webm' : 'video/mp4'} />
+              <video className="metric-video" poster={`${process.env.PUBLIC_URL}/videos/${item.poster}?v=20261001`} controls playsInline loop muted preload="metadata" aria-label={item.title}>
+                <source src={`${process.env.PUBLIC_URL}/videos/${item.src}?v=20261001`} type={item.src.endsWith('.webm') ? 'video/webm' : 'video/mp4'} />
                 Your browser does not support the video tag.
               </video>
             </article>
