@@ -320,7 +320,7 @@ const Demo = () => {
               key: 'PLCA/S',
               title: ko ? '우회전 전 차로 변경 지연' : 'Missed pre-turn lane change',
               detail: ko ? '잘못된 차로 진입 · 107.0초 · sim step 1070' : 'Wrong lane at entry · 107.0 s · sim step 1070',
-              src: 'metric-plca-bev.webm', poster: 'metric-plca-poster.jpg',
+              src: 'metric-plca-bev.mp4', poster: 'metric-plca-poster.jpg',
             },
           ].map((item) => (
             <article className="metric-video-card" key={item.key}>
@@ -328,8 +328,8 @@ const Demo = () => {
                 <span>{item.key}</span>
                 <div><h4>{item.title}</h4><p>{item.detail}</p></div>
               </div>
-              <video className="metric-video" poster={`${process.env.PUBLIC_URL}/videos/${item.poster}?v=20261001`} controls playsInline loop muted preload="metadata" aria-label={item.title}>
-                <source src={`${process.env.PUBLIC_URL}/videos/${item.src}?v=20261001`} type={item.src.endsWith('.webm') ? 'video/webm' : 'video/mp4'} />
+              <video className="metric-video" poster={`${process.env.PUBLIC_URL}/videos/${item.poster}?v=20261001b`} controls playsInline loop muted preload="metadata" aria-label={item.title}>
+                <source src={`${process.env.PUBLIC_URL}/videos/${item.src}?v=20261001b`} type={item.src.endsWith('.webm') ? 'video/webm' : 'video/mp4'} />
                 Your browser does not support the video tag.
               </video>
             </article>
