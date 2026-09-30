@@ -1,0 +1,320 @@
+/* =============================================
+   Overview Section
+   ============================================= */
+
+#overview {
+  position: relative;
+  max-width: none;
+  padding-left: 0;
+  padding-right: 0;
+  padding-bottom: 100px;
+  overflow: hidden;
+}
+
+/* 섹션 타이틀 + 인트로는 기존 패딩 유지 */
+#overview .section-title,
+.overview-intro {
+  padding-left: 24px;
+  padding-right: 24px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* =============================================
+   Aurora Glow Background
+   ============================================= */
+
+.overview-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 60% 50% at 28% 35%, rgba(211, 132, 69, 0.22) 0%, rgba(211, 132, 69, 0.08) 40%, transparent 65%),
+    radial-gradient(ellipse 55% 45% at 74% 40%, rgba(167, 66, 50, 0.20) 0%, rgba(167, 66, 50, 0.06) 40%, transparent 65%);
+}
+
+/* =============================================
+   Intro Block
+   ============================================= */
+
+.overview-intro {
+  position: relative;
+  z-index: 1;
+  max-width: 880px;
+  margin: 0 auto 72px;
+  text-align: center;
+}
+
+.overview-intro-lead {
+  font-size: 1.2rem;
+  font-weight: 600;
+  line-height: 1.7;
+  color: var(--color-text);
+  margin-bottom: 20px;
+  letter-spacing: 0.2px;
+}
+
+.overview-intro-body {
+  font-size: 1rem;
+  color: var(--color-text-light);
+  letter-spacing: 0.1px;
+}
+
+.overview-intro-body p {
+  line-height: 1.7;
+  margin: 0;
+}
+
+.overview-intro-body p + p {
+  margin-top: 4px;
+}
+
+/* =============================================
+   Demo Grid
+   ============================================= */
+
+.overview-demos {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+.overview-demo {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.overview-demo--cyan {
+  border-top: 2px solid var(--color-accent);
+}
+
+.overview-demo--purple {
+  border-top: 2px solid var(--color-accent-purple);
+}
+
+.overview-demo-header {
+  padding: 12px 24px 10px;
+}
+
+.overview-demo h3 {
+  font-size: 0.92rem;
+  font-weight: 500;
+  margin: 0;
+  letter-spacing: 0.2px;
+}
+
+.overview-demo--cyan h3 { color: var(--color-accent); }
+.overview-demo--purple h3 { color: var(--color-accent-purple); }
+
+.overview-demo p {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.overview-demo .video-embed,
+.overview-demo .video-placeholder {
+  border-radius: 0;
+}
+
+/* =============================================
+   Performance Tables
+   ============================================= */
+
+.overview-performance {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 48px auto 0;
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+.overview-performance-head {
+  text-align: center;
+  margin-bottom: 36px;
+  position: relative;
+}
+
+.overview-performance-head h3 {
+  display: inline-block;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0;
+  letter-spacing: 0.3px;
+  padding-bottom: 12px;
+  position: relative;
+}
+
+.overview-performance-head h3::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 48px;
+  height: 2px;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, transparent, var(--color-accent), transparent);
+}
+
+.overview-performance-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.perf-table {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.perf-table--cyan { border-top: 2px solid var(--color-accent); }
+.perf-table--purple { border-top: 2px solid var(--color-accent-purple); }
+
+.perf-table-head {
+  padding: 14px 22px 12px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.perf-table-head h4 {
+  font-size: 0.92rem;
+  font-weight: 600;
+  margin: 0;
+  letter-spacing: 0.2px;
+}
+
+.perf-table--cyan .perf-table-head h4 { color: var(--color-accent); }
+.perf-table--purple .perf-table-head h4 { color: var(--color-accent-purple); }
+
+.perf-table-scroll {
+  overflow-x: auto;
+}
+
+.perf-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+  color: var(--color-text-light);
+}
+
+.perf-table thead th {
+  text-align: right;
+  padding: 12px 18px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  color: var(--color-text-muted);
+  background: rgba(255, 255, 255, 0.015);
+  border-bottom: 1px solid var(--color-border);
+  white-space: nowrap;
+}
+
+.perf-table thead th:first-child {
+  text-align: left;
+}
+
+.perf-table tbody th {
+  text-align: left;
+  padding: 14px 18px;
+  font-weight: 500;
+  color: var(--color-text);
+  border-bottom: 1px solid var(--color-border);
+  white-space: nowrap;
+}
+
+.perf-table tbody td {
+  text-align: right;
+  padding: 14px 18px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: var(--color-text);
+  border-bottom: 1px solid var(--color-border);
+  white-space: nowrap;
+}
+
+.perf-table tbody tr:last-child th,
+.perf-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Highlight the primary-metric header in each table — dimmer than the table title.
+   Hierarchy: table title > primary metric label > other column labels. */
+.perf-table--cyan thead th:nth-child(2) {
+  color: hsl(199, 75%, 62%);
+}
+
+.perf-table--purple thead th:nth-child(2) {
+  color: hsl(255, 75%, 78%);
+}
+
+.perf-footnote {
+  margin: 0;
+  padding: 12px 22px 16px;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+  background: rgba(0, 0, 0, 0.12);
+  border-top: 1px solid var(--color-border);
+}
+
+/* =============================================
+   Responsive
+   ============================================= */
+
+@media (max-width: 768px) {
+  #overview {
+    padding-bottom: 64px;
+  }
+
+  .overview-intro {
+    text-align: left;
+    margin-bottom: 52px;
+  }
+
+  .overview-intro-lead {
+    font-size: 1.05rem;
+  }
+
+  .overview-intro-body {
+    font-size: 0.95rem;
+  }
+
+  .overview-demos {
+    gap: 20px;
+  }
+
+  .overview-performance {
+    margin-top: 36px;
+  }
+
+  .overview-performance-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .perf-table thead th,
+  .perf-table tbody th,
+  .perf-table tbody td {
+    padding: 12px 14px;
+  }
+
+  .perf-table table {
+    font-size: 0.82rem;
+  }
+}

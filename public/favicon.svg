@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs><radialGradient id="bg" cx="50%" cy="36%" r="72%"><stop offset="0" stop-color="#332018"/><stop offset="1" stop-color="#100d0b"/></radialGradient></defs>
+  <circle cx="32" cy="32" r="29" fill="url(#bg)" stroke="#8e5739" stroke-width="2"/>
+  <text x="32" y="46" text-anchor="middle" fill="#a66b47" font-family="Georgia,serif" font-size="45" font-style="italic" font-weight="700">O</text>
+</svg>

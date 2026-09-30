@@ -1,0 +1,176 @@
+{
+    "hero":  {
+                 "title":  "Odyssey",
+                 "sectionLabel":  "EAD Project Introduction",
+                 "subtitle":  "A Closed-Loop Benchmark for Long-Horizon Real-World Driving with Explicit Navigation Routes",
+                 "affiliation":  "arXiv",
+                 "description":  "Odyssey evaluates whether end-to-end driving planners can sustain safe, route-following behavior across continuous 100-second simulations reconstructed from nuPlan logs.",
+                 "highlights":  [
+                                    "100-second rollouts",
+                                    "Explicit SD-map routes",
+                                    "3DGS + diffusion"
+                                ],
+                 "stats":  [
+                               {
+                                   "value":  "100",
+                                   "label":  "Scenarios"
+                               },
+                               {
+                                   "value":  "100 s",
+                                   "label":  "Rollout"
+                               },
+                               {
+                                   "value":  "SD",
+                                   "label":  "Route"
+                               },
+                               {
+                                   "value":  "3DGS",
+                                   "label":  "Rendering"
+                               }
+                           ]
+             },
+    "roadmap":  {
+                    "sectionTitle":  "Roadmap",
+                    "sectionTag":  "RELEASE",
+                    "sectionSubtitle":  "",
+                    "versions":  [
+                                     {
+                                         "version":  "Release",
+                                         "badge":  "",
+                                         "period":  "",
+                                         "items":  [
+
+                                                   ],
+                                         "status":  "upcoming"
+                                     }
+                                 ]
+                },
+    "dataset":  {
+                    "sectionTitle":  "Benchmark Setup",
+                    "sectionTag":  "DATASET",
+                    "sectionSubtitle":  "A route-guided closed-loop benchmark built from continuous nuPlan driving logs.",
+                    "items":  [
+                                  {
+                                      "name":  "100 Scenarios",
+                                      "tags":  [
+                                                   "nuPlan logs",
+                                                   "100 seconds each",
+                                                   "Long-horizon"
+                                               ]
+                                  },
+                                  {
+                                      "name":  "Surround Views",
+                                      "tags":  [
+                                                   "8 cameras",
+                                                   "10 Hz",
+                                                   "8,000 images / scene"
+                                               ]
+                                  },
+                                  {
+                                      "name":  "SD-Map Routes",
+                                      "tags":  [
+                                                   "Explicit road sequence",
+                                                   "120 points",
+                                                   "1 m spacing"
+                                               ]
+                                  },
+                                  {
+                                      "name":  "Traffic Modes",
+                                      "tags":  [
+                                                   "Reactive traffic",
+                                                   "Non-reactive traffic"
+                                               ]
+                                  }
+                              ]
+                },
+    "model":  {
+                  "sectionTitle":  "Method",
+                  "sectionTag":  "BENCHMARK DESIGN",
+                  "sectionSubtitle":  "Scene reconstruction, visual refinement, and explicit route-conditioned planning are evaluated together.",
+                  "stages":  [
+                                 {
+                                     "number":  "01",
+                                     "title":  "Reconstruct continuous scenes",
+                                     "description":  "OmniRe builds a 3D Gaussian Splatting scene for each 100-second sequence, initialized from LiDAR and optimized from eight surround-view cameras."
+                                 },
+                                 {
+                                     "number":  "02",
+                                     "title":  "Refine novel views",
+                                     "description":  "A fine-tuned Fixer diffusion model refines rendered camera images at ego poses that differ from the recorded trajectory; the underlying scene and simulated state remain unchanged."
+                                 },
+                                 {
+                                     "number":  "03",
+                                     "title":  "Condition planners on routes",
+                                     "description":  "Planners receive a sequence of 120 SD-map points sampled one meter apart. They must interpret road-level topology and translate it into scene-consistent lane maneuvers."
+                                 }
+                             ]
+              },
+    "results":  {
+                    "sectionTitle":  "Results",
+                    "sectionTag":  "EXPERIMENTS",
+                    "sectionSubtitle":  "Route guidance improves route following across planners, while long-horizon evaluation exposes remaining lane-preparation and safety gaps."
+                },
+    "authors":  {
+                    "sectionTitle":  "Authors",
+                    "sectionSubtitle":  "",
+                    "members":  [
+                                    {
+                                        "name":  "Jungho Kim",
+                                        "role":  "Author"
+                                    },
+                                    {
+                                        "name":  "Hongjae Shin",
+                                        "role":  "Author"
+                                    },
+                                    {
+                                        "name":  "Seunghoon Yu",
+                                        "role":  "Author"
+                                    },
+                                    {
+                                        "name":  "Heecheol Yoo",
+                                        "role":  "Author"
+                                    },
+                                    {
+                                        "name":  "Myeongjun Kim",
+                                        "role":  "Author"
+                                    },
+                                    {
+                                        "name":  "Jiyong Oh",
+                                        "role":  "Author"
+                                    },
+                                    {
+                                        "name":  "Donghyuk Kwak",
+                                        "role":  "Author"
+                                    },
+                                    {
+                                        "name":  "Seunghyeop Nam",
+                                        "role":  "Author"
+                                    },
+                                    {
+                                        "name":  "Haesung Oh",
+                                        "role":  "Author"
+                                    },
+                                    {
+                                        "name":  "Hyunju Kim",
+                                        "role":  "Author"
+                                    },
+                                    {
+                                        "name":  "Hyungchan Cho",
+                                        "role":  "Author"
+                                    },
+                                    {
+                                        "name":  "Jaehyun Park",
+                                        "role":  "Author"
+                                    },
+                                    {
+                                        "name":  "Soo Won Seo",
+                                        "role":  "Author"
+                                    },
+                                    {
+                                        "portrait":  true,
+                                        "name":  "Jun Won Choi",
+                                        "role":  "Professor"
+                                    }
+                                ]
+                }
+}

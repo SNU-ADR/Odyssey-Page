@@ -1,0 +1,176 @@
+{
+    "hero":  {
+                 "title":  "Odyssey",
+                 "sectionLabel":  "EAD 프로젝트 소개",
+                 "subtitle":  "명시적 내비게이션 경로를 활용한 장기 실도로 주행 클로즈드루프 벤치마크",
+                 "affiliation":  "arXiv",
+                 "description":  "Odyssey는 nuPlan 로그를 재구성한 100초 연속 시뮬레이션에서 E2E 주행 계획기가 안전하게 경로를 따라가며 장기적으로 주행하는 능력을 평가합니다.",
+                 "highlights":  [
+                                    "100초 연속 주행",
+                                    "명시적 SD 맵 경로",
+                                    "3DGS + diffusion"
+                                ],
+                 "stats":  [
+                               {
+                                   "value":  "100",
+                                   "label":  "시나리오"
+                               },
+                               {
+                                   "value":  "100초",
+                                   "label":  "롤아웃"
+                               },
+                               {
+                                   "value":  "SD",
+                                   "label":  "경로 안내"
+                               },
+                               {
+                                   "value":  "3DGS",
+                                   "label":  "시각화"
+                               }
+                           ]
+             },
+    "roadmap":  {
+                    "sectionTitle":  "Roadmap",
+                    "sectionTag":  "RELEASE",
+                    "sectionSubtitle":  "",
+                    "versions":  [
+                                     {
+                                         "version":  "Release",
+                                         "badge":  "",
+                                         "period":  "",
+                                         "items":  [
+
+                                                   ],
+                                         "status":  "upcoming"
+                                     }
+                                 ]
+                },
+    "dataset":  {
+                    "sectionTitle":  "벤치마크 구성",
+                    "sectionTag":  "DATASET",
+                    "sectionSubtitle":  "연속 nuPlan 주행 로그로 구성한 경로 안내 기반 폐루프 벤치마크입니다.",
+                    "items":  [
+                                  {
+                                      "name":  "시나리오 100개",
+                                      "tags":  [
+                                                   "nuPlan 로그",
+                                                   "각 100초",
+                                                   "장기 주행"
+                                               ]
+                                  },
+                                  {
+                                      "name":  "서라운드 뷰",
+                                      "tags":  [
+                                                   "카메라 8대",
+                                                   "10 Hz",
+                                                   "장면당 8,000장"
+                                               ]
+                                  },
+                                  {
+                                      "name":  "SD-map 경로",
+                                      "tags":  [
+                                                   "명시적 도로 순서",
+                                                   "120 points",
+                                                   "1 m 간격"
+                                               ]
+                                  },
+                                  {
+                                      "name":  "교통 조건",
+                                      "tags":  [
+                                                   "반응형 교통",
+                                                   "비반응형 교통"
+                                               ]
+                                  }
+                              ]
+                },
+    "model":  {
+                  "sectionTitle":  "방법",
+                  "sectionTag":  "BENCHMARK DESIGN",
+                  "sectionSubtitle":  "장면 재구성, 시각 보정, 경로 조건 주행을 하나의 폐루프 벤치마크에서 평가합니다.",
+                  "stages":  [
+                                 {
+                                     "number":  "01",
+                                     "title":  "연속 장면 재구성",
+                                     "description":  "OmniRe가 LiDAR로 초기화한 3D Gaussian Splatting 장면을 구성하고, 8개 서라운드 카메라의 100초 영상으로 최적화합니다."
+                                 },
+                                 {
+                                     "number":  "02",
+                                     "title":  "새로운 시점 보정",
+                                     "description":  "Fine-tuned Fixer diffusion이 기록된 궤적에서 벗어난 자차 시점의 카메라 영상을 보정합니다. 장면 표현이나 시뮬레이션 상태는 바꾸지 않습니다."
+                                 },
+                                 {
+                                     "number":  "03",
+                                     "title":  "경로 조건 주행 모델",
+                                     "description":  "주행 모델은 1 m 간격으로 샘플링한 SD-map 경로 점 120개를 입력받습니다. 도로 수준 경로를 장면에 맞는 차로 기동으로 해석해야 합니다."
+                                 }
+                             ]
+              },
+    "results":  {
+                    "sectionTitle":  "실험 결과",
+                    "sectionTag":  "EXPERIMENTS",
+                    "sectionSubtitle":  "경로 안내는 여러 주행 모델의 경로 준수도를 높였지만, 장기 평가에서는 차로 준비와 안전성의 남은 과제도 드러납니다."
+                },
+    "authors":  {
+                    "sectionTitle":  "저자",
+                    "sectionSubtitle":  "",
+                    "members":  [
+                                    {
+                                        "name":  "Jungho Kim",
+                                        "role":  "저자"
+                                    },
+                                    {
+                                        "name":  "Hongjae Shin",
+                                        "role":  "저자"
+                                    },
+                                    {
+                                        "name":  "Seunghoon Yu",
+                                        "role":  "저자"
+                                    },
+                                    {
+                                        "name":  "Heecheol Yoo",
+                                        "role":  "저자"
+                                    },
+                                    {
+                                        "name":  "Myeongjun Kim",
+                                        "role":  "저자"
+                                    },
+                                    {
+                                        "name":  "Jiyong Oh",
+                                        "role":  "저자"
+                                    },
+                                    {
+                                        "name":  "Donghyuk Kwak",
+                                        "role":  "저자"
+                                    },
+                                    {
+                                        "name":  "Seunghyeop Nam",
+                                        "role":  "저자"
+                                    },
+                                    {
+                                        "name":  "Haesung Oh",
+                                        "role":  "저자"
+                                    },
+                                    {
+                                        "name":  "Hyunju Kim",
+                                        "role":  "저자"
+                                    },
+                                    {
+                                        "name":  "Hyungchan Cho",
+                                        "role":  "저자"
+                                    },
+                                    {
+                                        "name":  "Jaehyun Park",
+                                        "role":  "저자"
+                                    },
+                                    {
+                                        "name":  "Soo Won Seo",
+                                        "role":  "저자"
+                                    },
+                                    {
+                                        "portrait":  true,
+                                        "name":  "Jun Won Choi",
+                                        "role":  "교수"
+                                    }
+                                ]
+                }
+}

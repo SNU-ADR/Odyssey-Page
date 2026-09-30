@@ -1,0 +1,28 @@
+.results-section { padding: 88px 24px 104px; background: linear-gradient(180deg, rgba(14,11,9,.9), rgba(27,18,13,.62)); }
+.results-layout { width: min(100%, 1160px); margin: 38px auto 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.results-card { min-width: 0; padding: 28px; border: 1px solid rgba(211,132,69,.2); border-radius: 12px; background: rgba(25,19,15,.88); }
+.results-card--lead { background: linear-gradient(145deg, rgba(100,53,31,.48), rgba(25,19,15,.9)); }
+.results-card--insight { background: linear-gradient(145deg, rgba(42,31,25,.95), rgba(25,19,15,.88)); }
+.results-kicker { color: #df965d; font-size: .72rem; font-weight: 800; letter-spacing: .16em; }
+.results-card h3 { margin: 12px 0 10px; color: #f0decd; font-size: 1.2rem; line-height: 1.4; }
+.results-card p { color: #c5b09c; font-size: .95rem; line-height: 1.7; }
+.results-card-note { margin: 0 0 18px; color: #9f8d7c !important; font-size: .8rem !important; }
+.results-caveat { padding-top: 12px; border-top: 1px solid rgba(211,132,69,.18); }
+.results-table-wrap { overflow-x: auto; }
+.results-table { width: 100%; border-collapse: collapse; color: #cdb9a5; font-size: .88rem; text-align: left; }
+.results-table th, .results-table td { padding: 12px 10px; border-bottom: 1px solid rgba(211,132,69,.14); vertical-align: middle; }
+.results-table thead th { color: #a99077; font-size: .75rem; line-height: 1.5; }
+.results-table thead small { font-weight: 400; }
+.results-table tbody th { color: #e1c7ae; font-weight: 600; white-space: nowrap; }
+.results-table td strong { color: #efa96c; font-size: 1rem; }
+.results-table td span { color: #906c50; padding: 0 3px; }
+.results-table--compact { font-size: .82rem; }
+.results-table--compact th, .results-table--compact td { padding: 9px 8px; }
+.results-score-pair { margin-top: 22px; padding: 16px 18px; border-left: 2px solid #d38445; background: rgba(211,132,69,.07); }
+.results-score-pair div { display: grid; grid-template-columns: 1fr auto; gap: 6px 12px; align-items: center; }
+.results-score-pair span { color: #bca692; font-size: .84rem; }
+.results-score-pair strong { color: #efa96c; font-size: 1.35rem; }
+.results-score-pair small { color: #8f755f; font-size: .8rem; }
+.results-score-pair em { grid-column: 1 / -1; color: #8f7d6d; font-size: .76rem; font-style: normal; }
+@media (max-width: 800px) { .results-layout { grid-template-columns: 1fr; max-width: 680px; } }
+@media (max-width: 640px) { .results-section { padding: 68px 16px 80px; } .results-card { padding: 22px 18px; } }

@@ -1,0 +1,112 @@
+#dataset {
+  padding-top: 60px;
+  padding-bottom: 60px;
+}
+
+.dataset-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.dataset-card {
+  position: relative;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-top: 2px solid var(--color-accent);
+  border-radius: 14px;
+  padding: 22px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  overflow: hidden;
+}
+
+/* Subtle index in the top-right corner */
+.dataset-card::before {
+  content: attr(data-index);
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--color-text-muted);
+  opacity: 0.4;
+}
+
+/* Interim tone (between cyan and purple) — used for v2.0 / NVIDIA card */
+.dataset-card--interim {
+  border-top: 2px solid hsl(227, 80%, 70%);
+}
+
+.dataset-card--interim .dataset-card-tag--version {
+  color: hsl(227, 80%, 78%);
+  background: hsla(227, 80%, 70%, 0.08);
+  border-color: hsla(227, 80%, 70%, 0.35);
+}
+
+.dataset-card--planned {
+  border-top: 2px solid var(--color-accent-purple);
+}
+
+.dataset-card-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-text);
+  letter-spacing: 0.2px;
+  margin: 0;
+}
+
+.dataset-card--planned .dataset-card-name {
+  color: var(--color-text);
+}
+
+.dataset-card-tags {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.dataset-card-tag {
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+  padding: 3px 9px;
+  border-radius: 20px;
+  color: var(--color-text-light);
+  background: rgba(211, 132, 69, 0.04);
+  border: 1px solid rgba(211, 132, 69, 0.18);
+  white-space: nowrap;
+}
+
+/* Version tags (v1.0 / v2.0 / v3.0) get the accent color for emphasis */
+.dataset-card-tag--version {
+  color: var(--color-accent);
+  background: rgba(211, 132, 69, 0.08);
+  border-color: rgba(211, 132, 69, 0.32);
+  font-weight: 600;
+}
+
+.dataset-card--planned .dataset-card-tag--version {
+  color: var(--color-accent-purple);
+  background: rgba(167, 66, 50, 0.1);
+  border-color: rgba(167, 66, 50, 0.35);
+  font-weight: 600;
+}
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .dataset-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .dataset-grid {
+    grid-template-columns: 1fr;
+  }
+}

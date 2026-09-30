@@ -1,0 +1,377 @@
+.hero {
+  min-height: 100vh;
+  max-width: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 24px;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: -1px;
+}
+
+/* 하단 그라데이션 — 다음 섹션과 자연스러운 전환 */
+.hero-bottom-fade {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: linear-gradient(to bottom, transparent, var(--color-bg));
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ─── 배경 안개 (다층 glow) ─── */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 30% 25% at 50% 45%, rgba(211, 132, 69, 0.15) 0%, transparent 100%),
+    radial-gradient(ellipse 40% 30% at 50% 48%, rgba(167, 66, 50, 0.06) 0%, transparent 100%),
+    radial-gradient(ellipse 50% 40% at 50% 50%, rgba(211, 132, 69, 0.04) 0%, transparent 100%);
+  pointer-events: none;
+  animation: fogPulse 6s ease-in-out infinite alternate;
+  will-change: opacity;
+}
+
+@keyframes fogPulse {
+  from { opacity: 0.7; }
+  to { opacity: 1; }
+}
+
+/* ─── 스캔 라인 효과 ─── */
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(211, 132, 69, 0.03) 50%,
+    transparent 100%
+  );
+  background-size: 100% 6px;
+  background-repeat: repeat;
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+/* ─── 센서 그리드 배경 ─── */
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(211, 132, 69, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(211, 132, 69, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(0,0,0,0.4) 0%, transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(0,0,0,0.4) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* ─── 도로 원근 비주얼 ─── */
+.hero-road {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* 공통 차선 스타일 */
+.hero-road-lane {
+  position: absolute;
+  top: 46%;
+  left: 50%;
+  width: 1.5px;
+  height: 54%;
+  transform-origin: top center;
+  background: linear-gradient(to bottom, rgba(211, 132, 69, 0.0) 0%, rgba(211, 132, 69, 0.25) 60%, rgba(211, 132, 69, 0.0) 100%);
+}
+
+/* 내측 차선 */
+.hero-road-lane--left {
+  transform: rotate(-16deg);
+}
+
+.hero-road-lane--right {
+  transform: rotate(16deg);
+}
+
+/* 외측 차선 — 넓게 벌어짐, 더 투명 */
+.hero-road-lane--left-outer {
+  transform: rotate(-36deg);
+  background: linear-gradient(to bottom, rgba(211, 132, 69, 0.0) 0%, rgba(211, 132, 69, 0.12) 50%, rgba(211, 132, 69, 0.0) 100%);
+}
+
+.hero-road-lane--right-outer {
+  transform: rotate(36deg);
+  background: linear-gradient(to bottom, rgba(211, 132, 69, 0.0) 0%, rgba(211, 132, 69, 0.12) 50%, rgba(211, 132, 69, 0.0) 100%);
+}
+
+/* 중앙 점선 — 소실점에서 하단으로 (정지) */
+.hero-road-dash {
+  position: absolute;
+  top: 46%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 54%;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(211, 132, 69, 0.5) 0px,
+    rgba(211, 132, 69, 0.5) 16px,
+    transparent 16px,
+    transparent 40px
+  );
+  mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.3) 15%, rgba(0,0,0,1) 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.3) 15%, rgba(0,0,0,1) 100%);
+}
+
+/* ─── 콘텐츠 영역 ─── */
+.hero-content {
+  max-width: 800px;
+  position: relative;
+  z-index: 1;
+  padding: 48px 64px 100px;
+}
+
+/* Hero logo image (replaces the gradient text title) */
+.hero-title {
+  margin: 80px 0 -28px;
+  display: flex;
+  justify-content: center;
+  animation: heroFadeUp 0.8s ease-out both;
+  line-height: 0;
+}
+
+.hero-logo {
+  display: block;
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+}
+
+@keyframes heroFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-subtitle {
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  margin-bottom: 4px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  animation: heroFadeUp 0.8s ease-out 0.15s both;
+}
+
+.hero-affiliation {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  letter-spacing: 0.5px;
+  margin-top: 0;
+  margin-bottom: 0;
+  padding: 5px 16px;
+  border: 1px solid rgba(145, 104, 77, 0.25);
+  border-radius: 20px;
+  background: rgba(145, 104, 77, 0.06);
+  animation: heroFadeUp 0.8s ease-out 0.3s both;
+}
+
+.hero-divider {
+  width: 80px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-accent), transparent);
+  margin: 18px auto;
+  opacity: 0.5;
+}
+
+.hero-description {
+  font-size: 1.15rem;
+  color: var(--color-text-light);
+  line-height: 1.8;
+  max-width: 600px;
+  margin: 0 auto;
+  animation: heroFadeUp 0.8s ease-out 0.5s both;
+}
+
+/* ─── Hero Stats ─── */
+.hero-stats {
+  display: flex;
+  gap: 48px;
+  justify-content: center;
+  margin-top: 36px;
+  animation: heroFadeUp 0.8s ease-out 0.7s both;
+}
+
+.hero-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.hero-stat-value {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--color-accent);
+  letter-spacing: 1px;
+  text-shadow: 0 0 20px rgba(211, 132, 69, 0.3);
+  order: 1;
+}
+
+.hero-stat-label {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  order: 2;
+}
+
+/* ─── Small screen: wrap stats to 2×2 at 480px ─── */
+@media (max-width: 480px) {
+  .hero-stats {
+    gap: 20px;
+  }
+
+  .hero-stat-value {
+    font-size: 1.1rem;
+  }
+
+  .hero-stat-label {
+    font-size: 0.6rem;
+    letter-spacing: 1px;
+  }
+}
+
+/* ─── Reduced Motion: hero entry animations ─── */
+/* The global rule disables animation-duration/iteration, but animation-delay still applies.
+   This ensures heroFadeUp elements are immediately visible without waiting for delays. */
+@media (prefers-reduced-motion: reduce) {
+  .hero-title,
+  .hero-subtitle,
+  .hero-affiliation,
+  .hero-description,
+  .hero-stats {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* Fog glow: keep at full opacity (no animated pulse), release GPU layer */
+  .hero::before {
+    animation: none !important;
+    opacity: 1 !important;
+    will-change: auto;
+  }
+}
+
+/* ─── 반응형 ─── */
+@media (max-width: 768px) {
+  .hero-logo {
+    max-width: 260px;
+  }
+
+  .hero-subtitle {
+    font-size: 0.95rem;
+    letter-spacing: 2px;
+  }
+
+  .hero-description {
+    font-size: 0.9rem;
+  }
+
+  .hero-content {
+    padding: 32px 24px;
+  }
+
+  .hero-stats {
+    gap: 32px;
+    margin-top: 28px;
+  }
+
+  .hero-stat-value {
+    font-size: 1.3rem;
+  }
+
+  .hero-road-lane--left {
+    transform: rotate(-14deg);
+  }
+
+  .hero-road-lane--right {
+    transform: rotate(14deg);
+  }
+
+  .hero-road-lane--left-outer {
+    transform: rotate(-30deg);
+  }
+
+  .hero-road-lane--right-outer {
+    transform: rotate(30deg);
+  }
+
+  .hero-grid {
+    background-size: 40px 40px;
+  }
+}
+
+/* Odyssey wordmark and warm poster lighting */
+.hero::before {
+ background:
+  radial-gradient(ellipse 28% 24% at 52% 43%, rgba(221,107,48,.19) 0%, transparent 100%),
+  radial-gradient(ellipse 45% 38% at 52% 48%, rgba(148,62,39,.12) 0%, transparent 100%),
+  radial-gradient(ellipse 60% 55% at 50% 52%, rgba(211,132,69,.035) 0%, transparent 100%);
+}
+.hero-title { margin:76px 0 4px; align-items:center; gap:14px; line-height:1; }
+.hero-emblem { display:block; width:clamp(52px,7vw,86px); height:auto; max-width:none; filter:drop-shadow(0 8px 28px rgba(170,62,41,.2)); }
+.hero-wordmark {
+ color:#9b603d; font-family:'Bodoni 72','Didot',Georgia,'Times New Roman',serif;
+ font-size:clamp(4rem,10vw,7.6rem); font-style:italic; font-weight:700;
+ letter-spacing:-.065em; text-shadow:0 0 40px rgba(211,132,69,.18);
+}
+@media (max-width:600px) {
+ .hero-title { margin-top:86px; gap:8px; }
+ .hero-emblem { width:46px; }
+ .hero-wordmark { font-size:clamp(3.25rem,15vw,4.8rem); }
+}
+
+
+.hero-subtitle {
+  max-width: 860px;
+  margin: 0 auto 8px;
+  color: #b89475;
+  font-size: clamp(0.95rem, 1.65vw, 1.2rem);
+  line-height: 1.55;
+  letter-spacing: 0.025em;
+  text-transform: none;
+}
+
+
+.hero-navigation {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.55;
+  mix-blend-mode: screen;
+  pointer-events: none;
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 14%, #000 84%, transparent 100%);
+}
+
+.hero::before { z-index: 1; }

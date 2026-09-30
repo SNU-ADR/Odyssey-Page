@@ -1,0 +1,195 @@
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--nav-height);
+  background: transparent;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid transparent;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  transition: background 0.4s, border-color 0.4s, backdrop-filter 0.4s;
+}
+
+.navbar--scrolled {
+  background: rgba(16, 13, 11, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(211, 132, 69, 0.1);
+}
+
+.navbar-container {
+  max-width: var(--max-width);
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navbar-logo {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  line-height: 0;
+}
+
+.navbar-logo-img {
+  display: block;
+  height: 36px;
+  width: auto;
+  transform: translateY(-8px);
+}
+
+.navbar-links {
+  display: flex;
+  gap: 32px;
+  list-style: none;
+}
+
+.navbar-links a {
+  color: var(--color-text-muted);
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 500;
+  position: relative;
+  letter-spacing: 0.3px;
+}
+
+.navbar-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--color-accent);
+}
+
+.navbar-links a.active::after {
+  width: 100%;
+  background: var(--color-accent);
+}
+
+.navbar-links a.active {
+  color: var(--color-accent);
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.navbar-lang-toggle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: 1px solid var(--color-border-light);
+  border-radius: 20px;
+  padding: 4px 10px;
+  cursor: pointer;
+  font-family: var(--font-primary);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  color: var(--color-text-muted);
+}
+
+.navbar-lang-toggle span.active {
+  color: var(--color-accent);
+}
+
+.navbar-lang-sep {
+  color: var(--color-text-muted);
+  font-weight: 400;
+}
+
+.navbar-toggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.navbar-toggle span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--color-text);
+  margin: 5px 0;
+  transition: transform 0.3s, opacity 0.3s;
+}
+
+.navbar-toggle.active span:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+
+.navbar-toggle.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.navbar-toggle.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(5px, -5px);
+}
+
+@media (max-width: 768px) {
+  .navbar-toggle {
+    display: block;
+  }
+
+  .navbar-lang-toggle {
+    font-size: 0.75rem;
+    padding: 3px 8px;
+  }
+
+  .navbar-links {
+    position: absolute;
+    top: var(--nav-height);
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    background: rgba(16, 13, 11, 0.95);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    padding: 0 24px;
+    gap: 16px;
+    border-bottom: 1px solid var(--color-border);
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transition: max-height 0.3s ease, opacity 0.25s ease, padding 0.3s ease,
+      visibility 0s linear 0.3s;
+  }
+
+  .navbar-links.open {
+    max-height: 400px;
+    opacity: 1;
+    visibility: visible;
+    padding: 16px 24px;
+    transition: max-height 0.3s ease, opacity 0.25s ease, padding 0.3s ease,
+      visibility 0s linear;
+  }
+
+  .navbar-links a::after {
+    display: none;
+  }
+}
+
+/* ── Reduced Motion: remove visibility delay so menu hides from a11y tree instantly ── */
+@media (prefers-reduced-motion: reduce) {
+  .navbar-links {
+    transition-delay: 0s !important;
+  }
+}
+
+.navbar-logo { gap:8px; line-height:1; }
+.navbar-logo-img { width:30px; height:34px; object-fit:contain; transform:none; }
+.navbar-logo-text { color:#9b603d; font-family:'Bodoni 72','Didot',Georgia,'Times New Roman',serif; font-size:1.35rem; font-style:italic; font-weight:700; letter-spacing:-.04em; }

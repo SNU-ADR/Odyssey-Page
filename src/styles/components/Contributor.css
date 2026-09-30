@@ -1,0 +1,133 @@
+.team-section {
+  padding: 72px 24px 88px;
+  background: linear-gradient(180deg, rgba(11, 9, 8, 0.72), rgba(20, 15, 12, 0.92));
+}
+
+.team-section .section-title {
+  width: min(100%, 1120px);
+  margin: 0 auto;
+}
+
+.team-layout {
+  width: min(100%, 1120px);
+  margin: 36px auto 0;
+  display: grid;
+  grid-template-columns: minmax(220px, 0.72fr) minmax(0, 2fr);
+  gap: 24px;
+  align-items: stretch;
+}
+
+.team-professor,
+.team-group {
+  border: 1px solid rgba(211, 132, 69, 0.22);
+  border-radius: 16px;
+  background: linear-gradient(145deg, rgba(38, 27, 20, 0.9), rgba(20, 16, 13, 0.96));
+}
+
+.team-professor {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 20px;
+}
+
+.team-professor-photo {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  object-position: center 28%;
+  border-radius: 11px;
+  filter: saturate(0.82);
+}
+
+.team-professor-info {
+  padding: 18px 2px 2px;
+}
+
+.team-professor-info h3 {
+  margin: 0;
+  color: var(--color-text);
+  font-family: var(--font-serif, Georgia, serif);
+  font-size: 1.45rem;
+}
+
+.team-professor-info p {
+  margin: 7px 0 0;
+  color: var(--color-accent);
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.team-groups {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.team-group {
+  padding: 22px 24px;
+}
+
+.team-group h3 {
+  margin: 0 0 10px;
+  color: var(--color-accent);
+  font-size: 0.8rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.team-group ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.team-member {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 13px 0;
+  border-bottom: 1px solid rgba(211, 132, 69, 0.12);
+}
+
+.team-member:last-child {
+  border-bottom: 0;
+}
+
+.team-member-name {
+  color: var(--color-text);
+  font-size: 0.98rem;
+  font-weight: 600;
+}
+
+.team-member-role {
+  color: var(--color-text-muted);
+  font-size: 0.76rem;
+  text-align: right;
+  white-space: nowrap;
+}
+
+@media (max-width: 820px) {
+  .team-layout {
+    grid-template-columns: minmax(180px, 0.7fr) minmax(0, 1.5fr);
+    gap: 16px;
+  }
+
+  .team-groups {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+}
+
+@media (max-width: 600px) {
+  .team-section { padding: 56px 16px 64px; }
+  .team-layout { grid-template-columns: 1fr; margin-top: 26px; }
+  .team-professor { flex-direction: row; align-items: center; gap: 16px; padding: 16px; }
+  .team-professor-photo { width: 92px; height: 92px; aspect-ratio: 1; flex: 0 0 92px; border-radius: 50%; }
+  .team-professor-info { padding: 0; }
+  .team-professor-info h3 { font-size: 1.2rem; }
+  .team-group { padding: 18px 20px; }
+}

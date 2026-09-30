@@ -1,0 +1,160 @@
+#milestones {
+  padding-top: 60px;
+  padding-bottom: 60px;
+}
+
+/* ── Horizontal stepper ── */
+.milestones-stepper {
+  display: flex;
+  align-items: flex-start;
+  justify-content: stretch;
+  list-style: none;
+  padding: 36px 0 0;
+  margin: 0;
+  position: relative;
+}
+
+/* Single continuous line spanning first node centre → last node centre,
+   colour drifts from cyan to purple. */
+.milestones-stepper::before {
+  content: '';
+  position: absolute;
+  top: 43px;
+  left: 16.67%;
+  right: 16.67%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--color-accent) 0%, var(--color-accent-purple) 100%);
+  z-index: 0;
+}
+
+.milestone-step {
+  flex: 1;
+  position: relative;
+  text-align: center;
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Node */
+.milestone-node {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  box-shadow:
+    0 0 16px rgba(211, 132, 69, 0.55),
+    0 0 40px rgba(211, 132, 69, 0.3),
+    0 0 80px rgba(211, 132, 69, 0.15);
+  position: relative;
+  z-index: 1;
+  margin-bottom: 18px;
+}
+
+.milestone-step--ongoing .milestone-node {
+  background: var(--color-accent);
+  box-shadow:
+    0 0 20px rgba(211, 132, 69, 0.65),
+    0 0 50px rgba(211, 132, 69, 0.35),
+    0 0 100px rgba(211, 132, 69, 0.2);
+}
+
+.milestone-step--planned .milestone-node {
+  background: var(--color-accent-purple);
+  box-shadow:
+    0 0 16px rgba(167, 66, 50, 0.55),
+    0 0 40px rgba(167, 66, 50, 0.3),
+    0 0 80px rgba(167, 66, 50, 0.15);
+}
+
+/* Labels */
+.milestone-version {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-text);
+  letter-spacing: 0.3px;
+}
+
+.milestone-status {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+.milestone-step--completed .milestone-status {
+  color: var(--color-accent);
+  background: rgba(211, 132, 69, 0.1);
+  border: 1px solid rgba(211, 132, 69, 0.3);
+}
+
+.milestone-step--ongoing .milestone-status {
+  color: var(--color-accent);
+  background: rgba(211, 132, 69, 0.08);
+  border: 1px solid rgba(211, 132, 69, 0.25);
+}
+
+.milestone-step--planned .milestone-status {
+  color: var(--color-accent-purple);
+  background: rgba(167, 66, 50, 0.08);
+  border: 1px solid rgba(167, 66, 50, 0.3);
+}
+
+.milestone-note {
+  margin: 6px 0 0;
+  font-size: 0.88rem;
+  color: var(--color-text-light);
+  line-height: 1.55;
+  max-width: 42ch;
+}
+
+/* ── Responsive: stack vertically on narrow screens ── */
+@media (max-width: 768px) {
+  .milestones-stepper {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 12px 0 0;
+    gap: 8px;
+  }
+
+  .milestone-step {
+    flex-direction: row;
+    align-items: flex-start;
+    text-align: left;
+    padding: 12px 0 12px 32px;
+    gap: 10px 12px;
+    flex-wrap: wrap;
+  }
+
+  /* Vertical line spanning the column on mobile */
+  .milestones-stepper::before {
+    top: 14px;
+    bottom: 14px;
+    left: 9px;
+    right: auto;
+    width: 2px;
+    height: auto;
+    background: linear-gradient(180deg, var(--color-accent) 0%, var(--color-accent-purple) 100%);
+  }
+
+  .milestone-node {
+    position: absolute;
+    top: 14px;
+    left: 0;
+    margin: 0;
+  }
+
+  .milestone-version {
+    flex: 0 0 auto;
+  }
+
+  .milestone-note {
+    flex: 1 0 100%;
+    margin: 0;
+    max-width: none;
+  }
+}
