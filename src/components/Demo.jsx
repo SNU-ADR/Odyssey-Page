@@ -89,22 +89,22 @@ const penaltyCases = [
     key: 'NC',
     koTitle: '과실 충돌',
     enTitle: 'At-fault collision',
-    koBody: '다른 차량과 자차 궤적이 겹치는 접촉 지점을 표시합니다.',
-    enBody: 'Marks where the ego trajectory makes at-fault contact with another road user.',
+    koBody: '자차가 같은 차로의 앞차와 접촉한 지점을 표시합니다.',
+    enBody: 'Marks where the ego makes at-fault contact with the vehicle ahead in its lane.',
   },
   {
     key: 'DAC',
     koTitle: '비주행 영역 진입',
     enTitle: 'Leaves the drivable area',
-    koBody: '도로 경계 밖으로 나간 궤적 구간을 빨간색으로 표시합니다.',
-    enBody: 'Highlights the trajectory segment that leaves the drivable surface.',
+    koBody: '자차가 도로 경계에 걸쳐 차체 일부가 주행 가능 영역 밖으로 나간 상황입니다.',
+    enBody: 'The ego straddles the road edge, with part of its footprint outside the drivable area.',
   },
   {
     key: 'SDC',
     koTitle: '지정 경로 이탈',
     enTitle: 'Departs from the SD route',
-    koBody: '지정된 경로와 다른 분기로 향한 이동을 보여줍니다.',
-    enBody: 'Shows a rollout taking a branch outside the designated route.',
+    koBody: 'SD 경로는 분기로 우회전합니다. 자차는 분기를 놓치고 직진해, 경로에 없는 도로 구간(빨간색)을 주행합니다.',
+    enBody: 'The SD route turns right into the branch. The ego misses the turn and continues straight onto a road segment outside the route (red).',
   },
   {
     key: 'PLCA/S',
@@ -118,59 +118,55 @@ const penaltyCases = [
 const PenaltyDiagram = ({ kind }) => (
   <svg viewBox="0 0 480 230" role="img" aria-label={`${kind} penalty example`}>
     <rect width="480" height="230" rx="12" fill="#17120f" />
+    {/* NC / DAC / SDC share one layout: two-way two-lane road, event circle at x=240, label centered above the road */}
     {kind === 'NC' && (
       <>
-        <path d="M0 118H480M245 0V230" stroke="#40362e" strokeWidth="76" />
-        <path d="M0 118H480M245 0V230" stroke="#8d7865" strokeOpacity=".5" strokeWidth="2" strokeDasharray="12 10" />
-        <path d="M34 118H446" fill="none" stroke="#d99455" strokeWidth="4" strokeDasharray="10 8" />
-        <path d="M245 18V210" fill="none" stroke="#b9a99a" strokeOpacity=".24" strokeWidth="4" strokeDasharray="8 10" />
+        <rect x="0" y="62" width="480" height="112" fill="#40362e" />
+        <path d="M0 62H480M0 174H480" fill="none" stroke="#8d7865" strokeOpacity=".48" strokeWidth="2" />
+        <path d="M0 116H480M0 120H480" fill="none" stroke="#a18e7d" strokeOpacity=".55" strokeWidth="1.5" />
         <g fill="#c8b8a8" opacity=".22">
-          <rect x="78" y="107" width="36" height="20" rx="6" />
-          <rect x="337" y="107" width="36" height="20" rx="6" />
-          <rect x="235" y="38" width="20" height="36" rx="6" />
-          <rect x="235" y="173" width="20" height="36" rx="6" />
+          <rect x="84" y="136" width="36" height="20" />
+          <rect x="360" y="80" width="36" height="20" />
         </g>
-        <rect x="193" y="108" width="38" height="20" rx="6" fill="#e8bd91" />
-        <rect x="246" y="89" width="20" height="38" rx="6" transform="rotate(90 256 108)" fill="#c8b8a8" opacity=".48" />
-        <path d="M210 118H246" stroke="#ef5147" strokeWidth="8" strokeLinecap="round" />
-        <circle cx="246" cy="118" r="19" fill="none" stroke="#ef5147" strokeWidth="3" />
-        <path d="M237 109L255 127M255 109L237 127" stroke="#ef5147" strokeWidth="3" />
-        <text x="270" y="89" className="penalty-svg-alert">CONTACT</text>
+        <rect x="240" y="136" width="38" height="20" fill="#c8b8a8" opacity=".48" />
+        <rect x="202" y="136" width="38" height="20" fill="#f2c18f" stroke="#ef5147" strokeWidth="2" />
+        <circle cx="240" cy="146" r="11" fill="none" stroke="#ef5147" strokeWidth="3" />
+        <path d="M234.5 140.5L245.5 151.5M245.5 140.5L234.5 151.5" stroke="#ef5147" strokeWidth="3" />
+        <text x="240" y="48" textAnchor="middle" className="penalty-svg-alert">CONTACT</text>
       </>
     )}
     {kind === 'DAC' && (
       <>
-        <rect x="0" y="62" width="480" height="112" fill="#29231e" />
-        <path d="M0 62H480M0 174H480" stroke="#756454" strokeWidth="2" />
-        <path d="M0 118H480" stroke="#8d7865" strokeOpacity=".45" strokeWidth="2" strokeDasharray="12 10" />
-        <path d="M24 118H300" fill="none" stroke="#d99455" strokeWidth="4" strokeDasharray="10 8" />
-        <path d="M300 118C344 118 352 132 374 157S418 181 462 186" fill="none" stroke="#ef5147" strokeWidth="5" />
-        <path d="M315 118C360 122 372 163 409 176" fill="none" stroke="#b9a99a" strokeOpacity=".18" strokeWidth="4" strokeDasharray="8 9" />
+        <rect x="0" y="62" width="480" height="112" fill="#40362e" />
+        <path d="M0 62H480M0 174H480" fill="none" stroke="#8d7865" strokeOpacity=".48" strokeWidth="2" />
+        <path d="M0 116H480M0 120H480" fill="none" stroke="#a18e7d" strokeOpacity=".55" strokeWidth="1.5" />
         <g fill="#d0c0b0" opacity=".22">
-          <rect x="92" y="108" width="36" height="20" rx="6" />
-          <rect x="188" y="108" width="36" height="20" rx="6" />
-          <rect x="359" y="182" width="36" height="20" rx="6" transform="rotate(16 377 192)" />
+          <rect x="84" y="136" width="36" height="20" />
+          <rect x="360" y="80" width="36" height="20" />
         </g>
-        <rect x="353" y="143" width="38" height="20" rx="6" transform="rotate(42 372 153)" fill="#f2c18f" stroke="#ef5147" strokeWidth="2" />
-        <path d="M323 132L340 148" stroke="#ef5147" strokeWidth="3" />
-        <text x="337" y="208" className="penalty-svg-alert">OFF-ROAD</text>
+        {/* ego straddles the road edge: only the front-right corner is outside */}
+        <rect x="205" y="156" width="38" height="20" transform="rotate(14 224 166)" fill="#f2c18f" stroke="#ef5147" strokeWidth="2" />
+        <circle cx="240" cy="178" r="11" fill="none" stroke="#ef5147" strokeWidth="3" />
+        <text x="240" y="48" textAnchor="middle" className="penalty-svg-alert">OFF-ROAD</text>
       </>
     )}
     {kind === 'SDC' && (
       <>
-        <path d="M0 142H242V0M242 142C301 142 314 84 365 78S427 78 480 78" fill="none" stroke="#40362e" strokeWidth="76" />
-        <path d="M0 142H242V0" fill="none" stroke="#d99455" strokeWidth="4" strokeDasharray="10 8" />
-        <path d="M0 142H242C301 142 314 84 365 78S427 78 480 78" fill="none" stroke="#ef5147" strokeWidth="5" />
-        <path d="M0 142H242V0M242 142C301 142 314 84 365 78S427 78 480 78" fill="none" stroke="#8d7865" strokeOpacity=".45" strokeWidth="2" strokeDasharray="12 10" />
+        <rect x="0" y="62" width="480" height="112" fill="#40362e" />
+        <rect x="212" y="174" width="112" height="56" fill="#40362e" />
+        <path d="M0 62H480M0 174H212V230M324 230V174H480" fill="none" stroke="#8d7865" strokeOpacity=".48" strokeWidth="2" />
+        <path d="M0 116H480M0 120H480M266 174V230M270 174V230" fill="none" stroke="#a18e7d" strokeOpacity=".55" strokeWidth="1.5" />
+        {/* SD route on the eastbound edge, then right into the branch; red = edge taken after missing it */}
+        <path d="M0 146H240V230" fill="none" stroke="#d99455" strokeOpacity=".38" strokeWidth="12" strokeLinejoin="round" />
+        <path d="M240 146H480" fill="none" stroke="#ef5147" strokeOpacity=".38" strokeWidth="12" />
+        <path d="M46 140L52 146L46 152M166 140L172 146L166 152M234 196L240 202L246 196" fill="none" stroke="#d99455" strokeWidth="2.5" />
         <g fill="#d0c0b0" opacity=".22">
-          <rect x="63" y="132" width="36" height="20" rx="6" />
-          <rect x="172" y="132" width="36" height="20" rx="6" />
-          <rect x="302" y="108" width="36" height="20" rx="6" transform="rotate(-30 320 118)" />
-          <rect x="230" y="43" width="20" height="36" rx="6" />
+          <rect x="84" y="136" width="36" height="20" />
+          <rect x="360" y="80" width="36" height="20" />
         </g>
-        <rect x="283" y="119" width="38" height="20" rx="6" transform="rotate(-25 302 129)" fill="#f2c18f" stroke="#ef5147" strokeWidth="2" />
-        <circle cx="242" cy="142" r="18" fill="none" stroke="#ef5147" strokeWidth="3" />
-        <text x="315" y="174" className="penalty-svg-alert">WRONG BRANCH</text>
+        <rect x="311" y="136" width="38" height="20" fill="#f2c18f" stroke="#ef5147" strokeWidth="2" />
+        <circle cx="240" cy="146" r="11" fill="none" stroke="#ef5147" strokeWidth="3" />
+        <text x="240" y="48" textAnchor="middle" className="penalty-svg-alert">MISSED BRANCH</text>
       </>
     )}
     {kind === 'PLCA/S' && (
@@ -208,7 +204,7 @@ const PenaltyCaseGrid = ({ ko }) => (
   <>
     <div className="metric-diagram-intro">
       <h4>{ko ? '감점 상황 개념도' : 'Penalty cases'}</h4>
-      <p>{ko ? '흐린 차량과 궤적은 가능한 주행 예시이고, 빨간색은 감점이 발생하는 상황입니다.' : 'Faded vehicles and paths show possible motion; red marks a penalty event.'}</p>
+      <p>{ko ? '빨간 테두리 차량이 자차이고, 흐린 차량은 주변 차량 또는 자차의 이전 위치입니다. 노란색은 예정 경로, 빨간 원은 감점이 발생한 지점입니다.' : 'The red-outlined box is the ego; faded boxes are other traffic or earlier ego positions. Yellow shows the expected route, and the red circle marks where the penalty occurs.'}</p>
     </div>
     <div className="penalty-diagrams">
       {penaltyCases.map((item) => (
