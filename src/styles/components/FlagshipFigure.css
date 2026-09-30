@@ -8,9 +8,8 @@
   width: min(100%, 1240px);
   margin: 0 auto;
   overflow: hidden;
-  border: 1px solid rgba(211, 132, 69, 0.32);
   border-radius: 12px;
-  background: #f7f5ef;
+  background: var(--color-bg);
   box-shadow: 0 24px 76px rgba(0, 0, 0, 0.42), 0 0 40px rgba(211, 132, 69, 0.08);
 }
 

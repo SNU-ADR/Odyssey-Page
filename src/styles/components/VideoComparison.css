@@ -1,0 +1,173 @@
+.video-comparison-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px 20px;
+  margin: 0 0 18px;
+}
+
+.video-comparison { min-width: 0; }
+
+.video-comparison-stage {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border: 1px solid rgba(181, 139, 107, 0.3);
+  border-radius: 12px;
+  background: #080706;
+  touch-action: pan-y;
+  cursor: ew-resize;
+}
+
+.video-comparison-stage video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.video-comparison-after {
+  /* Half-height × tan(5deg), expressed relative to the 16:9 frame width. */
+  clip-path: var(--comparison-clip, polygon(
+    calc(var(--comparison-split) + 2.4606%) 0,
+    100% 0,
+    100% 100%,
+    calc(var(--comparison-split) - 2.4606%) 100%
+  ));
+}
+
+.video-comparison-label {
+  position: absolute;
+  top: 14px;
+  z-index: 2;
+  padding: 5px 10px;
+  border-radius: 6px;
+  background: rgba(16, 13, 11, 0.8);
+  color: #f2dfd0;
+  font-size: 0.8rem;
+  pointer-events: none;
+}
+
+.video-comparison-label--left { left: 14px; }
+.video-comparison-label--right { right: 14px; }
+
+.video-comparison-divider {
+  position: absolute;
+  z-index: 3;
+  inset: 0 auto 0 var(--comparison-split);
+  width: 2px;
+  transform: translateX(-50%);
+  opacity: var(--comparison-divider-opacity, 1);
+  pointer-events: none;
+}
+
+.video-comparison-divider::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: skewX(-5deg);
+  background: #e4c5aa;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+}
+
+.video-comparison-divider span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid #d1aa89;
+  border-radius: 50%;
+  background: #35281f;
+  color: #f2dfd0;
+}
+
+.video-comparison-divider svg {
+  display: block;
+  width: 24px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.video-comparison-split {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: ew-resize;
+  touch-action: pan-y;
+}
+
+.video-comparison-stage:focus-within { outline: 2px solid #c49979; outline-offset: 3px; }
+
+.video-comparison-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.video-comparison-controls button {
+  min-width: 72px;
+  min-height: 36px;
+  padding: 5px 12px;
+  border: 1px solid #382b23;
+  border-radius: 6px;
+  background: #1c1612;
+  color: var(--color-text);
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.video-comparison-controls button:hover { background: #30231b; }
+.video-comparison-controls button:disabled { opacity: 0.5; cursor: wait; }
+.video-comparison-controls input {
+  flex: 1;
+  min-width: 0;
+  height: 20px;
+  margin: 0;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.video-comparison-controls input::-webkit-slider-runnable-track {
+  height: 5px;
+  border-radius: 3px;
+  background: linear-gradient(to right, #71523d var(--playback-progress), #29211b var(--playback-progress));
+}
+
+.video-comparison-controls input::-webkit-slider-thumb {
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  margin-top: -3.5px;
+  border: 1px solid #957357;
+  border-radius: 50%;
+  background: #71523d;
+}
+
+.video-comparison-controls input::-moz-range-track { height: 5px; border-radius: 3px; background: #29211b; }
+.video-comparison-controls input::-moz-range-progress { height: 5px; border-radius: 3px; background: #71523d; }
+.video-comparison-controls input::-moz-range-thumb { width: 10px; height: 10px; border: 1px solid #957357; border-radius: 50%; background: #71523d; }
+.video-comparison-controls > span { color: var(--color-text-light); font-size: 0.8rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.video-comparison-hint { margin: 8px 0 0; color: var(--color-text-muted); font-size: 0.8rem; text-align: center; }
+
+@media (max-width: 640px) {
+  .video-comparison-grid { grid-template-columns: 1fr; margin-left: 0; }
+  .video-comparison-label { top: 8px; padding: 4px 6px; font-size: 0.65rem; }
+  .video-comparison-label--left { left: 8px; }
+  .video-comparison-label--right { right: 8px; }
+  .video-comparison-controls { gap: 8px; }
+}

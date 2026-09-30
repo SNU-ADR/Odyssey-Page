@@ -1,4 +1,51 @@
 .results-section { padding: 88px 24px 104px; background: linear-gradient(180deg, rgba(14,11,9,.9), rgba(27,18,13,.62)); }
+.benchmark-tables { width: min(100%, 1160px); margin: 38px auto 52px; display: grid; gap: 34px; }
+.benchmark-block { min-width: 0; }
+.benchmark-heading { padding: 24px 24px 6px; }
+.benchmark-heading h3 { margin: 8px 0 3px; color: #f0decd; font-size: clamp(1.2rem, 2vw, 1.5rem); font-weight: 500; line-height: 1.4; }
+.benchmark-heading .benchmark-title--baseline { color: #df965d; font-size: clamp(1.05rem, 1.7vw, 1.3rem); letter-spacing: .04em; }
+.benchmark-heading p { margin: 0; color: #bfa995; font-size: .88rem; line-height: 1.6; }
+.benchmark-scroll { overflow-x: auto; scrollbar-color: #87654a #211914; scrollbar-width: thin; }
+.benchmark-scroll:focus-visible { outline: 2px solid #c5956e; outline-offset: -2px; }
+.benchmark-table { width: 100%; min-width: 1080px; border-collapse: separate; border-spacing: 0; background: #201914; color: #cdb9a5; font-size: .81rem; line-height: 1.45; font-variant-numeric: tabular-nums; text-align: center; }
+.benchmark-table th, .benchmark-table td { padding: 8px 7px; white-space: nowrap; }
+.benchmark-table thead th { background: #2c2119; color: #ddc4ab; font-size: .78rem; font-weight: 500; font-style: italic; }
+.benchmark-table thead tr:last-child th { padding-top: 5px; padding-bottom: 12px; }
+.benchmark-table thead small { color: #bfa58c; font-size: .7rem; font-weight: 400; }
+.benchmark-table .benchmark-name { position: sticky; left: 0; z-index: 1; padding-left: 20px; text-align: left; background: #201914; color: #e1c7ae; font-weight: 500; }
+.benchmark-table thead .benchmark-name { background: #2c2119; }
+.benchmark-group-start { border-left: 1px solid rgba(197,157,123,.18); }
+.benchmark-family th { padding: 9px 20px; border-top: 1px solid rgba(197,157,123,.24); border-bottom: 1px solid rgba(197,157,123,.18); background: #30231a; color: #d4ac87; font-size: .8rem; font-weight: 500; text-align: left; letter-spacing: .025em; }
+.benchmark-table .benchmark-family th { text-align: center; font-style: italic; }
+.benchmark-pair-start > th, .benchmark-pair-start > td { border-top: 1px solid rgba(197,157,123,.13); }
+.benchmark-with-route td { background: rgba(186,133,85,.045); }
+.benchmark-route { color: #bea38a; font-size: 1rem; }
+.benchmark-with-route .benchmark-route { color: #e2b68e; }
+.benchmark-table strong, .benchmark-note strong { color: #f0c49b; font-weight: 700; }
+.benchmark-second { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+.benchmark-note { margin: 0; padding: 16px 24px 20px; border-top: 1px solid rgba(197,157,123,.18); color: #a99079; font-size: .76rem; line-height: 1.7; }
+.benchmark-note.benchmark-note--compact { padding-top: 4px; }
+@media (max-width: 640px) {
+  .benchmark-heading { padding: 20px 18px 5px; }
+  .benchmark-note { padding: 14px 18px 18px; }
+  .benchmark-table--scoring .benchmark-name { min-width: 150px; max-width: 175px; white-space: normal; }
+}
+.results-figure-section { width: min(100%, 1160px); margin: 38px auto 0; }
+.results-figure-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.results-plot { min-width: 0; margin: 0; padding: 16px 10px 20px; border: 1px solid rgba(211,164,124,.14); border-radius: 18px; background: #201914; box-shadow: inset 0 1px 0 rgba(255,226,197,.035); }
+.results-plot img { display: block; width: 100%; height: auto; object-fit: contain; }
+.results-plot figcaption { margin: 16px 8px 0; padding-top: 16px; border-top: 1px solid rgba(211,164,124,.12); color: #bfa995; font-size: .84rem; line-height: 1.65; }
+.results-plot figcaption h4 { margin: 0 0 8px; color: #f0decd; font-size: 1rem; font-weight: 700; }
+.results-plot figcaption p { margin: 0; }
+@media (max-width: 900px) {
+  .results-figure-section { max-width: 680px; }
+  .results-figure-grid { grid-template-columns: 1fr; }
+  .results-plot { padding: 20px; }
+  .results-plot img { max-width: 520px; margin: 0 auto; }
+}
+@media (max-width: 480px) {
+  .results-plot { padding: 14px 10px 18px; }
+}
 .results-layout { width: min(100%, 1160px); margin: 38px auto 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
 .results-card { min-width: 0; padding: 28px; border: 1px solid rgba(211,132,69,.2); border-radius: 12px; background: rgba(25,19,15,.88); }
 .results-card--lead { background: linear-gradient(145deg, rgba(100,53,31,.48), rgba(25,19,15,.9)); }

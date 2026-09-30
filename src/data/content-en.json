@@ -2,9 +2,8 @@
     "hero":  {
                  "title":  "Odyssey",
                  "sectionLabel":  "EAD Project Introduction",
-                 "subtitle":  "A Closed-Loop Benchmark for Long-Horizon Real-World Driving with Explicit Navigation Routes",
+                 "subtitle":  "A Closed-Loop Benchmark for Long-Horizon Real-World Driving\nwith Explicit Navigation Routes",
                  "affiliation":  "arXiv",
-                 "description":  "Odyssey evaluates whether end-to-end driving planners can sustain safe, route-following behavior across continuous 100-second simulations reconstructed from nuPlan logs.",
                  "highlights":  [
                                     "100-second rollouts",
                                     "Explicit SD-map routes",
@@ -12,20 +11,24 @@
                                 ],
                  "stats":  [
                                {
-                                   "value":  "100",
-                                   "label":  "Scenarios"
-                               },
-                               {
-                                   "value":  "100 s",
-                                   "label":  "Rollout"
+                                   "value":  "3DGS + Diff.",
+                                   "label":  "Rendering",
+                                   "description":  "For enhanced visual quality\nat novel viewpoints."
                                },
                                {
                                    "value":  "SD",
-                                   "label":  "Route"
+                                   "label":  "Routing",
+                                   "description":  "Explicit, unambiguous\nroad-level routes."
                                },
                                {
-                                   "value":  "3DGS",
-                                   "label":  "Rendering"
+                                   "value":  "100 s",
+                                   "label":  "Source Log",
+                                   "description":  "Reconstructed from continuous\n100-second nuPlan logs."
+                               },
+                               {
+                                   "value":  "100",
+                                   "label":  "Scenarios",
+                                   "description":  "Multiple turns,\nlane changes followed by turns,\ntraffic lights,\npedestrians, ..."
                                }
                            ]
              },
@@ -108,7 +111,7 @@
     "results":  {
                     "sectionTitle":  "Results",
                     "sectionTag":  "EXPERIMENTS",
-                    "sectionSubtitle":  "Route guidance improves route following across planners, while long-horizon evaluation exposes remaining lane-preparation and safety gaps."
+                    "sectionSubtitle":  ""
                 },
     "authors":  {
                     "sectionTitle":  "Authors",

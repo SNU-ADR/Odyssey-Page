@@ -41,21 +41,20 @@
     <path d="M0 252h1600M0 470h1600M0 690h1600M286 0v900M578 0v900M866 0v900M1150 0v900M1435 0v900" stroke-dasharray="2 7"/>
   </g>
   <g filter="url(#routeGlow)">
-    <path d="M45 790h130c36 0 54-20 54-56v-67c0-36 18-54 54-54h122c36 0 54 18 54 54v70c0 36 18 54 54 54h114c36 0 54-18 54-54V590c0-36 18-54 54-54h111c36 0 54 18 54 54v86c0 36 18 54 54 54h116c36 0 54-18 54-54V450c0-36 18-54 54-54h108c36 0 54 18 54 54v116c0 36 18 54 54 54h110c36 0 54-18 54-54V360c0-36 18-54 54-54h104c36 0 54 18 54 54v90c0 36 18 54 54 54h70c36 0 54-18 54-54V235c0-36 18-54 54-54h30" stroke="url(#route)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-mid="url(#arrow)" marker-end="url(#arrow)"/>
-    <path d="M45 790h130c36 0 54-20 54-56v-67c0-36 18-54 54-54h122c36 0 54 18 54 54v70c0 36 18 54 54 54h114c36 0 54-18 54-54V590c0-36 18-54 54-54h111c36 0 54 18 54 54v86c0 36 18 54 54 54h116c36 0 54-18 54-54V450c0-36 18-54 54-54h108c36 0 54 18 54 54v116c0 36 18 54 54 54h110c36 0 54-18 54-54V360c0-36 18-54 54-54h104c36 0 54 18 54 54v90c0 36 18 54 54 54h70c36 0 54-18 54-54V235c0-36 18-54 54-54h30" stroke="#e49a5e" stroke-opacity=".5" stroke-width="1" stroke-dasharray="2 12" stroke-linecap="round"/>
+    <path d="M160 770H300Q322 770 338 754L382 710Q398 694 420 694H600Q624 694 624 670V626Q624 602 600 602H502Q478 602 478 578V470Q478 446 502 446H850Q876 446 876 420V332Q876 308 902 308H1020Q1044 308 1060 324L1092 356Q1108 372 1132 372H1280Q1308 372 1308 344V230Q1308 202 1336 202H1388Q1420 202 1420 181" stroke="url(#route)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" marker-mid="url(#arrow)" marker-end="url(#arrow)"/>
+    <path d="M160 770H300Q322 770 338 754L382 710Q398 694 420 694H600Q624 694 624 670V626Q624 602 600 602H502Q478 602 478 578V470Q478 446 502 446H850Q876 446 876 420V332Q876 308 902 308H1020Q1044 308 1060 324L1092 356Q1108 372 1132 372H1280Q1308 372 1308 344V230Q1308 202 1336 202H1388Q1420 202 1420 181" stroke="#e49a5e" stroke-opacity=".5" stroke-width="1" stroke-dasharray="2 12" stroke-linecap="round"/>
   </g>
   <g fill="#1b120e" stroke="#df8d53" stroke-width="2">
-    <circle cx="287" cy="678" r="6"/><circle cx="403" cy="497" r="6"/><circle cx="551" cy="366" r="6"/>
-    <circle cx="855" cy="250" r="6"/><circle cx="1120" cy="354" r="6"/><circle cx="1390" cy="632" r="6"/>
+    <circle cx="420" cy="694" r="6"/><circle cx="624" cy="626" r="6"/><circle cx="502" cy="446" r="6"/>
+    <circle cx="902" cy="308" r="6"/><circle cx="1132" cy="372" r="6"/><circle cx="1308" cy="230" r="6"/>
   </g>
-  <circle cx="45" cy="790" r="8" fill="#efad68" fill-opacity=".95"/><circle cx="45" cy="790" r="17" stroke="#efad68" stroke-opacity=".48" stroke-width="1.5"/>
-  <circle cx="1588" cy="181" r="16" stroke="#efad68" stroke-opacity=".78" stroke-width="2"/>
-  <circle cx="1588" cy="181" r="5" fill="#efad68"/>
+  <circle cx="160" cy="770" r="8" fill="#efad68" fill-opacity=".95"/><circle cx="160" cy="770" r="17" stroke="#efad68" stroke-opacity=".48" stroke-width="1.5"/>
+  <circle cx="1420" cy="181" r="16" stroke="#efad68" stroke-opacity=".78" stroke-width="2"/>
+  <circle cx="1420" cy="181" r="5" fill="#efad68"/>
   <g font-family="Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="1.8" fill="#f0d0af">
-    <rect x="23" y="818" width="94" height="30" rx="15" fill="#160f0b" fill-opacity=".94" stroke="#df8d53" stroke-opacity=".72"/>
-    <text x="70" y="838" text-anchor="middle">START</text>
-    <rect x="1385" y="126" width="192" height="30" rx="15" fill="#160f0b" fill-opacity=".94" stroke="#df8d53" stroke-opacity=".72"/>
-    <text x="1481" y="146" text-anchor="middle">DESTINATION</text>
-    <text x="785" y="820" text-anchor="middle" fill="#d9a271" font-size="11" letter-spacing="2.3">100 s MULTI-TURN ROUTE</text>
+    <rect x="113" y="798" width="94" height="30" rx="15" fill="#160f0b" fill-opacity=".94" stroke="#df8d53" stroke-opacity=".72"/>
+    <text x="160" y="818" text-anchor="middle">START</text>
+    <rect x="1296" y="126" width="192" height="30" rx="15" fill="#160f0b" fill-opacity=".94" stroke="#df8d53" stroke-opacity=".72"/>
+    <text x="1392" y="146" text-anchor="middle">DESTINATION</text>
   </g>
 </svg>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import SectionTitle from './common/SectionTitle';
+import VideoComparison from './VideoComparison';
 import '../styles/components/Demo.css';
 
 const metrics = [
@@ -34,12 +35,24 @@ const metrics = [
   },
 ];
 
-const ChapterHeading = ({ number, title, note }) => (
-  <div className="demo-chapter-heading">
-    <span className="demo-chapter-number">{number}</span>
-    <div><h3>{title}</h3>{note && <p>{note}</p>}</div>
+const PlannerVideoPlaceholder = ({ label, ko }) => (
+  <div
+    className="planner-video-placeholder"
+    role="img"
+    aria-label={`${label} — ${ko ? '영상 준비 중, 2분 31초' : 'Video coming soon, 2 minutes 31 seconds'}`}
+  >
+    <div className="planner-video-placeholder-center">
+      <svg viewBox="0 0 48 48" aria-hidden="true">
+        <circle cx="24" cy="24" r="22" />
+        <path d="M20 16L32 24L20 32Z" />
+      </svg>
+      <span>{ko ? '영상 준비 중' : 'Video coming soon'}</span>
+    </div>
+    <span className="planner-video-duration" aria-hidden="true">2:31</span>
   </div>
 );
+
+const plannerScenarios = ['Collision', 'Pre-Lane Change', 'Traffic Light', 'Pedestrian'];
 
 const MetricFigure = ({ ko }) => (
   <figure className="metric-figure">
@@ -75,9 +88,6 @@ const MetricFigure = ({ ko }) => (
 const Demo = () => {
   const { lang } = useLanguage();
   const ko = lang === 'ko';
-  const subtitle = ko
-    ? '컨셉, 모델 평가, 평가 지표, 렌더링 비교를 네 개의 데모로 나눠 소개합니다.'
-    : 'Four demo areas for the benchmark concept, planner evaluation, metrics, and rendering comparisons.';
   const placeholder = (title, body, className = '') => (
     <div className={`demo-placeholder ${className}`}>
       <span className="demo-placeholder-mark" aria-hidden="true">＋</span>
@@ -88,13 +98,9 @@ const Demo = () => {
 
   return (
     <section id="demo" className="demo-section" aria-label="Demo">
-      <SectionTitle title="Demos" subtitle={subtitle} />
-
-      <article className="demo-chapter">
-        <ChapterHeading
-          number="01"
-          title={ko ? 'Odyssey 컨셉 데모' : 'Odyssey Concept Demo'}
-          note={ko ? '논문 supplementary video 원본을 그대로 유지합니다.' : 'Original paper supplementary video, kept intact.'}
+      <article className="demo-chapter" id="odyssey-concept">
+        <SectionTitle
+          title={ko ? 'Odyssey 컨셉' : 'Odyssey Concept'}
         />
         <div className="demo-video-frame">
           <video controls playsInline preload="metadata" className="demo-video">
@@ -104,27 +110,47 @@ const Demo = () => {
         </div>
       </article>
 
-      <article className="demo-chapter">
-        <ChapterHeading number="02" title={ko ? '모델 평가 데모' : 'Model Evaluation Demo'} />
-        {placeholder(
-          ko ? '모델 평가 데모 준비 중' : 'Model evaluation demo placeholder',
-          ko ? '평가 대상 모델들의 주행 결과 영상을 이 자리에 추가합니다.' : 'Planner evaluation footage will be added here.',
-          'demo-placeholder--wide',
-        )}
+      <article className="demo-chapter" id="planner-demos">
+        <SectionTitle
+          title="Closed-Loop Planner Evaluation"
+        />
+        <div className="planner-demos">
+          <div className="planner-route-comparison">
+            <h3 className="planner-concept-title">Command vs SD Route</h3>
+            <div className="planner-video-grid">
+              {['Scenario 1', 'Scenario 2'].map((label) => (
+                <figure className="planner-video-card" key={label}>
+                  <PlannerVideoPlaceholder label={label} ko={ko} />
+                  <figcaption className="planner-video-label">{label}</figcaption>
+                </figure>
+              ))}
+            </div>
+          </div>
+
+          <div className="planner-video-grid planner-scenarios">
+            {plannerScenarios.map((label) => (
+              <figure className="planner-video-card" key={label}>
+                <figcaption>
+                  <h3 className="planner-concept-title">{label}</h3>
+                </figcaption>
+                <PlannerVideoPlaceholder label={label} ko={ko} />
+              </figure>
+            ))}
+          </div>
+        </div>
       </article>
 
-      <article className="demo-chapter">
-        <ChapterHeading
-          number="03"
+      <article className="demo-chapter" id="evaluation-metrics">
+        <SectionTitle
           title={ko ? '평가 지표' : 'Evaluation Metrics'}
-          note={ko ? '지표 그림 → 장면 이미지 예시 → BEV 재생 데모 순서로 구성합니다.' : 'Metric figure → scenario image examples → BEV playback.'}
+          subtitle={ko ? '지표 그림 → 장면 이미지 예시 → BEV 재생 데모 순서로 구성합니다.' : 'Metric figure → scenario image examples → BEV playback.'}
         />
         <MetricFigure ko={ko} />
         <div className="metric-cards">
           {metrics.map((metric) => (
             <section className="metric-card" key={metric.key}>
               <span>{metric.key}</span>
-              <h4>{ko ? metric.koTitle : metric.enTitle}</h4>
+              <h3>{ko ? metric.koTitle : metric.enTitle}</h3>
               <p>{ko ? metric.koBody : metric.enBody}</p>
             </section>
           ))}
@@ -141,15 +167,20 @@ const Demo = () => {
         </div>
       </article>
 
-      <article className="demo-chapter">
-        <ChapterHeading
-          number="04"
-          title="3DGS / Fixer"
-          note={ko ? '비교할 장면을 고른 뒤 결과를 추가합니다.' : 'Comparison footage will follow once a scene is selected.'}
+      <article className="demo-chapter" id="rendering-comparison">
+        <SectionTitle
+          title="3DGS / Diffusion Refinement"
         />
-        <div className="rendering-comparison">
-          {placeholder('3D Gaussian Splatting', ko ? '비교 장면 선택 후 추가' : 'Pending scene selection')}
-          {placeholder('Fixer refinement', ko ? '같은 장면의 보정 결과 추가' : 'Refined view from the same scene')}
+        <div className="video-comparison-grid">
+          {[1, 2, 3, 4].map((scene) => (
+            <VideoComparison
+              key={scene}
+              label={`${ko ? '장면' : 'Scene'} ${scene}`}
+              beforeSrc={`${process.env.PUBLIC_URL}/videos/odyssey-paper-demo.mp4`}
+              afterSrc={`${process.env.PUBLIC_URL}/videos/odyssey-paper-demo.mp4`}
+              ko={ko}
+            />
+          ))}
         </div>
       </article>
     </section>

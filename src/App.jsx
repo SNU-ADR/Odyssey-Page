@@ -5,11 +5,7 @@ import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import FlagshipFigure from './components/FlagshipFigure';
 import Demo from './components/Demo';
-import RoadMap from './components/RoadMap';
-import Model from './components/Model';
-import Dataset from './components/Dataset';
 import Results from './components/Results';
-import Authors from './components/Authors';
 import Footer from './components/Footer';
 
 function AppInner() {
@@ -21,11 +17,7 @@ function AppInner() {
         <Hero />
         <FlagshipFigure />
         <Demo />
-        <Model />
-        <Dataset />
         <Results />
-        <Authors />
-        <RoadMap />
       </main>
       <Footer />
     </div>

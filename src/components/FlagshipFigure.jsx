@@ -1,5 +1,5 @@
 import React from 'react';
-import flagshipFigure from '../assets/images/odyssey-flagship.png';
+import flagshipFigure from '../assets/images/intro1_Page-no-labels.svg';
 import '../styles/components/FlagshipFigure.css';
 
 const FlagshipFigure = () => (

@@ -12,20 +12,24 @@
                                 ],
                  "stats":  [
                                {
-                                   "value":  "100",
-                                   "label":  "시나리오"
-                               },
-                               {
-                                   "value":  "100초",
-                                   "label":  "롤아웃"
+                                   "value":  "3DGS + Diff.",
+                                   "label":  "시각화",
+                                   "description":  "새로운 시점에서의\n시각적 품질 향상을 위해."
                                },
                                {
                                    "value":  "SD",
-                                   "label":  "경로 안내"
+                                   "label":  "경로 안내",
+                                   "description":  "모호함 없는 명시적인\n도로 단위 경로."
                                },
                                {
-                                   "value":  "3DGS",
-                                   "label":  "시각화"
+                                   "value":  "100초",
+                                   "label":  "원본 로그",
+                                   "description":  "연속 100초 nuPlan 로그로부터\n재구성."
+                               },
+                               {
+                                   "value":  "100",
+                                   "label":  "시나리오",
+                                   "description":  "연속 회전,\n차선 변경 후 회전,\n교통 신호,\n보행자 등."
                                }
                            ]
              },
@@ -108,7 +112,7 @@
     "results":  {
                     "sectionTitle":  "실험 결과",
                     "sectionTag":  "EXPERIMENTS",
-                    "sectionSubtitle":  "경로 안내는 여러 주행 모델의 경로 준수도를 높였지만, 장기 평가에서는 차로 준비와 안전성의 남은 과제도 드러납니다."
+                    "sectionSubtitle":  ""
                 },
     "authors":  {
                     "sectionTitle":  "저자",

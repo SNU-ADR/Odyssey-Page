@@ -11,12 +11,11 @@ const Navbar = () => {
   const toggleRef = useRef(null);
 
   const navItems = [
-    { label: 'Demo', href: '#demo' },
-    { label: content.model.sectionTitle, href: '#model' },
-    { label: content.dataset.sectionTitle, href: '#dataset' },
+    { label: lang === 'ko' ? '컨셉' : 'Concept', href: '#odyssey-concept' },
+    { label: lang === 'ko' ? '주행 모델 평가' : 'Planner Evaluation', href: '#planner-demos' },
+    { label: lang === 'ko' ? '평가 지표' : 'Metrics', href: '#evaluation-metrics' },
+    { label: lang === 'ko' ? '렌더링' : 'Rendering', href: '#rendering-comparison' },
     { label: content.results.sectionTitle, href: '#results' },
-    { label: content.authors.sectionTitle, href: '#authors' },
-    { label: content.roadmap.sectionTitle, href: '#roadmap' },
   ];
 
   const closeMenu = () => {
