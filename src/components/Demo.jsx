@@ -328,8 +328,8 @@ const Demo = () => {
                 <span>{item.key}</span>
                 <div><h4>{item.title}</h4><p>{item.detail}</p></div>
               </div>
-              <video className="metric-video" poster={`${process.env.PUBLIC_URL}/videos/${item.poster}?v=20261001b`} controls playsInline loop muted preload="metadata" aria-label={item.title}>
-                <source src={`${process.env.PUBLIC_URL}/videos/${item.src}?v=20261001b`} type={item.src.endsWith('.webm') ? 'video/webm' : 'video/mp4'} />
+              <video className="metric-video" poster={`${process.env.PUBLIC_URL}/videos/${item.poster}?v=20261001c`} controls playsInline loop muted preload="metadata" aria-label={item.title}>
+                <source src={`${process.env.PUBLIC_URL}/videos/${item.src}?v=20261001c`} type={item.src.endsWith('.webm') ? 'video/webm' : 'video/mp4'} />
                 Your browser does not support the video tag.
               </video>
             </article>
