@@ -94,99 +94,7 @@
   border-bottom: 1px solid rgba(181, 139, 107, 0.18);
 }
 
-/* One clip at full width, switched with arrows. A 2x2 comparison shown at half
-   width loses the per-panel detail that the clip is about. */
-.video-carousel-stage {
-  position: relative;
-}
-
-/* Bare .carousel-arrow flows inline next to the tabs; only the prev/next
-   variants are lifted over the stage. */
-.carousel-arrow {
-  display: grid;
-  place-items: center;
-  width: 36px;
-  height: 36px;
-  padding: 0;
-  border: 1px solid rgba(211, 132, 69, 0.42);
-  border-radius: 50%;
-  background: rgba(16, 13, 11, 0.72);
-  color: #e6c9ab;
-  cursor: pointer;
-  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
-}
-
-.carousel-arrow:hover,
-.carousel-arrow:focus-visible {
-  background: rgba(30, 22, 17, 0.92);
-  border-color: rgba(211, 132, 69, 0.8);
-  color: #f6e6d2;
-}
-
-.carousel-arrow svg {
-  width: 20px;
-  height: 20px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.carousel-arrow-prev,
-.carousel-arrow-next {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 46px;
-  height: 46px;
-}
-
-.carousel-arrow-prev { left: 14px; }
-.carousel-arrow-next { right: 14px; }
-
-.carousel-count {
-  position: absolute;
-  top: 14px;
-  right: 16px;
-  padding: 3px 9px;
-  border-radius: 999px;
-  background: rgba(16, 13, 11, 0.7);
-  color: #c9ae95;
-  font-size: 0.75rem;
-  letter-spacing: 0.04em;
-}
-
-.carousel-tabs {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 14px;
-}
-
-.carousel-tab {
-  padding: 7px 16px;
-  border: 1px solid rgba(181, 139, 107, 0.3);
-  border-radius: 999px;
-  background: transparent;
-  color: var(--color-text-light);
-  font-size: 0.84rem;
-  cursor: pointer;
-  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
-}
-
-.carousel-tab:hover { border-color: rgba(211, 132, 69, 0.6); color: #efdcc6; }
-
-.carousel-tab.is-active {
-  border-color: rgba(211, 132, 69, 0.85);
-  background: rgba(211, 132, 69, 0.16);
-  color: #f6e6d2;
-}
-
-.planner-scenarios > .planner-concept-title { margin-top: 0; }
-
-/* All clips at once, stacked at full width. */
+/* Every planner clip at once, stacked at full width. */
 .planner-stack {
   display: flex;
   flex-direction: column;
@@ -202,6 +110,8 @@
   font-weight: 600;
   letter-spacing: 0.04em;
 }
+
+.planner-scenarios > .planner-concept-title { margin-top: 0; }
 
 .planner-video-placeholder {
   position: relative;
@@ -349,42 +259,6 @@
   letter-spacing: 1px;
 }
 
-.metric-cards {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 12px;
-  margin: 0 0 18px;
-}
-
-.metric-card {
-  padding: 18px 17px;
-  border: 1px solid rgba(211, 132, 69, 0.2);
-  border-radius: 12px;
-  background: rgba(31, 23, 18, 0.8);
-}
-
-.metric-card > span {
-  color: var(--color-accent);
-  font-size: 0.74rem;
-  font-weight: 800;
-  letter-spacing: 0.13em;
-}
-
-.metric-card h3 {
-  min-height: 2.7em;
-  margin: 9px 0 7px;
-  color: var(--color-text);
-  font-size: 0.95rem;
-  line-height: 1.35;
-}
-
-.metric-card p {
-  margin: 0;
-  color: var(--color-text-muted);
-  font-size: 0.8rem;
-  line-height: 1.55;
-}
-
 .metric-media-grid,
 .rendering-comparison {
   display: grid;
@@ -396,32 +270,18 @@
 .metric-media-grid .demo-placeholder { min-height: 240px; }
 .rendering-comparison .demo-placeholder { min-height: 260px; }
 
-@media (max-width: 900px) {
-  .metric-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-
 @media (max-width: 640px) {
   .demo-section { padding: 0 16px 60px; }
   .demo-chapter { margin-bottom: 44px; }
   .demo-video-frame,
   .planner-demos,
   .metric-figure,
-  .metric-cards,
   .metric-media-grid,
   .rendering-comparison { width: 100%; margin-left: 0; }
   .demo-video-frame { border-radius: 10px; }
   .planner-video-grid { grid-template-columns: 1fr; gap: 22px; }
-  .carousel-arrow { width: 36px; height: 36px; }
-  .carousel-arrow svg { width: 16px; height: 16px; }
-  .carousel-arrow-prev { left: 8px; }
-  .carousel-arrow-next { right: 8px; }
-  .carousel-tab { padding: 6px 12px; font-size: 0.78rem; }
   .planner-concept-title { font-size: 0.95rem; }
   .metric-figure { padding: 6px; }
-  .metric-cards { gap: 9px; }
-  .metric-card { padding: 14px 12px; }
-  .metric-card h3 { font-size: 0.88rem; }
-  .metric-card p { font-size: 0.75rem; }
   .metric-media-grid,
   .rendering-comparison { grid-template-columns: 1fr; gap: 10px; }
   .metric-media-grid .demo-placeholder,
@@ -438,7 +298,7 @@
 }
 
 .metric-diagram-intro {
-  margin: 30px 0 14px 66px;
+  margin: 30px 0 14px;
 }
 
 .metric-diagram-intro h4 {
@@ -457,7 +317,7 @@
 .penalty-rows {
   display: grid;
   gap: 18px;
-  margin: 0 0 22px 66px;
+  margin: 0 0 22px;
 }
 
 .penalty-row {
@@ -488,10 +348,10 @@
   font-size: 1rem;
 }
 
-/* diagram | video, top-aligned (diagram heights differ per case) */
+/* diagram | video; columns are set per row (--diagram-fr / --video-fr) so both panels have the same height */
 .penalty-row-panels {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, var(--diagram-fr, 1fr)) minmax(0, var(--video-fr, 1fr));
   gap: 14px;
   align-items: start;
 }
@@ -510,6 +370,11 @@
 
 .penalty-row-panel > .metric-video {
   aspect-ratio: 16 / 9;
+}
+
+/* PLCA triptych (three passes side by side, 1280x480) */
+.penalty-row-panel > .metric-video-wide {
+  aspect-ratio: 8 / 3;
 }
 
 .penalty-row-panel figcaption {

@@ -2,8 +2,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import '../styles/components/VideoComparison.css';
 
 const formatTime = (seconds) => `${Math.floor(seconds / 60)}:${String(Math.floor(seconds % 60)).padStart(2, '0')}`;
+const PLAYBACK_RATE = 2;
 
-const VideoComparison = ({ beforeSrc, afterSrc, ko, label }) => {
+const VideoComparison = ({ beforeSrc, afterSrc, beforePoster, afterPoster, ko, label }) => {
+  const containerRef = useRef(null);
   const beforeRef = useRef(null);
   const afterRef = useRef(null);
   const controlsRef = useRef(null);
@@ -12,11 +14,29 @@ const VideoComparison = ({ beforeSrc, afterSrc, ko, label }) => {
   const [time, setTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [error, setError] = useState(false);
+  const [active, setActive] = useState(false);
 
   useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setActive(true);
+        observer.disconnect();
+      }
+    }, { rootMargin: '300px' });
+    observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!active) return;
     const before = beforeRef.current;
     const after = afterRef.current;
     const videos = [before, after];
+    const applyPlaybackRate = () => videos.forEach(video => {
+      video.defaultPlaybackRate = PLAYBACK_RATE;
+      video.playbackRate = PLAYBACK_RATE;
+    });
+    applyPlaybackRate();
     let wantsPlayback = false;
     let disposed = false;
     let frame;
@@ -31,6 +51,7 @@ const VideoComparison = ({ beforeSrc, afterSrc, ko, label }) => {
       if (disposed || starting || !wantsPlayback || videos.every(video => !video.paused) || videos.some(video => video.readyState < 3 || video.seeking)) return;
       starting = true;
       try {
+        applyPlaybackRate();
         await Promise.all(videos.map(video => video.play()));
         if (disposed || !wantsPlayback) pause();
       } catch (err) {
@@ -43,6 +64,7 @@ const VideoComparison = ({ beforeSrc, afterSrc, ko, label }) => {
       }
     };
     const metadata = () => {
+      applyPlaybackRate();
       if (videos.every(video => Number.isFinite(video.duration))) {
         setDuration(Math.min(before.duration, after.duration));
       }
@@ -59,16 +81,20 @@ const VideoComparison = ({ beforeSrc, afterSrc, ko, label }) => {
     };
     const failed = () => { stop(); setError(true); };
     const updateTime = () => setTime(before.currentTime);
-    const events = { loadedmetadata: metadata, canplay: resume, seeked: resume, waiting: pause, ended: stop, error: failed };
+    const events = { loadedmetadata: metadata, play: applyPlaybackRate, canplay: resume, seeked: resume, waiting: pause, ended: stop, error: failed };
     videos.forEach(video => Object.entries(events).forEach(([event, handler]) => video.addEventListener(event, handler)));
     before.addEventListener('timeupdate', updateTime);
     controlsRef.current = {
       toggle: () => {
         if (wantsPlayback) return stop();
         setError(false);
+        applyPlaybackRate();
         if (videos.some(video => video.ended)) videos.forEach(video => { video.currentTime = 0; });
         wantsPlayback = true;
         setPlaying(true);
+        // Metadata is sufficient until playback is requested. Setting auto here
+        // lets canplay resume both streams together once their frames are ready.
+        videos.forEach(video => { video.preload = 'auto'; });
         resume();
       },
       seek: (value) => {
@@ -87,7 +113,7 @@ const VideoComparison = ({ beforeSrc, afterSrc, ko, label }) => {
       before.removeEventListener('timeupdate', updateTime);
       controlsRef.current = null;
     };
-  }, [beforeSrc, afterSrc]);
+  }, [beforeSrc, afterSrc, active]);
 
   const moveSplit = (event) => {
     const bounds = event.currentTarget.getBoundingClientRect();
@@ -95,7 +121,7 @@ const VideoComparison = ({ beforeSrc, afterSrc, ko, label }) => {
   };
 
   return (
-    <div className="video-comparison" role="group" aria-label={label}>
+    <div ref={containerRef} className="video-comparison" role="group" aria-label={label}>
       <div
         className="video-comparison-stage"
         style={{
@@ -109,10 +135,10 @@ const VideoComparison = ({ beforeSrc, afterSrc, ko, label }) => {
           moveSplit(event);
         }}
       >
-        <video ref={beforeRef} src={beforeSrc} muted playsInline preload="auto" aria-label="3DGS only" />
-        <video ref={afterRef} src={afterSrc} muted playsInline preload="auto" className="video-comparison-after" aria-label="Diffusion refinement" />
-        <span className="video-comparison-label video-comparison-label--left">3DGS only</span>
-        <span className="video-comparison-label video-comparison-label--right">Diffusion refinement</span>
+        <video ref={beforeRef} src={active ? beforeSrc : undefined} poster={beforePoster} muted playsInline preload="metadata" aria-label="3DGS Only" />
+        <video ref={afterRef} src={active ? afterSrc : undefined} poster={afterPoster} muted playsInline preload="metadata" className="video-comparison-after" aria-label="Diffusion refinement" />
+        <span className="video-comparison-label video-comparison-label--left">3DGS Only</span>
+        <span className="video-comparison-label video-comparison-label--right">Diff. Refine</span>
         <div className="video-comparison-divider" aria-hidden="true">
           <span>
             <svg viewBox="0 0 24 16" focusable="false">

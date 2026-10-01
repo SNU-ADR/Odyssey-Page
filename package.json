@@ -2,7 +2,7 @@
   "name": "ead-project",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://adr-hcyoo.github.io/ody_test_page",
+  "homepage": "https://snu-adr.github.io/Odyssey-Page/",
   "dependencies": {
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
