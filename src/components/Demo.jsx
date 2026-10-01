@@ -3,6 +3,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import SectionTitle from './common/SectionTitle';
 import VideoComparison from './VideoComparison';
 import PenaltyDiagram, { DIAGRAM_ASPECT } from './PenaltyDiagram';
+import renderingComparisons from '../data/rendering-comparisons.json';
 import '../styles/components/Demo.css';
 
 const PlannerVideoPlaceholder = ({ label, ko }) => (
@@ -336,12 +337,14 @@ const Demo = () => {
           title="3DGS / Diffusion Refinement"
         />
         <div className="video-comparison-grid">
-          {[1, 2, 3, 4].map((scene) => (
+          {renderingComparisons.map((scene) => (
             <VideoComparison
-              key={scene}
-              label={`${ko ? '장면' : 'Scene'} ${scene}`}
-              beforeSrc={`${process.env.PUBLIC_URL}/videos/odyssey-paper-demo.mp4`}
-              afterSrc={`${process.env.PUBLIC_URL}/videos/odyssey-paper-demo.mp4`}
+              key={scene.id}
+              label={`${ko ? '장면' : 'Scene'} ${scene.id}: 3DGS / Diffusion Refinement`}
+              beforeSrc={`${process.env.PUBLIC_URL}/videos/rendering/${scene.before}`}
+              afterSrc={`${process.env.PUBLIC_URL}/videos/rendering/${scene.after}`}
+              beforePoster={`${process.env.PUBLIC_URL}/videos/rendering/${scene.beforePoster}`}
+              afterPoster={`${process.env.PUBLIC_URL}/videos/rendering/${scene.afterPoster}`}
               ko={ko}
             />
           ))}
