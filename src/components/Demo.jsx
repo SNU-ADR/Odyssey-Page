@@ -133,25 +133,25 @@ const MetricFigure = ({ ko }) => (
         <circle cx="236" cy="272" r="3" fill="#ef5147" />
         <circle cx="236" cy="279" r="3" fill="#4a3d33" />
         <circle cx="236" cy="286" r="3" fill="#4a3d33" />
-        <circle cx="270" cy="237.5" r="9" fill="none" stroke="#ef5147" strokeWidth="2.5" />
+        <circle cx="270" cy="237.5" r="7" fill="none" stroke="#ef5147" strokeWidth="2.2" />
         <text x="240" y="314" textAnchor="end" className="penalty-svg-alert">P<tspan dy="3" fontSize="8">TL</tspan><tspan dy="-3"> ×0.7</tspan></text>
         <text x="240" y="327" textAnchor="end" className="penalty-svg-note">RED LIGHT</text>
 
         {/* P_col: at-fault contact with the vehicle ahead */}
         <rect x="436" y="231" width="30" height="13" fill="#c8b8a8" opacity=".48" />
-        <circle cx="436" cy="237.5" r="9" fill="none" stroke="#ef5147" strokeWidth="2.5" />
+        <circle cx="436" cy="237.5" r="7" fill="none" stroke="#ef5147" strokeWidth="2.2" />
         <text x="436" y="180" textAnchor="middle" className="penalty-svg-alert">P<tspan dy="3" fontSize="8">col</tspan><tspan dy="-3"> ×0.6</tspan></text>
         <text x="436" y="193" textAnchor="middle" className="penalty-svg-note">AT-FAULT COLLISION</text>
 
         {/* P_PLC: stop line at B; compatible (outer) lane in green, ego crosses in the inner lane */}
         <path d="M598 230V245" stroke="#e7d1ba" strokeWidth="2.5" />
         <path d="M598 245V260" stroke="#a5cb9d" strokeWidth="2.5" />
-        <circle cx="598" cy="237.5" r="9" fill="none" stroke="#ef5147" strokeWidth="2.5" />
+        <circle cx="598" cy="237.5" r="7" fill="none" stroke="#ef5147" strokeWidth="2.2" />
         <text x="598" y="180" textAnchor="middle" className="penalty-svg-alert">P<tspan dy="3" fontSize="8">PLC</tspan><tspan dy="-3"> ×0.7</tspan></text>
         <text x="598" y="193" textAnchor="middle" className="penalty-svg-note">WRONG LANE AT STOP LINE</text>
 
         {/* P_off: trajectory drifts over the road edge */}
-        <circle cx="598" cy="320" r="9" fill="none" stroke="#ef5147" strokeWidth="2.5" />
+        <circle cx="598" cy="320" r="7" fill="none" stroke="#ef5147" strokeWidth="2.2" />
         <text x="582" y="316" textAnchor="end" className="penalty-svg-alert">P<tspan dy="3" fontSize="8">off</tspan></text>
         <text x="582" y="329" textAnchor="end" className="penalty-svg-note">OFF-ROAD DISTANCE</text>
 
@@ -211,53 +211,55 @@ const penaltyCases = [
 const PenaltyDiagram = ({ kind }) => (
   <svg viewBox="0 0 480 230" role="img" aria-label={`${kind} penalty example`}>
     <rect width="480" height="230" rx="12" fill="#17120f" />
-    {/* All cases share one layout: two-way road with a double center line, event circle (no X) at x=240, label centered above the road */}
+    {/* All cases share one scale and layout: lane ~22-24 px (3.5 m), cars 33 x 13 px (~2 m x 4.8 m),
+        double center line, event circle (r=7, no X) at x=240, label centered above the road.
+        NC / DAC / SDC: one lane each way with solid lane edge marks and a narrow shoulder (asphalt 86-150). */}
     {kind === 'NC' && (
       <>
-        <rect x="0" y="62" width="480" height="112" fill="#40362e" />
-        <path d="M0 62H480M0 174H480" fill="none" stroke="#8d7865" strokeOpacity=".48" strokeWidth="2" />
-        <path d="M0 116H480M0 120H480" fill="none" stroke="#a18e7d" strokeOpacity=".55" strokeWidth="1.5" />
+        <rect x="0" y="86" width="480" height="64" fill="#40362e" />
+        <path d="M0 86H480M0 150H480" fill="none" stroke="#8d7865" strokeOpacity=".48" strokeWidth="2" />
+        <path d="M0 94H480M0 142H480M0 116H480M0 120H480" fill="none" stroke="#a18e7d" strokeOpacity=".55" strokeWidth="1.5" />
         <g fill="#c8b8a8" opacity=".22">
-          <rect x="84" y="136" width="36" height="20" />
-          <rect x="360" y="80" width="36" height="20" />
+          <rect x="84" y="124.5" width="33" height="13" />
+          <rect x="360" y="98.5" width="33" height="13" />
         </g>
-        <rect x="240" y="136" width="38" height="20" fill="#c8b8a8" opacity=".48" />
-        <rect x="202" y="136" width="38" height="20" fill="#f2c18f" stroke="#ef5147" strokeWidth="2" />
-        <circle cx="240" cy="146" r="11" fill="none" stroke="#ef5147" strokeWidth="3" />
+        <rect x="240" y="124.5" width="33" height="13" fill="#c8b8a8" opacity=".48" />
+        <rect x="207" y="124.5" width="33" height="13" fill="#f2c18f" stroke="#ef5147" strokeWidth="2" />
+        <circle cx="240" cy="131" r="7" fill="none" stroke="#ef5147" strokeWidth="2.5" />
         <text x="240" y="48" textAnchor="middle" className="penalty-svg-alert">CONTACT</text>
       </>
     )}
     {kind === 'DAC' && (
       <>
-        <rect x="0" y="62" width="480" height="112" fill="#40362e" />
-        <path d="M0 62H480M0 174H480" fill="none" stroke="#8d7865" strokeOpacity=".48" strokeWidth="2" />
-        <path d="M0 116H480M0 120H480" fill="none" stroke="#a18e7d" strokeOpacity=".55" strokeWidth="1.5" />
+        <rect x="0" y="86" width="480" height="64" fill="#40362e" />
+        <path d="M0 86H480M0 150H480" fill="none" stroke="#8d7865" strokeOpacity=".48" strokeWidth="2" />
+        <path d="M0 94H480M0 142H480M0 116H480M0 120H480" fill="none" stroke="#a18e7d" strokeOpacity=".55" strokeWidth="1.5" />
         <g fill="#d0c0b0" opacity=".22">
-          <rect x="84" y="136" width="36" height="20" />
-          <rect x="360" y="80" width="36" height="20" />
+          <rect x="84" y="124.5" width="33" height="13" />
+          <rect x="360" y="98.5" width="33" height="13" />
         </g>
-        {/* ego straddles the road edge: only the front-right corner is outside */}
-        <rect x="205" y="156" width="38" height="20" transform="rotate(14 224 166)" fill="#f2c18f" stroke="#ef5147" strokeWidth="2" />
-        <circle cx="240" cy="178" r="11" fill="none" stroke="#ef5147" strokeWidth="3" />
+        {/* ego drifts over the lane mark and the shoulder; only the front-right corner leaves the asphalt */}
+        <rect x="209" y="137.2" width="33" height="13" transform="rotate(14 225.5 143.7)" fill="#f2c18f" stroke="#ef5147" strokeWidth="2" />
+        <circle cx="240" cy="154" r="7" fill="none" stroke="#ef5147" strokeWidth="2.5" />
         <text x="240" y="48" textAnchor="middle" className="penalty-svg-alert">OFF-ROAD</text>
       </>
     )}
     {kind === 'SDC' && (
       <>
-        <rect x="0" y="62" width="480" height="112" fill="#40362e" />
-        <rect x="184" y="174" width="112" height="56" fill="#40362e" />
-        <path d="M0 62H480M0 174H184V230M296 230V174H480" fill="none" stroke="#8d7865" strokeOpacity=".48" strokeWidth="2" />
+        <rect x="0" y="86" width="480" height="64" fill="#40362e" />
+        <rect x="208" y="150" width="64" height="80" fill="#40362e" />
+        <path d="M0 86H480M0 150H208V230M272 230V150H480" fill="none" stroke="#8d7865" strokeOpacity=".48" strokeWidth="2" />
         {/* SD route on the road center (no direction split, as in PLCA/S), then right into the branch; red = road taken after missing it */}
-        <path d="M0 118H240V230" fill="none" stroke="#d99455" strokeOpacity=".38" strokeWidth="12" strokeLinejoin="round" />
-        <path d="M240 118H480" fill="none" stroke="#ef5147" strokeOpacity=".38" strokeWidth="12" />
-        <path d="M0 116H480M0 120H480M238 174V230M242 174V230" fill="none" stroke="#a18e7d" strokeOpacity=".55" strokeWidth="1.5" />
-        <path d="M86 112L92 118L86 124M166 112L172 118L166 124M234 196L240 202L246 196" fill="none" stroke="#d99455" strokeWidth="2.5" />
+        <path d="M0 118H240V230" fill="none" stroke="#d99455" strokeOpacity=".38" strokeWidth="8" strokeLinejoin="round" />
+        <path d="M240 118H480" fill="none" stroke="#ef5147" strokeOpacity=".38" strokeWidth="8" />
+        <path d="M0 94H480M0 142H216V230M480 142H264V230M0 116H480M0 120H480M238 150V230M242 150V230" fill="none" stroke="#a18e7d" strokeOpacity=".55" strokeWidth="1.5" />
+        <path d="M86 113L91 118L86 123M166 113L171 118L166 123M235 195L240 200L245 195" fill="none" stroke="#d99455" strokeWidth="2.2" />
         <g fill="#d0c0b0" opacity=".22">
-          <rect x="84" y="136" width="36" height="20" />
-          <rect x="360" y="80" width="36" height="20" />
+          <rect x="84" y="124.5" width="33" height="13" />
+          <rect x="360" y="98.5" width="33" height="13" />
         </g>
-        <rect x="311" y="136" width="38" height="20" fill="#f2c18f" stroke="#ef5147" strokeWidth="2" />
-        <circle cx="240" cy="118" r="11" fill="none" stroke="#ef5147" strokeWidth="3" />
+        <rect x="300" y="124.5" width="33" height="13" fill="#f2c18f" stroke="#ef5147" strokeWidth="2" />
+        <circle cx="240" cy="118" r="7" fill="none" stroke="#ef5147" strokeWidth="2.5" />
         <text x="240" y="48" textAnchor="middle" className="penalty-svg-alert">MISSED BRANCH</text>
       </>
     )}
@@ -267,7 +269,7 @@ const PenaltyDiagram = ({ kind }) => (
         <path d="M0 62H480V158H316Q300 158 300 174V230H240V174Q240 158 224 158H0Z" fill="#40362e" />
         <path d="M0 62H480M0 158H224Q240 158 240 174V230M300 230V174Q300 158 316 158H480" fill="none" stroke="#8d7865" strokeOpacity=".48" strokeWidth="2" />
         {/* SD route on the road center: straight, then right at the intersection */}
-        <path d="M0 110H270V230" fill="none" stroke="#d99455" strokeOpacity=".38" strokeWidth="12" strokeLinejoin="round" />
+        <path d="M0 110H270V230" fill="none" stroke="#d99455" strokeOpacity=".38" strokeWidth="8" strokeLinejoin="round" />
         <path d="M0 108H480M0 112H480M268 174V230M272 174V230" fill="none" stroke="#a18e7d" strokeOpacity=".55" strokeWidth="1.5" />
         <path d="M0 86H240M300 86H480M0 134H240M300 134H480" fill="none" stroke="#a18e7d" strokeOpacity=".4" strokeWidth="1.2" strokeDasharray="8 8" />
         <path d="M56 104L62 110L56 116M146 104L152 110L146 116M264 206L270 212L276 206" fill="none" stroke="#d99455" strokeWidth="2.5" />
@@ -289,7 +291,7 @@ const PenaltyDiagram = ({ kind }) => (
         </g>
         {/* ego center on the stop line, still in lane 1, heading turned toward lane 2: the entry comes too late (score 0) */}
         <rect x="223.5" y="118.5" width="33" height="13" transform="rotate(20 240 125)" fill="#f2c18f" stroke="#ef5147" strokeWidth="2" />
-        <circle cx="240" cy="125" r="11" fill="none" stroke="#ef5147" strokeWidth="3" />
+        <circle cx="240" cy="125" r="7" fill="none" stroke="#ef5147" strokeWidth="2.5" />
         <text x="240" y="48" textAnchor="middle" className="penalty-svg-alert">WRONG LANE AT STOP LINE</text>
       </>
     )}
