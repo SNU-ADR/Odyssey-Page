@@ -94,6 +94,115 @@
   border-bottom: 1px solid rgba(181, 139, 107, 0.18);
 }
 
+/* One clip at full width, switched with arrows. A 2x2 comparison shown at half
+   width loses the per-panel detail that the clip is about. */
+.video-carousel-stage {
+  position: relative;
+}
+
+/* Bare .carousel-arrow flows inline next to the tabs; only the prev/next
+   variants are lifted over the stage. */
+.carousel-arrow {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid rgba(211, 132, 69, 0.42);
+  border-radius: 50%;
+  background: rgba(16, 13, 11, 0.72);
+  color: #e6c9ab;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+}
+
+.carousel-arrow:hover,
+.carousel-arrow:focus-visible {
+  background: rgba(30, 22, 17, 0.92);
+  border-color: rgba(211, 132, 69, 0.8);
+  color: #f6e6d2;
+}
+
+.carousel-arrow svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.carousel-arrow-prev,
+.carousel-arrow-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 46px;
+  height: 46px;
+}
+
+.carousel-arrow-prev { left: 14px; }
+.carousel-arrow-next { right: 14px; }
+
+.carousel-count {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: rgba(16, 13, 11, 0.7);
+  color: #c9ae95;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+}
+
+.carousel-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.carousel-tab {
+  padding: 7px 16px;
+  border: 1px solid rgba(181, 139, 107, 0.3);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-text-light);
+  font-size: 0.84rem;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+}
+
+.carousel-tab:hover { border-color: rgba(211, 132, 69, 0.6); color: #efdcc6; }
+
+.carousel-tab.is-active {
+  border-color: rgba(211, 132, 69, 0.85);
+  background: rgba(211, 132, 69, 0.16);
+  color: #f6e6d2;
+}
+
+.planner-scenarios > .planner-concept-title { margin-top: 0; }
+
+/* All clips at once, stacked at full width. */
+.planner-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.planner-stack-item { margin: 0; }
+
+.planner-stack-label {
+  margin: 0 0 8px;
+  color: #c9ae95;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
 .planner-video-placeholder {
   position: relative;
   display: grid;
@@ -302,6 +411,11 @@
   .rendering-comparison { width: 100%; margin-left: 0; }
   .demo-video-frame { border-radius: 10px; }
   .planner-video-grid { grid-template-columns: 1fr; gap: 22px; }
+  .carousel-arrow { width: 36px; height: 36px; }
+  .carousel-arrow svg { width: 16px; height: 16px; }
+  .carousel-arrow-prev { left: 8px; }
+  .carousel-arrow-next { right: 8px; }
+  .carousel-tab { padding: 6px 12px; font-size: 0.78rem; }
   .planner-concept-title { font-size: 0.95rem; }
   .metric-figure { padding: 6px; }
   .metric-cards { gap: 9px; }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import SectionTitle from './common/SectionTitle';
 import VideoComparison from './VideoComparison';
@@ -44,24 +44,125 @@ const metrics = [
   },
 ];
 
-const PlannerVideoPlaceholder = ({ label, ko }) => (
-  <div
-    className="planner-video-placeholder"
-    role="img"
-    aria-label={`${label} — ${ko ? '영상 준비 중, 2분 31초' : 'Video coming soon, 2 minutes 31 seconds'}`}
-  >
-    <div className="planner-video-placeholder-center">
-      <svg viewBox="0 0 48 48" aria-hidden="true">
-        <circle cx="24" cy="24" r="22" />
-        <path d="M20 16L32 24L20 32Z" />
-      </svg>
-      <span>{ko ? '영상 준비 중' : 'Video coming soon'}</span>
+const Chevron = ({ back }) => (
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d={back ? 'M15 4L7 12l8 8' : 'M9 4l8 8-8 8'} />
+  </svg>
+);
+
+// One item at full width with arrows, rather than a grid of small panes: these
+// are 2x2 comparisons and before/after sliders, and at half width the detail
+// they are about stops being readable.
+//
+// overlayArrows=false keeps the arrows out of the stage. The before/after
+// slider is dragged across the middle of its stage, which is exactly where an
+// overlaid arrow would sit.
+const Carousel = ({ items, ko, name, overlayArrows = true, stageClass = '', children }) => {
+  const [idx, setIdx] = useState(0);
+  const n = items.length;
+  const go = (step) => setIdx((idx + step + n) % n);
+  const arrow = (step, back) => (
+    <button
+      type="button"
+      className={`carousel-arrow${overlayArrows ? ` carousel-arrow-${back ? 'prev' : 'next'}` : ''}`}
+      onClick={() => go(step)}
+      aria-label={(back ? (ko ? '이전 장면' : 'Previous scene') : (ko ? '다음 장면' : 'Next scene'))}
+    >
+      <Chevron back={back} />
+    </button>
+  );
+  return (
+    <div className="video-carousel">
+      <div className={`video-carousel-stage ${stageClass}`}>
+        {children(items[idx])}
+        {n > 1 && overlayArrows && (
+          <>
+            {arrow(-1, true)}
+            {arrow(1, false)}
+            <span className="carousel-count" aria-hidden="true">{idx + 1} / {n}</span>
+          </>
+        )}
+      </div>
+      {n > 1 && (
+        <div className="carousel-tabs" role="tablist" aria-label={name}>
+          {!overlayArrows && arrow(-1, true)}
+          {items.map((it, k) => (
+            <button
+              key={it.label}
+              type="button"
+              role="tab"
+              aria-selected={k === idx}
+              className={`carousel-tab${k === idx ? ' is-active' : ''}`}
+              onClick={() => setIdx(k)}
+            >
+              {it.label}
+            </button>
+          ))}
+          {!overlayArrows && arrow(1, false)}
+        </div>
+      )}
     </div>
-    <span className="planner-video-duration" aria-hidden="true">2:31</span>
+  );
+};
+
+const PlannerClip = ({ item, ko }) => (
+  // key forces a remount so the browser loads the new source
+  <video
+    key={item.src}
+    className="demo-video"
+    controls
+    playsInline
+    loop
+    muted
+    preload="metadata"
+    aria-label={`${item.label} — ${ko ? '비교 영상' : 'comparison clip'}`}
+  >
+    <source src={`${process.env.PUBLIC_URL}/videos/${item.src}`} type="video/mp4" />
+    Your browser does not support the video tag.
+  </video>
+);
+
+// Every clip laid out at once, each at full width. A carousel hid five of the
+// six behind a click, and a grid made each one too small to read.
+const PlannerStack = ({ items, ko }) => (
+  <div className="planner-stack">
+    {items.map((item) => (
+      <figure className="planner-stack-item" key={item.src}>
+        <figcaption className="planner-stack-label">{item.label}</figcaption>
+        <div className="demo-video-frame">
+          <PlannerClip item={item} ko={ko} />
+        </div>
+      </figure>
+    ))}
   </div>
 );
 
-const plannerScenarios = ['Collision', 'Pre-Lane Change', 'Traffic Light', 'Pedestrian'];
+// Two scenes where a directional command and an SD-map route disagree.
+const routeScenarios = [
+  { label: 'Intersection', src: '2_navigation_guidance_intersection.mp4' },
+  { label: 'Roundabout', src: '3_navigation_guidance_roundabout.mp4' },
+];
+
+// One scene per headline failure mode; labels name what the clip actually shows.
+const plannerScenarios = [
+  { label: 'Pre-Lane Change', src: '4_right_turn_lane_selection.mp4' },
+  { label: 'Traffic Light', src: '6_signalized_intersection.mp4' },
+  { label: 'Pedestrian', src: '7_crossing_pedestrian.mp4' },
+  // Last: this one is not a single failure mode but the whole run being judged.
+  { label: 'Overall Evaluation', src: '5_passing_parked_vehicles.mp4' },
+];
+
+// Both sides come from the same rollout, same camera and same steps: one from
+// sensor_blobs_pre_restore (raw 3DGS) and one from sensor_blobs (refined), and
+// both are encoded with identical settings so the slider shows rendering
+// quality rather than a difference in compression.
+const renderComparisons = [
+  {
+    label: 'Scene c091',
+    before: 'render-c091-3dgs.mp4',
+    after: 'render-c091-refined.mp4',
+  },
+];
 
 // RouteDS = 100 · RC_SD · P_PLC · P_SD · P_col · P_off · P_TL (paper appendix, "RouteDS Components")
 const routeDsTerms = [
@@ -302,7 +403,7 @@ const Demo = () => {
         />
         <div className="demo-video-frame">
           <video controls playsInline preload="metadata" className="demo-video">
-            <source src={`${process.env.PUBLIC_URL}/videos/odyssey-paper-demo.mp4`} type="video/mp4" />
+            <source src={`${process.env.PUBLIC_URL}/videos/1_benchmark_overview.mp4`} type="video/mp4" />
             Your browser does not support the video tag.
           </video>
         </div>
@@ -315,25 +416,12 @@ const Demo = () => {
         <div className="planner-demos">
           <div className="planner-route-comparison">
             <h3 className="planner-concept-title">Command vs SD Route</h3>
-            <div className="planner-video-grid">
-              {['Scenario 1', 'Scenario 2'].map((label) => (
-                <figure className="planner-video-card" key={label}>
-                  <PlannerVideoPlaceholder label={label} ko={ko} />
-                  <figcaption className="planner-video-label">{label}</figcaption>
-                </figure>
-              ))}
-            </div>
+            <PlannerStack items={routeScenarios} ko={ko} />
           </div>
 
-          <div className="planner-video-grid planner-scenarios">
-            {plannerScenarios.map((label) => (
-              <figure className="planner-video-card" key={label}>
-                <figcaption>
-                  <h3 className="planner-concept-title">{label}</h3>
-                </figcaption>
-                <PlannerVideoPlaceholder label={label} ko={ko} />
-              </figure>
-            ))}
+          <div className="planner-scenarios">
+            <h3 className="planner-concept-title">{ko ? '장면별 비교' : 'Scenario comparisons'}</h3>
+            <PlannerStack items={plannerScenarios} ko={ko} />
           </div>
         </div>
       </article>
@@ -360,17 +448,18 @@ const Demo = () => {
         <SectionTitle
           title="3DGS / Diffusion Refinement"
         />
-        <div className="video-comparison-grid">
-          {[1, 2, 3, 4].map((scene) => (
+        <Carousel items={renderComparisons} ko={ko} name="3DGS / Diffusion Refinement"
+                  overlayArrows={false}>
+          {(item) => (
             <VideoComparison
-              key={scene}
-              label={`${ko ? '장면' : 'Scene'} ${scene}`}
-              beforeSrc={`${process.env.PUBLIC_URL}/videos/odyssey-paper-demo.mp4`}
-              afterSrc={`${process.env.PUBLIC_URL}/videos/odyssey-paper-demo.mp4`}
+              key={item.label}
+              label={item.label}
+              beforeSrc={`${process.env.PUBLIC_URL}/videos/${item.before}`}
+              afterSrc={`${process.env.PUBLIC_URL}/videos/${item.after}`}
               ko={ko}
             />
-          ))}
-        </div>
+          )}
+        </Carousel>
       </article>
     </section>
   );
