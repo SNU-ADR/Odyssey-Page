@@ -263,8 +263,9 @@ const PLCA = () => {
         <text x={(20 + lateFrom) / 2} y={ruler + 18} textAnchor="middle" className="penalty-svg-note" style={{ fill: C.onTime }}>ON TIME · 1</text>
         <text x={(lateFrom + CX) / 2} y={ruler + 18} textAnchor="middle" className="penalty-svg-note" style={{ fill: C.late }}>LATE · 0.5</text>
         <text x={(lateFrom + CX) / 2} y={ruler + 31} textAnchor="middle" className="penalty-svg-note">LAST 10 m</text>
-        {/* stop line: lane 1 plain, lane 2 (compatible) green */}
-        <path d={`M${CX} ${r.center + GAP / 2}V${r.dividersDown[0]}`} stroke={C.stopLine} strokeWidth="3" />
+        {/* stop line: lane 2 (compatible) green; crossing in lane 1 = wrong lane (0), red */}
+        <path d={`M${CX} ${r.center + GAP / 2}V${r.dividersDown[0]}`} stroke={C.alert} strokeWidth="3" />
+        <text x={xr.right + 12} y={r.down(1) + 3} className="penalty-svg-note" style={{ fill: '#ff8379' }}>WRONG LANE · 0</text>
         <path d={`M${CX} ${r.dividersDown[0]}V${r.markBottom}`} stroke={C.onTime} strokeWidth="3" />
         <Car x={140} y={r.down(1)} />
         <Car x={376} y={r.up(2)} />
