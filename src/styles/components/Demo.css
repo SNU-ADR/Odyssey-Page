@@ -12,13 +12,6 @@
 .demo-chapter:last-child { margin-bottom: 0; }
 
 .demo-chapter > .section-title { margin-bottom: 24px; }
-.demo-chapter > .section-title p a {
-  color: var(--color-accent);
-  text-decoration: underline;
-  text-decoration-color: rgba(211, 132, 69, 0.45);
-  text-underline-offset: 3px;
-}
-.demo-chapter > .section-title p a:hover { text-decoration-color: currentColor; }
 
 .demo-video-frame {
   width: 100%;
@@ -247,42 +240,6 @@
   letter-spacing: 1px;
 }
 
-.metric-cards {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 12px;
-  margin: 0 0 18px;
-}
-
-.metric-card {
-  padding: 18px 17px;
-  border: 1px solid rgba(211, 132, 69, 0.2);
-  border-radius: 12px;
-  background: rgba(31, 23, 18, 0.8);
-}
-
-.metric-card > span {
-  color: var(--color-accent);
-  font-size: 0.74rem;
-  font-weight: 800;
-  letter-spacing: 0.13em;
-}
-
-.metric-card h3 {
-  min-height: 2.7em;
-  margin: 9px 0 7px;
-  color: var(--color-text);
-  font-size: 0.95rem;
-  line-height: 1.35;
-}
-
-.metric-card p {
-  margin: 0;
-  color: var(--color-text-muted);
-  font-size: 0.8rem;
-  line-height: 1.55;
-}
-
 .metric-media-grid,
 .rendering-comparison {
   display: grid;
@@ -294,27 +251,18 @@
 .metric-media-grid .demo-placeholder { min-height: 240px; }
 .rendering-comparison .demo-placeholder { min-height: 260px; }
 
-@media (max-width: 900px) {
-  .metric-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-
 @media (max-width: 640px) {
   .demo-section { padding: 0 16px 60px; }
   .demo-chapter { margin-bottom: 44px; }
   .demo-video-frame,
   .planner-demos,
   .metric-figure,
-  .metric-cards,
   .metric-media-grid,
   .rendering-comparison { width: 100%; margin-left: 0; }
   .demo-video-frame { border-radius: 10px; }
   .planner-video-grid { grid-template-columns: 1fr; gap: 22px; }
   .planner-concept-title { font-size: 0.95rem; }
   .metric-figure { padding: 6px; }
-  .metric-cards { gap: 9px; }
-  .metric-card { padding: 14px 12px; }
-  .metric-card h3 { font-size: 0.88rem; }
-  .metric-card p { font-size: 0.75rem; }
   .metric-media-grid,
   .rendering-comparison { grid-template-columns: 1fr; gap: 10px; }
   .metric-media-grid .demo-placeholder,
@@ -381,10 +329,10 @@
   font-size: 1rem;
 }
 
-/* diagram | video, top-aligned (diagram heights differ per case) */
+/* diagram | video; columns are set per row (--diagram-fr / --video-fr) so both panels have the same height */
 .penalty-row-panels {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, var(--diagram-fr, 1fr)) minmax(0, var(--video-fr, 1fr));
   gap: 14px;
   align-items: start;
 }
@@ -403,6 +351,11 @@
 
 .penalty-row-panel > .metric-video {
   aspect-ratio: 16 / 9;
+}
+
+/* PLCA triptych (three passes side by side, 1280x480) */
+.penalty-row-panel > .metric-video-wide {
+  aspect-ratio: 8 / 3;
 }
 
 .penalty-row-panel figcaption {

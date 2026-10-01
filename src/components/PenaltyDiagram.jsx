@@ -4,10 +4,12 @@ import React from 'react';
  * Penalty case diagrams (NC, DAC, SDC, PLCA/S).
  *
  * Every case is built from the same geometry, expressed in meters and converted to px:
- *   - lane 3.5 m, car 4.8 m x 2.0 m, shoulder outside a solid lane mark, double center line
+ *   - lane 3.5 m, car 4.8 m x 2.0 m; edge / dashed dividers / center line evenly spaced one lane apart
+ *     (asphalt edge = lane edge, thick solid center line, no outer lane marks)
  *   - traffic drives on the right: ego direction = lower half, heading +x
  *   - the penalty event is always at x = CX, marked by a small red circle (no X)
- *   - labels sit above the road; each SVG is cropped to its own height
+ *   - labels sit above the road; every case shares one canvas (CANVAS_H) with its content centered vertically,
+ *     so diagrams line up with each other and with the replay videos beside them
  */
 
 // ---- Scale ----
@@ -17,12 +19,14 @@ const m = (meters) => meters * PX_PER_M;
 // ---- Canvas ----
 const W = 480;
 const CX = W / 2; // event x
-const ROAD_TOP = 62; // asphalt top, below the two label rows
+const ROAD_TOP = 62; // asphalt top, below the two label rows (before centering)
+const CANVAS_H = 214; // shared height = tallest case (PLCA/S)
+export const DIAGRAM_ASPECT = W / CANVAS_H;
 
 // ---- Road ----
 const LANE = m(3.5);
-const SHOULDER = 8;
-const GAP = 4; // between the two center lines
+const SHOULDER = 0; // asphalt edge = lane edge, so every lane boundary is one lane width apart
+const GAP = 0; // single center line sits exactly between the two directions
 const CORNER_R = 16; // curb radius at intersections
 
 // ---- Vehicles ----
@@ -83,29 +87,25 @@ const crossRoad = (cx) => ({
 // ---- Shared pieces ----
 
 const AsphaltStroke = { fill: 'none', stroke: C.edge, strokeOpacity: 0.48, strokeWidth: 2 };
-const MarkStroke = { fill: 'none', stroke: C.mark, strokeOpacity: 0.55, strokeWidth: 1.5 };
+// Lane style: no outer lane marks; one thick solid center line; dashed dividers between same-direction lanes.
+const CenterStroke = { fill: 'none', stroke: C.mark, strokeOpacity: 0.7, strokeWidth: 3 };
 const DividerStroke = { fill: 'none', stroke: C.mark, strokeOpacity: 0.4, strokeWidth: 1.2, strokeDasharray: '8 8' };
 const BandStroke = { fill: 'none', strokeOpacity: 0.38, strokeWidth: 8, strokeLinejoin: 'round' };
 
-/** Double center line of a horizontal road. */
-const centerLines = (r) => `M0 ${r.center - GAP / 2}H${W}M0 ${r.center + GAP / 2}H${W}`;
+/** Center line (solid, thick) of a horizontal road. */
+const centerLine = (r) => `M0 ${r.center}H${W}`;
 
 /**
  * T-junction: horizontal road `r` with a vertical road `x` (from crossRoad) hanging below it down to `end`.
- * Curb corners and the outer lane marks are rounded with CORNER_R.
- * Returns path strings so a case can draw route bands between the asphalt and the marks.
+ * Curb corners are rounded with CORNER_R.
+ * Returns path strings so a case can draw route bands between the asphalt and the center lines.
  */
 const tee = (r, x, end) => {
   const R = CORNER_R;
   return {
     asphalt: `M0 ${r.top}H${W}V${r.bottom}H${x.right + R}Q${x.right} ${r.bottom} ${x.right} ${r.bottom + R}V${end}H${x.left}V${r.bottom + R}Q${x.left} ${r.bottom} ${x.left - R} ${r.bottom}H0Z`,
     edges: `M0 ${r.top}H${W}M0 ${r.bottom}H${x.left - R}Q${x.left} ${r.bottom} ${x.left} ${r.bottom + R}V${end}M${x.right} ${end}V${r.bottom + R}Q${x.right} ${r.bottom} ${x.right + R} ${r.bottom}H${W}`,
-    marks:
-      `M0 ${r.markTop}H${W}` +
-      `M0 ${r.markBottom}H${x.markLeft - R}Q${x.markLeft} ${r.markBottom} ${x.markLeft} ${r.markBottom + R}V${end}` +
-      `M${x.markRight} ${end}V${r.markBottom + R}Q${x.markRight} ${r.markBottom} ${x.markRight + R} ${r.markBottom}H${W}` +
-      centerLines(r) +
-      `M${x.center - GAP / 2} ${r.bottom}V${end}M${x.center + GAP / 2} ${r.bottom}V${end}`,
+    center: `${centerLine(r)}M${x.center} ${r.bottom}V${end}`,
   };
 };
 
@@ -147,12 +147,12 @@ const carCorner = (x, y, angle, sx, sy) => {
 
 const EventMark = ({ x = CX, y }) => <circle cx={x} cy={y} r="7" fill="none" stroke={C.alert} strokeWidth="2.5" />;
 
-/** Plain straight road: asphalt, edges, solid lane marks, center lines, dividers. */
+/** Plain straight road: asphalt, edges, center line, dashed dividers. */
 const StraightRoad = ({ r }) => (
   <>
     <rect x="0" y={r.top} width={W} height={r.bottom - r.top} fill={C.asphalt} />
     <path d={`M0 ${r.top}H${W}M0 ${r.bottom}H${W}`} {...AsphaltStroke} />
-    <path d={`M0 ${r.markTop}H${W}M0 ${r.markBottom}H${W}${centerLines(r)}`} {...MarkStroke} />
+    <path d={centerLine(r)} {...CenterStroke} />
     {r.dividersDown.length > 0 && <path d={dividers([...r.dividersUp, ...r.dividersDown])} {...DividerStroke} />}
   </>
 );
@@ -160,8 +160,8 @@ const StraightRoad = ({ r }) => (
 // ---- Cases ----
 
 /** NC: the ego rear-ends the vehicle ahead in the same lane; contact point at CX. */
-const NC = () => {
-  const r = road(1);
+const NC = (dy = 0) => {
+  const r = road(1, ROAD_TOP + dy);
   const y = r.down(1);
   return {
     height: r.bottom + 24,
@@ -180,8 +180,8 @@ const NC = () => {
 };
 
 /** DAC: the ego drifts over the lane mark and shoulder; only its front-right corner leaves the asphalt. */
-const DAC = () => {
-  const r = road(1);
+const DAC = (dy = 0) => {
+  const r = road(1, ROAD_TOP + dy);
   const angle = 14;
   const out = 4; // how far the front-right corner is past the asphalt edge
   // place the car so that its front-right corner lands at (CX, r.bottom + out)
@@ -203,10 +203,10 @@ const DAC = () => {
 };
 
 /** SDC: the SD route (on the road center) turns right into a branch at CX; the ego keeps going straight. */
-const SDC = () => {
-  const r = road(1);
+const SDC = (dy = 0, bottom) => {
+  const r = road(1, ROAD_TOP + dy);
   const b = crossRoad(CX);
-  const end = r.bottom + 76; // branch length shown
+  const end = bottom ?? r.bottom + 76; // branch runs to the canvas bottom
   const t = tee(r, b, end);
   return {
     height: end,
@@ -218,7 +218,7 @@ const SDC = () => {
         {/* SD route (road graph, no direction split) and the off-route road the ego took */}
         <path d={`M0 ${r.center}H${CX}V${end}`} stroke={C.route} {...BandStroke} />
         <path d={`M${CX} ${r.center}H${W}`} stroke={C.alert} {...BandStroke} />
-        <path d={t.marks} {...MarkStroke} />
+        <path d={t.center} {...CenterStroke} />
         <path d={`${chevron(90, r.center)}${chevron(170, r.center)}${chevron(CX, end - 26, 'down')}`} fill="none" stroke={C.route} strokeWidth="2.2" />
         <Car x={100} y={r.down(1)} />
         <Car x={376} y={r.up(1)} />
@@ -235,41 +235,39 @@ const SDC = () => {
  * In it before the last 10 m of driving = on time (1), within the last 10 m = late (0.5),
  * any other lane at the stop line = 0. The ego reaches the stop line still in the through lane (lane 1).
  */
-const PLCA = () => {
-  const r = road(2);
+const PLCA = (dy = 0, bottom) => {
+  const r = road(2, ROAD_TOP + dy);
   const xr = crossRoad(CX + 8 + SHOULDER + LANE + GAP / 2); // intersection starts 8 px after the stop line
-  const end = r.bottom + 64;
+  const end = bottom ?? r.bottom + 64;
   const t = tee(r, xr, end);
   const lateFrom = CX - m(10);
   const egoY = r.down(1) + 1;
   const ruler = r.bottom + 18;
   return {
     height: end,
-    label: 'WRONG LANE AT STOP LINE',
+    label: 'INCOMPATIBLE LANE AT STOP LINE',
     body: (
       <>
         <path d={t.asphalt} fill={C.asphalt} />
         <path d={t.edges} {...AsphaltStroke} />
         {/* SD route on the road center: straight, then right at the intersection */}
         <path d={`M0 ${r.center}H${xr.center}V${end}`} stroke={C.route} {...BandStroke} />
-        <path d={t.marks} {...MarkStroke} />
+        <path d={t.center} {...CenterStroke} />
         <path d={dividers([r.dividersUp[0]], xr.left, xr.right) + dividers([r.dividersDown[0]], CX, xr.right)} {...DividerStroke} />
         <path d={`${chevron(60, r.center)}${chevron(150, r.center)}${chevron(xr.center, end - 26, 'down')}`} fill="none" stroke={C.route} strokeWidth="2.2" />
-        <text x="14" y={r.down(1) + 3} className="penalty-svg-note">THROUGH LANE</text>
-        <text x="14" y={r.down(2) + 3} className="penalty-svg-note">RIGHT-TURN LANE</text>
-        {/* scoring zones on lane 2 (the route-compatible lane) */}
-        <rect x="0" y={r.dividersDown[0]} width={lateFrom} height={LANE} fill={C.onTime} opacity=".2" />
+        {/* lane-direction arrows (road markings): straight, and right turn (down in this view) */}
+        <path d={`M14 ${r.down(1)}H46M39 ${r.down(1) - 6}L46 ${r.down(1)}L39 ${r.down(1) + 6}`} fill="none" stroke={C.mark} strokeOpacity=".9" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d={`M14 ${r.down(2) - 4}H29Q39 ${r.down(2) - 4} 39 ${r.down(2) + 4}M33 ${r.down(2) + 1}L39 ${r.down(2) + 8}L45 ${r.down(2) + 1}`} fill="none" stroke={C.mark} strokeOpacity=".9" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
+        {/* last 10 m before the stop line on the compatible lane, with a line where it begins */}
         <rect x={lateFrom} y={r.dividersDown[0]} width={CX - lateFrom} height={LANE} fill={C.late} opacity=".34" />
-        <path d={`M20 ${ruler}H${CX}M20 ${ruler - 4}V${ruler + 4}M${lateFrom} ${ruler - 4}V${ruler + 4}M${CX} ${ruler - 4}V${ruler + 4}`} fill="none" stroke={C.ruler} strokeWidth="1.2" />
-        <text x={(20 + lateFrom) / 2} y={ruler + 18} textAnchor="middle" className="penalty-svg-note" style={{ fill: C.onTime }}>ON TIME</text>
-        <text x={(lateFrom + CX) / 2} y={ruler + 18} textAnchor="middle" className="penalty-svg-note" style={{ fill: C.late }}>LATE</text>
-        <text x={(lateFrom + CX) / 2} y={ruler + 31} textAnchor="middle" className="penalty-svg-note">LAST 10 m</text>
-        {/* wrong lane: the through lane past the stop line, up to the cross road's center line */}
-        <rect x={CX} y={r.center + GAP / 2} width={xr.center - GAP / 2 - CX} height={LANE} fill={C.alert} opacity=".3" />
-        {/* stop line: lane 2 (compatible) green; crossing in lane 1 = wrong lane, red */}
+        <path d={`M${lateFrom} ${r.dividersDown[0]}V${r.markBottom}`} stroke={C.late} strokeWidth="3" />
+        <path d={`M${lateFrom} ${ruler}H${CX}M${lateFrom} ${ruler - 4}V${ruler + 4}M${CX} ${ruler - 4}V${ruler + 4}`} fill="none" stroke={C.ruler} strokeWidth="1.2" />
+        <text x={(lateFrom + CX) / 2} y={ruler + 18} textAnchor="middle" className="penalty-svg-note">10 m</text>
+        {/* stop line: crossing in lane 1 = incompatible (red); lane 2 segment closes the last-10 m zone (same amber as its start line) */}
         <path d={`M${CX} ${r.center + GAP / 2}V${r.dividersDown[0]}`} stroke={C.alert} strokeWidth="3" />
-        <text x={xr.center + GAP / 2 + 6} y={r.down(1) + 3} className="penalty-svg-note" style={{ fill: '#ff8379' }}>WRONG LANE</text>
-        <path d={`M${CX} ${r.dividersDown[0]}V${r.markBottom}`} stroke={C.onTime} strokeWidth="3" />
+        <text x={xr.center + 8} y={r.down(1) + 3} className="penalty-svg-note" style={{ fill: '#ff8379' }}>INCOMPATIBLE LANE</text>
+        <path d={`M${CX} ${r.dividersDown[0]}V${r.markBottom}`} stroke={C.late} strokeWidth="3" />
+        <text x={xr.center + 8} y={r.down(2) + 3} className="penalty-svg-note" style={{ fill: C.onTime }}>COMPATIBLE LANE</text>
         <Car x={140} y={r.down(1)} />
         <Car x={376} y={r.up(2)} />
         {/* ego center on the stop line, still in lane 1, heading turned toward lane 2 */}
@@ -281,23 +279,23 @@ const PLCA = () => {
 };
 
 /** TLC: the ego continues through a stop line while the signal is red. */
-const TLC = () => {
-  const r = road(1);
+const TLC = (dy = 0, bottom) => {
+  const r = road(1, ROAD_TOP + dy);
   const xr = crossRoad(CX + 46);
-  const end = r.bottom + 60;
+  const end = bottom ?? r.bottom + 60;
   const t = tee(r, xr, end);
   const y = r.down(1);
   const egoX = CX - CAR_L / 4; // front quarter of the car has crossed the stop line
   return {
     height: end,
-    label: 'RED-LIGHT CROSSING',
+    label: 'RED-LIGHT VIOLATION',
     body: (
       <>
         <path d={t.asphalt} fill={C.asphalt} />
         <path d={t.edges} {...AsphaltStroke} />
         <path d={`M0 ${r.center}H${W}`} stroke={C.route} {...BandStroke} />
         <path d={`M${CX} ${y}H${CX + CAR_L / 4}`} stroke={C.alert} {...BandStroke} />
-        <path d={t.marks} {...MarkStroke} />
+        <path d={t.center} {...CenterStroke} />
         {/* red signal: the stop line is red, as in the replay */}
         <path d={`M${CX} ${r.center + GAP / 2}V${r.markBottom}`} stroke={C.alert} strokeWidth="3" />
         <path d={`${chevron(88, r.center)}${chevron(180, r.center)}${chevron(380, r.center)}`} fill="none" stroke={C.route} strokeWidth="2.2" />
@@ -318,12 +316,14 @@ const TLC = () => {
 const CASES = { NC, DAC, SDC, 'PLCA/S': PLCA, TLC };
 
 const PenaltyDiagram = ({ kind }) => {
-  const { height, label, body } = CASES[kind]();
+  // center the case (event label + road) on the shared canvas
+  const dy = Math.round((CANVAS_H - CASES[kind]().height) / 2);
+  const { label, body } = CASES[kind](dy, CANVAS_H);
   return (
-    <svg viewBox={`0 0 ${W} ${height}`} role="img" aria-label={`${kind} penalty example`}>
-      <rect width={W} height={height} rx="12" fill={C.bg} />
+    <svg viewBox={`0 0 ${W} ${CANVAS_H}`} role="img" aria-label={`${kind} penalty example`}>
+      <rect width={W} height={CANVAS_H} rx="12" fill={C.bg} />
       {body}
-      <text x={CX} y="48" textAnchor="middle" className="penalty-svg-alert">{label}</text>
+      <text x={CX} y={48 + dy} textAnchor="middle" className="penalty-svg-alert">{label}</text>
       <text x="20" y="24" className="penalty-svg-note">PENALTY CASE</text>
     </svg>
   );

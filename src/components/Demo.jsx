@@ -2,47 +2,8 @@ import React from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import SectionTitle from './common/SectionTitle';
 import VideoComparison from './VideoComparison';
-import PenaltyDiagram from './PenaltyDiagram';
+import PenaltyDiagram, { DIAGRAM_ASPECT } from './PenaltyDiagram';
 import '../styles/components/Demo.css';
-
-// Ordered as the penalty factors in RouteDS: P_PLC, P_SD, P_col, P_off, P_TL
-const metrics = [
-  {
-    key: 'PLCA/S',
-    koTitle: '교차로 차로 준비',
-    enTitle: 'Pre-Lane Change Accuracy / Score',
-    koBody: '경로상의 평가 교차로마다 진입 전 경로에 맞는 차로에 있었는지 평가합니다. PLCA는 자차가 도달한 교차로만, PLCS는 경로상의 모든 교차로를 평균하며 도달하지 못한 교차로는 실패로 셉니다.',
-    enBody: 'Checks route-compatible lane choice before each evaluated intersection on the route. PLCA averages over intersections the ego reached; PLCS over all of them, counting those never reached as failed.',
-  },
-  {
-    key: 'SDC',
-    koTitle: 'SD 경로 준수',
-    enTitle: 'SD Route Compliance',
-    koBody: '자차가 실제로 주행한 도로 구간(궤적을 맵 매칭해 구함)이 모두 지정 SD 경로에 속하는지 평가합니다.',
-    enBody: 'Checks that every road segment the ego drove on, map-matched from its trajectory, belongs to the designated SD route.',
-  },
-  {
-    key: 'NC',
-    koTitle: '충돌 회피',
-    enTitle: 'No Collision',
-    koBody: '차량·보행자·자전거와의 과실 충돌을 확인합니다.',
-    enBody: 'Checks at-fault collisions with vehicles, pedestrians, and bicycles.',
-  },
-  {
-    key: 'DAC',
-    koTitle: '주행 가능 영역 준수',
-    enTitle: 'Drivable Area Compliance',
-    koBody: '주행 가능 영역 밖 또는 역방향으로 이동한 거리를 살핍니다.',
-    enBody: 'Tracks distance driven outside drivable areas or against traffic.',
-  },
-  {
-    key: 'TLC',
-    koTitle: '교통신호 준수',
-    enTitle: 'Traffic Light Compliance',
-    koBody: '적색 신호에서 정지선을 넘어 교차로에 진입하는지 평가합니다.',
-    enBody: 'Checks whether the ego crosses a stop line against a red signal.',
-  },
-];
 
 const PlannerVideoPlaceholder = ({ label, ko }) => (
   <div
@@ -73,19 +34,18 @@ const routeDsTerms = [
   { sym: 'P', sub: 'TL', name: 'Red light', rule: '×0.7 per violation' },
 ];
 
-const MetricFigure = ({ ko }) => (
-  <figure className="metric-figure">
-    <svg viewBox="0 0 960 460" role="img" aria-labelledby="metric-figure-title metric-figure-desc">
-      <title id="metric-figure-title">{ko ? 'RouteDS 개요' : 'RouteDS overview'}</title>
-      <desc id="metric-figure-desc">{ko ? 'RouteDS는 SD 경로 완료율에 감점 계수를 곱합니다. 하나의 rollout 위에 각 계수가 적용되는 위치를 표시했습니다.' : 'RouteDS multiplies SD-route completion by penalty factors, shown where each applies along one rollout.'}</desc>
-      <defs>
-        <pattern id="rds-grid" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" fill="none" stroke="#8e6b50" strokeOpacity=".12" strokeWidth="1" /></pattern>
-        <clipPath id="rds-scene"><rect x="0" y="128" width="960" height="332" /></clipPath>
-      </defs>
-      <rect width="960" height="460" rx="16" fill="#17120f" />
-      <rect width="960" height="460" rx="16" fill="url(#rds-grid)" />
+const RdsGrid = ({ id }) => (
+  <pattern id={id} width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" fill="none" stroke="#8e6b50" strokeOpacity=".12" strokeWidth="1" /></pattern>
+);
 
-      {/* Formula: RouteDS = 100 x RC_SD x penalty factors */}
+// Formula strip (top of the section): RouteDS = 100 x RC_SD x penalty factors
+const MetricFormula = ({ ko }) => (
+  <figure className="metric-figure">
+    <svg viewBox="0 12 960 122" role="img" aria-labelledby="metric-formula-title">
+      <title id="metric-formula-title">{ko ? 'RouteDS = 100 × SD 경로 완료율 × 감점 계수' : 'RouteDS = 100 × SD-route completion × penalty factors'}</title>
+      <defs><RdsGrid id="rds-grid-formula" /></defs>
+      <rect y="12" width="960" height="122" rx="16" fill="#17120f" />
+      <rect y="12" width="960" height="122" rx="16" fill="url(#rds-grid-formula)" />
       <text x="24" y="68" className="rds-title">RouteDS</text>
       <text x="24" y="96" className="rds-eq">= 100 ×</text>
       {routeDsTerms.map((term, i) => {
@@ -102,77 +62,94 @@ const MetricFigure = ({ ko }) => (
           </g>
         );
       })}
+    </svg>
+  </figure>
+);
 
-      <path d="M16 128H944" stroke="#8d7865" strokeOpacity=".3" strokeWidth="1" />
+// Overview scene (after the penalty cases): every factor along one rollout
+const MetricFigure = ({ ko }) => (
+  <figure className="metric-figure">
+    <svg viewBox="0 128 960 332" role="img" aria-labelledby="metric-figure-title metric-figure-desc">
+      <title id="metric-figure-title">{ko ? 'RouteDS 개요' : 'RouteDS overview'}</title>
+      <desc id="metric-figure-desc">{ko ? '하나의 rollout 위에 각 감점 계수가 적용되는 위치를 표시했습니다.' : 'Where each RouteDS factor applies along one rollout.'}</desc>
+      <defs>
+        <RdsGrid id="rds-grid" />
+        <clipPath id="rds-scene"><rect x="0" y="128" width="960" height="332" /></clipPath>
+      </defs>
+      <rect y="128" width="960" height="332" rx="16" fill="#17120f" />
+      <rect y="128" width="960" height="332" rx="16" fill="url(#rds-grid)" />
 
       {/* BEV scene: one SD-route rollout. The ego meets the penalties in formula order:
           P_PLC (stop line before the right turn) -> P_SD (off-route branch) -> P_col -> P_off -> P_TL (last intersection).
           Roads: H1 (2 lanes each way) -> right turn into V2 -> left turn onto H2 -> goal; V3 crosses H2 at the signal. */}
       <g clipPath="url(#rds-scene)">
-        {/* asphalt = lanes + 4 px shoulder each side; the wider under-stroke draws the asphalt edge (square caps close the corners) */}
+        {/* asphalt = lanes only (edge, dividers and center evenly spaced); the wider under-stroke draws the edge (square caps close the corners) */}
         <g fill="none" stroke="#6a5747" strokeLinecap="square">
-          <path d="M0 210H960" strokeWidth="71" />
-          <path d="M300 210V380" strokeWidth="51" />
-          <path d="M0 300H300" strokeWidth="51" />
-          <path d="M300 380H960" strokeWidth="51" />
-          <path d="M760 128V460" strokeWidth="51" />
+          <path d="M0 210H960" strokeWidth="63" />
+          <path d="M300 210V380" strokeWidth="43" />
+          <path d="M0 300H300" strokeWidth="43" />
+          <path d="M300 380H960" strokeWidth="43" />
+          <path d="M760 128V460" strokeWidth="43" />
         </g>
         <g fill="none" stroke="#40362e" strokeLinecap="square">
-          <path d="M0 210H960" strokeWidth="68" />
-          <path d="M300 210V380" strokeWidth="48" />
-          <path d="M0 300H300" strokeWidth="48" />
-          <path d="M300 380H960" strokeWidth="48" />
-          <path d="M760 128V460" strokeWidth="48" />
+          <path d="M0 210H960" strokeWidth="60" />
+          <path d="M300 210V380" strokeWidth="40" />
+          <path d="M0 300H300" strokeWidth="40" />
+          <path d="M300 380H960" strokeWidth="40" />
+          <path d="M760 128V460" strokeWidth="40" />
         </g>
         {/* off-route branch (red, faint) and SD route on the road center lines, both under the lane markings */}
         <path d="M0 300H300" fill="none" stroke="#ef5147" strokeOpacity=".22" strokeWidth="8" />
         <path d="M40 210H300V380H867" fill="none" stroke="#d99455" strokeOpacity=".38" strokeWidth="8" strokeLinejoin="round" />
         {/* remaining (not yet completed) part of the SD route: same band, dashed */}
         <path d="M867 380H930" fill="none" stroke="#d99455" strokeOpacity=".38" strokeWidth="8" strokeDasharray="6 5" />
-        <path d="M0 208H280M320 208H740M780 208H960M0 212H280M320 212H740M780 212H960M298 240V360M302 240V360M0 298H280M0 302H280M320 378H740M780 378H960M320 382H740M780 382H960M758 128V180M762 128V180M758 240V360M762 240V360M758 400V460M762 400V460" fill="none" stroke="#a18e7d" strokeOpacity=".55" strokeWidth="1.2" />
+        {/* one thick solid center line per road (broken at junctions); no outer lane marks */}
+        <path d="M0 210H280M320 210H740M780 210H960M300 240V360M0 300H280M320 380H740M780 380H960M760 128V180M760 240V360M760 400V460" fill="none" stroke="#a18e7d" strokeOpacity=".7" strokeWidth="3" />
         <path d="M0 195H280M320 195H740M780 195H960M0 225H278M320 225H740M780 225H960" fill="none" stroke="#a18e7d" strokeOpacity=".4" strokeWidth="1.2" strokeDasharray="8 8" />
-        {/* solid outer lane marks (broken at junction mouths, turning the V2/H2 corner) */}
-        <path d="M0 180H740M780 180H960M0 240H280M320 240H740M780 240H960M0 280H280M0 320H280M280 240V280M280 320V400H740M320 240V360H740M780 360H960M780 400H960M740 128V180M780 128V180M740 240V360M780 240V360M740 400V460M780 400V460" fill="none" stroke="#a18e7d" strokeOpacity=".55" strokeWidth="1.2" />
         <path d="M146 205L151 210L146 215M295 330L300 335L305 330M516 375L521 380L516 385M656 375L661 380L656 385" fill="none" stroke="#d99455" strokeWidth="2.2" />
 
         {/* ego trajectory (in its lane): through lane to the stop line, turn, collision, off-road drift, red light */}
-        <path d="M40 217.5H276Q290 217.5 290 232V368Q290 390 312 390H540C556 390 562 407 580 407C598 407 604 390 620 390H852" fill="none" stroke="#f2c18f" strokeOpacity=".85" strokeWidth="2" />
+        <path d="M40 217.5H276Q290 217.5 290 232V368Q290 390 312 390H540C556 390 562 404 580 404C598 404 604 390 620 390H852" fill="none" stroke="#f2c18f" strokeOpacity=".85" strokeWidth="2" />
 
         <circle cx="40" cy="210" r="6" fill="#76b98a" />
         <text x="40" y="258" textAnchor="middle" className="penalty-svg-note">START</text>
         <circle cx="930" cy="380" r="6" fill="#e9c47c" />
         <text x="944" y="352" textAnchor="end" className="penalty-svg-note">GOAL</text>
 
-        {/* 1. P_PLC: stop line before the right turn; route-compatible (outer) lane in green, ego crosses in the through lane */}
+        {/* 1. P_PLC: stop line before the right turn; route-compatible (outer) lane's segment in amber (closes the 10 m zone), ego crosses in the through lane */}
+        {/* last 10 m before the stop line on the compatible lane (lane width 15 = 3.5 m, so 10 m = 43), as in the PLCA/S diagram */}
+        <rect x="235" y="225" width="43" height="15" fill="#e6a765" opacity=".34" />
+        <path d="M235 225V240" stroke="#e6a765" strokeWidth="2.5" />
+        <text x="256.5" y="254" textAnchor="middle" className="penalty-svg-note">10 m</text>
         <path d="M278 210V225" stroke="#e7d1ba" strokeWidth="2.5" />
-        <path d="M278 225V240" stroke="#a5cb9d" strokeWidth="2.5" />
+        <path d="M278 225V240" stroke="#e6a765" strokeWidth="2.5" />
         <circle cx="278" cy="217.5" r="7" fill="none" stroke="#ef5147" strokeWidth="2.2" />
-        <text x="278" y="160" textAnchor="middle" className="penalty-svg-alert">P<tspan dy="3" fontSize="8">PLC</tspan><tspan dy="-3"> ×0.7</tspan></text>
-        <text x="278" y="173" textAnchor="middle" className="penalty-svg-note">WRONG LANE AT STOP LINE</text>
+        <text x="278" y="160" textAnchor="middle" className="penalty-svg-alert">P<tspan dy="3" fontSize="8">PLC</tspan></text>
+        <text x="278" y="173" textAnchor="middle" className="penalty-svg-note">INCOMPATIBLE LANE AT STOP LINE</text>
 
         {/* 2. P_SD: entering the off-route branch would give P_SD = 0 */}
-        <text x="140" y="342" textAnchor="middle" className="penalty-svg-alert">P<tspan dy="3" fontSize="8">SD</tspan><tspan dy="-3"> = 0</tspan></text>
+        <text x="140" y="342" textAnchor="middle" className="penalty-svg-alert">P<tspan dy="3" fontSize="8">SD</tspan></text>
         <text x="140" y="355" textAnchor="middle" className="penalty-svg-note">IF THE EGO ENTERS AN OFF-ROUTE ROAD</text>
 
         {/* 3. P_col: at-fault contact with the vehicle ahead */}
         <rect x="432" y="383.5" width="30" height="13" fill="#c8b8a8" opacity=".48" />
         <circle cx="432" cy="390" r="7" fill="none" stroke="#ef5147" strokeWidth="2.2" />
-        <text x="432" y="342" textAnchor="middle" className="penalty-svg-alert">P<tspan dy="3" fontSize="8">col</tspan><tspan dy="-3"> ×0.6</tspan></text>
+        <text x="432" y="342" textAnchor="middle" className="penalty-svg-alert">P<tspan dy="3" fontSize="8">col</tspan></text>
         <text x="432" y="355" textAnchor="middle" className="penalty-svg-note">AT-FAULT COLLISION</text>
 
         {/* 4. P_off: trajectory drifts over the road edge */}
-        <circle cx="580" cy="404" r="7" fill="none" stroke="#ef5147" strokeWidth="2.2" />
+        <circle cx="580" cy="400" r="7" fill="none" stroke="#ef5147" strokeWidth="2.2" />
         <text x="560" y="428" textAnchor="middle" className="penalty-svg-alert">P<tspan dy="3" fontSize="8">off</tspan></text>
         <text x="560" y="441" textAnchor="middle" className="penalty-svg-note">OFF-ROAD DISTANCE</text>
 
         {/* 5. P_TL: red light at the last intersection */}
-        <path d="M732 380V400" stroke="#e7d1ba" strokeWidth="2.5" />
+        <path d="M738 380V400" stroke="#e7d1ba" strokeWidth="2.5" />
         <rect x="722" y="406" width="12" height="26" rx="3" fill="#2a211b" stroke="#6a5747" />
         <circle cx="728" cy="412" r="3" fill="#ef5147" />
         <circle cx="728" cy="419" r="3" fill="#4a3d33" />
         <circle cx="728" cy="426" r="3" fill="#4a3d33" />
-        <circle cx="732" cy="390" r="7" fill="none" stroke="#ef5147" strokeWidth="2.2" />
-        <text x="714" y="420" textAnchor="end" className="penalty-svg-alert">P<tspan dy="3" fontSize="8">TL</tspan><tspan dy="-3"> ×0.7</tspan></text>
+        <circle cx="738" cy="390" r="7" fill="none" stroke="#ef5147" strokeWidth="2.2" />
+        <text x="714" y="420" textAnchor="end" className="penalty-svg-alert">P<tspan dy="3" fontSize="8">TL</tspan></text>
         <text x="714" y="433" textAnchor="end" className="penalty-svg-note">RED LIGHT</text>
 
         {/* ego at the end of the rollout; RC_SD = completed part of the route, measured on the SD route (progress tick) */}
@@ -190,7 +167,7 @@ const MetricFigure = ({ ko }) => (
         </g>
       </g>
     </svg>
-    <figcaption>{ko ? 'RouteDS는 SD 경로 완료율에 감점 계수를 곱합니다. 표시는 하나의 rollout에서 각 계수가 적용되는 위치이며, 주행 가능 영역 이탈 거리에는 역방향 주행도 포함됩니다.' : 'RouteDS multiplies SD-route completion by penalty factors. Markers show where each factor applies along one rollout; off-road distance also counts driving against traffic.'}</figcaption>
+    <figcaption>{ko ? '모든 감점 계수를 하나의 rollout 위에 표시했습니다.' : 'All factors along one rollout.'}</figcaption>
   </figure>
 );
 
@@ -198,42 +175,42 @@ const MetricFigure = ({ ko }) => (
 const penaltyCases = [
   {
     key: 'PLCA/S',
-    koTitle: '사전 차로 변경(Pre-Lane Change) 실패',
-    enTitle: 'Fails the pre-lane change',
-    koBody: '경로에 맞는 차로는 우회전 차로입니다. 마지막 10 m(주행 거리) 전에 들어오면 제때 진입, 그 안에서 들어오면 늦은 진입, 다른 차로로 정지선에 닿으면 잘못된 차로 진입입니다. 자차는 직진 차로로 정지선에 닿은 뒤에야 방향을 틀어 잘못된 차로 진입입니다.',
-    enBody: 'The right-turn lane fits the route. Entering it before the last 10 m of driving is on time, within the last 10 m is late, and reaching the stop line in another lane is a wrong-lane entry. The ego only turns at the stop line, still in the through lane: a wrong-lane entry.',
-    video: { src: 'metric-plca-bev.mp4', poster: 'metric-plca-poster.jpg', koDetail: '잘못된 차로로 진입 → 늦은 진입 → 제때 진입', enDetail: 'Wrong lane at entry → late entry → on-time entry' },
+    koTitle: '사전 차로 변경 정확도 / 점수',
+    enTitle: 'Pre-Lane Change Accuracy / Score',
+    koBody: '정지선에서 자차가 경로에 맞는 차로(여기서는 우회전 차로)에 있는지 확인하고, 정지선 10 m 전에서 미리 그 차로로 옮겼는지 확인합니다. PLCA는 도달한 교차로만, PLCS는 도달하지 못한 교차로를 실패로 포함해 경로상의 모든 교차로를 평균합니다.',
+    enBody: 'At the stop line, it checks that the ego is in a route-compatible lane (here, the right-turn lane). 10 m before the stop line, it checks that the ego already changed into it. PLCA averages over the intersections the ego reached; PLCS over all on the route, counting unreached ones as failed.',
+    video: { src: 'metric-plca-bev.mp4', poster: 'metric-plca-poster.jpg', wide: true, koDetail: '경로에 맞지 않는 차로로 진입 · 늦은 진입 · 사전 차로 변경', enDetail: 'Incompatible lane at entry · Late entry · Pre-lane change' },
   },
   {
     key: 'SDC',
-    koTitle: '지정 경로 이탈',
-    enTitle: 'Departs from the SD route',
-    koBody: 'SD 경로는 분기로 우회전하지만 자차는 직진합니다. 맵 매칭한 경로가 처음 경로를 벗어나는 지점(빨간 구간)에서 P_SD가 0이 됩니다.',
-    enBody: 'The SD route turns right into the branch; the ego continues straight. Its map-matched path first leaves the route on the red segment, which sets P_SD to 0.',
-    video: { src: 'metric-sdc-bev.mp4', poster: 'metric-sdc-poster.jpg', koDetail: '경로와 궤적이 갈라지는 시점 · sim step 120', enDetail: 'Route and rollout diverge · sim step 120' },
+    koTitle: 'SD 경로 준수',
+    enTitle: 'SD Route Compliance',
+    koBody: '자차가 지정된 SD 경로를 따라가는지, 경로에 없는 분기로 빠지지 않는지 확인합니다.',
+    enBody: 'Checks that the ego follows the designated SD route and does not take a branch off it.',
+    video: { src: 'metric-sdc-bev.mp4', poster: 'metric-sdc-poster.jpg', koDetail: '분기로 우회전해야 하지만 직진 · sim step 120', enDetail: 'Should turn right into the branch, but goes straight · sim step 120' },
   },
   {
     key: 'NC',
-    koTitle: '과실 충돌',
-    enTitle: 'At-fault collision',
+    koTitle: '충돌 회피',
+    enTitle: 'No Collision',
     koBody: '자차가 앞차를 뒤에서 추돌한 과실 충돌입니다.',
     enBody: 'The ego rear-ends the vehicle ahead, an at-fault collision.',
     video: { src: 'metric-nc-bev.mp4', poster: 'metric-nc-poster.jpg', koDetail: '접촉 · sim step 182', enDetail: 'Contact · sim step 182' },
   },
   {
     key: 'DAC',
-    koTitle: '비주행 영역 진입',
-    enTitle: 'Leaves the drivable area',
-    koBody: '자차가 도로 경계에 걸쳐 차체 일부가 주행 가능 영역 밖으로 나간 상황입니다.',
-    enBody: 'The ego straddles the road edge, with part of its footprint outside the drivable area.',
-    video: { src: 'metric-dac-bev.mp4', poster: 'metric-dac-poster.jpg', koDetail: '비주행 영역 flag · sim step 358', enDetail: 'Non-drivable area flag · sim step 358' },
+    koTitle: '주행 가능 영역 준수',
+    enTitle: 'Drivable Area Compliance',
+    koBody: '자차가 도로 경계에 걸쳐 차체 일부가 주행 가능 영역 밖으로 나간 상황입니다. 역방향 주행 거리도 포함됩니다.',
+    enBody: 'The ego straddles the road edge, with part of its footprint outside the drivable area. Distance driven against traffic also counts.',
+    video: { src: 'metric-dac-bev.mp4', poster: 'metric-dac-poster.jpg', koDetail: '비주행 영역 진입 · sim step 360', enDetail: 'Non-drivable area · sim step 360' },
   },
   {
     key: 'TLC',
-    koTitle: '적색 신호 정지선 통과',
-    enTitle: 'Red-light crossing',
-    koBody: '적색 신호에서 정지선을 통과하면 감점됩니다. 오른쪽 영상은 직진 중 위반 사례입니다.',
-    enBody: 'Crossing a stop line under a red signal incurs a penalty. The replay shows a straight-through violation.',
+    koTitle: '교통신호 준수',
+    enTitle: 'Traffic Light Compliance',
+    koBody: '적색 신호에서 정지선을 통과하면 감점됩니다.',
+    enBody: 'Crossing a stop line under a red signal incurs a penalty.',
     video: {
       src: 'metric-tlc-bev.mp4',
       poster: 'metric-tlc-poster.jpg',
@@ -257,15 +234,16 @@ const PenaltyCaseRows = ({ ko }) => (
             <span>{item.key}</span>
             <h4>{ko ? item.koTitle : item.enTitle}</h4>
           </div>
-          <div className="penalty-row-panels">
+          {/* column widths in proportion to the diagram and video aspect ratios, so both panels share one height */}
+          <div className="penalty-row-panels" style={{ '--diagram-fr': `${DIAGRAM_ASPECT}fr`, '--video-fr': `${item.video.wide ? 8 / 3 : 16 / 9}fr` }}>
             <figure className="penalty-row-panel">
               <PenaltyDiagram kind={item.key} />
               <figcaption>{ko ? item.koBody : item.enBody}</figcaption>
             </figure>
             <figure className="penalty-row-panel">
               <video
-                className="metric-video"
-                poster={`${process.env.PUBLIC_URL}/videos/${item.video.poster}?v=20261001t`}
+                className={item.video.wide ? 'metric-video metric-video-wide' : 'metric-video'}
+                poster={`${process.env.PUBLIC_URL}/videos/${item.video.poster}?v=20261003a`}
                 controls
                 playsInline
                 loop
@@ -273,7 +251,7 @@ const PenaltyCaseRows = ({ ko }) => (
                 preload="metadata"
                 aria-label={`${item.key} ${ko ? '재생' : 'replay'}`}
               >
-                <source src={`${process.env.PUBLIC_URL}/videos/${item.video.src}?v=20261001t`} type="video/mp4" />
+                <source src={`${process.env.PUBLIC_URL}/videos/${item.video.src}?v=20261003a`} type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
               <figcaption>{ko ? item.video.koDetail : item.video.enDetail}</figcaption>
@@ -344,20 +322,13 @@ const Demo = () => {
         <SectionTitle
           title={ko ? '평가 지표' : 'Evaluation Metrics'}
           subtitle={ko
-            ? <>RouteDS는 <a href="https://github.com/Thinklab-SJTU/Bench2Drive" target="_blank" rel="noopener noreferrer">Bench2Drive</a>의 Driving Score를 확장한 지표입니다. SD 경로 완료율에 사전 차로 변경, SD 경로 이탈, 과실 충돌, 도로 이탈, 신호 위반 감점 계수를 곱합니다.</>
-            : <>RouteDS extends the Driving Score of <a href="https://github.com/Thinklab-SJTU/Bench2Drive" target="_blank" rel="noopener noreferrer">Bench2Drive</a>: SD-route completion multiplied by penalty factors for pre-lane change, SD-route deviation, at-fault collision, off-road driving, and red-light violations.</>}
+            ? <>RouteDS는 지정된 SD 경로를 따라간 진척도와 주행 품질을 함께 평가합니다. 경로 완료율(RC<sub>SD</sub>)은 완주한 비율을 나타내고, 0~1 범위의 감점 계수 다섯 개가 차로 선택 오류, 경로 이탈, 충돌, 도로 이탈, 신호 위반에 따라 점수를 낮춥니다.</>
+            : <>RouteDS combines progress along the designated SD route with driving quality. Route completion (RC<sub>SD</sub>) measures the fraction completed, while five penalty factors between 0 and 1 reduce the score for lane choice errors, route departures, collisions, off-road driving, and red-light violations.</>}
         />
-        <MetricFigure ko={ko} />
-        <div className="metric-cards">
-          {metrics.map((metric) => (
-            <section className="metric-card" key={metric.key}>
-              <span>{metric.key}</span>
-              <h3>{ko ? metric.koTitle : metric.enTitle}</h3>
-              <p>{ko ? metric.koBody : metric.enBody}</p>
-            </section>
-          ))}
-        </div>
+        <MetricFormula ko={ko} />
         <PenaltyCaseRows ko={ko} />
+        {/* overview after the individual cases: all factors along one rollout */}
+        <MetricFigure ko={ko} />
       </article>
 
       <article className="demo-chapter" id="rendering-comparison">
