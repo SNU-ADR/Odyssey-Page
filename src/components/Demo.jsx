@@ -282,13 +282,14 @@ const PenaltyDiagram = ({ kind }) => (
         <text x="198" y="203" textAnchor="middle" className="penalty-svg-note">LAST 10 m</text>
         <path d="M240 110V134" stroke="#e7d1ba" strokeWidth="3" />
         <path d="M240 134V158" stroke="#a5cb9d" strokeWidth="3" />
+        {/* vehicles to scale: lane 24 px = 3.5 m, so a ~2 m x 4.8 m car is 13 x 33 px */}
         <g fill="#d0c0b0" opacity=".22">
-          <rect x="84" y="112" width="36" height="20" />
-          <rect x="360" y="64" width="36" height="20" />
+          <rect x="84" y="116.5" width="33" height="13" />
+          <rect x="360" y="67.5" width="33" height="13" />
         </g>
         {/* ego center on the stop line, still in lane 1, heading turned toward lane 2: the entry comes too late (score 0) */}
-        <rect x="221" y="114" width="38" height="20" transform="rotate(30 240 124)" fill="#f2c18f" stroke="#ef5147" strokeWidth="2" />
-        <circle cx="240" cy="124" r="11" fill="none" stroke="#ef5147" strokeWidth="3" />
+        <rect x="223.5" y="118.5" width="33" height="13" transform="rotate(20 240 125)" fill="#f2c18f" stroke="#ef5147" strokeWidth="2" />
+        <circle cx="240" cy="125" r="11" fill="none" stroke="#ef5147" strokeWidth="3" />
         <text x="240" y="48" textAnchor="middle" className="penalty-svg-alert">WRONG LANE AT STOP LINE</text>
       </>
     )}
