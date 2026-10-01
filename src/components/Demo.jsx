@@ -5,7 +5,22 @@ import VideoComparison from './VideoComparison';
 import PenaltyDiagram from './PenaltyDiagram';
 import '../styles/components/Demo.css';
 
+// Ordered as the penalty factors in RouteDS: P_PLC, P_SD, P_col, P_off, P_TL
 const metrics = [
+  {
+    key: 'PLCA/S',
+    koTitle: '교차로 차로 준비',
+    enTitle: 'Pre-Lane Change Accuracy / Score',
+    koBody: '교차로 진입 전 경로에 맞는 차로에 있었는지 평가합니다. PLCS는 도달하지 못한 교차로도 0점으로 포함합니다.',
+    enBody: 'Evaluates route-compatible lane choice before intersections. PLCS also counts unencountered intersections as zero.',
+  },
+  {
+    key: 'SDC',
+    koTitle: 'SD 경로 준수',
+    enTitle: 'SD Route Compliance',
+    koBody: '맵 매칭된 도로 구간이 지정 SD 경로에 속하는지 평가합니다.',
+    enBody: 'Checks whether map-matched road segments belong to the designated SD route.',
+  },
   {
     key: 'NC',
     koTitle: '충돌 회피',
@@ -19,20 +34,6 @@ const metrics = [
     enTitle: 'Drivable Area Compliance',
     koBody: '주행 가능 영역 밖 또는 역방향으로 이동한 거리를 살핍니다.',
     enBody: 'Tracks distance driven outside drivable areas or against traffic.',
-  },
-  {
-    key: 'SDC',
-    koTitle: 'SD 경로 준수',
-    enTitle: 'SD Route Compliance',
-    koBody: '맵 매칭된 도로 구간이 지정 SD 경로에 속하는지 평가합니다.',
-    enBody: 'Checks whether map-matched road segments belong to the designated SD route.',
-  },
-  {
-    key: 'PLCA/S',
-    koTitle: '교차로 차로 준비',
-    enTitle: 'Pre-Lane Change Accuracy / Score',
-    koBody: '교차로 진입 전 경로에 맞는 차로에 있었는지 평가합니다. PLCS는 도달하지 못한 교차로도 0점으로 포함합니다.',
-    enBody: 'Evaluates route-compatible lane choice before intersections. PLCS also counts unencountered intersections as zero.',
   },
   {
     key: 'TLC',
@@ -104,72 +105,76 @@ const MetricFigure = ({ ko }) => (
 
       <path d="M16 128H944" stroke="#8d7865" strokeOpacity=".3" strokeWidth="1" />
 
-      {/* BEV scene: one SD-route rollout */}
+      {/* BEV scene: one SD-route rollout. The ego meets the penalties in formula order:
+          P_PLC (stop line before the right turn) -> P_SD (off-route branch) -> P_col -> P_off -> P_TL (last intersection).
+          Roads: H1 (2 lanes each way) -> right turn into V2 -> left turn onto H2 -> goal; V3 crosses H2 at the signal. */}
       <g clipPath="url(#rds-scene)">
-        {/* roads: H1 (4 lanes), V1 and V2/H2 (2 lanes); the wider under-stroke draws the edge lines */}
+        {/* the wider under-stroke draws the edge lines */}
         <g fill="none" stroke="#6a5747" strokeLinejoin="miter">
-          <path d="M0 230H960" strokeWidth="63" />
-          <path d="M270 128V460" strokeWidth="43" />
-          <path d="M620 230V400H960" strokeWidth="43" />
+          <path d="M0 210H960" strokeWidth="63" />
+          <path d="M300 210V400" strokeWidth="43" />
+          <path d="M0 300H300" strokeWidth="43" />
+          <path d="M300 380H960" strokeWidth="43" />
+          <path d="M760 128V460" strokeWidth="43" />
         </g>
         <g fill="none" stroke="#40362e" strokeLinejoin="miter">
-          <path d="M0 230H960" strokeWidth="60" />
-          <path d="M270 128V460" strokeWidth="40" />
-          <path d="M620 230V400H960" strokeWidth="40" />
+          <path d="M0 210H960" strokeWidth="60" />
+          <path d="M300 210V400" strokeWidth="40" />
+          <path d="M0 300H300" strokeWidth="40" />
+          <path d="M300 380H960" strokeWidth="40" />
+          <path d="M760 128V460" strokeWidth="40" />
         </g>
-        {/* off-route roads (red, faint), under the lane markings */}
-        <path d="M270 200V128M270 260V460M640 245H960" fill="none" stroke="#ef5147" strokeOpacity=".22" strokeWidth="10" />
-        <path d="M0 228H250M290 228H600M640 228H960M0 232H250M290 232H600M640 232H960M268 128V200M272 128V200M268 260V460M272 260V460M618 260V380M622 260V380M640 398H960M640 402H960" fill="none" stroke="#a18e7d" strokeOpacity=".55" strokeWidth="1.2" />
-        <path d="M0 215H250M290 215H600M640 215H960M0 245H250M290 245H600M640 245H960" fill="none" stroke="#a18e7d" strokeOpacity=".4" strokeWidth="1.2" strokeDasharray="8 8" />
+        {/* off-route branch (red, faint) and SD route on the road center lines, both under the lane markings */}
+        <path d="M0 300H280" fill="none" stroke="#ef5147" strokeOpacity=".22" strokeWidth="8" />
+        <path d="M40 210H300V380H867" fill="none" stroke="#d99455" strokeOpacity=".38" strokeWidth="8" strokeLinejoin="round" />
+        <path d="M867 380H930" fill="none" stroke="#d99455" strokeOpacity=".16" strokeWidth="8" />
+        <path d="M0 208H280M320 208H740M780 208H960M0 212H280M320 212H740M780 212H960M298 240V360M302 240V360M0 298H280M0 302H280M320 378H740M780 378H960M320 382H740M780 382H960M758 128V180M762 128V180M758 240V360M762 240V360M758 400V460M762 400V460" fill="none" stroke="#a18e7d" strokeOpacity=".55" strokeWidth="1.2" />
+        <path d="M0 195H280M320 195H740M780 195H960M0 225H278M320 225H740M780 225H960" fill="none" stroke="#a18e7d" strokeOpacity=".4" strokeWidth="1.2" strokeDasharray="8 8" />
+        <path d="M146 205L151 210L146 215M295 330L300 335L305 330M516 375L521 380L516 385M656 375L661 380L656 385" fill="none" stroke="#d99455" strokeWidth="2.2" />
 
-        {/* SD route: completed part stronger, remaining part faint */}
-        <path d="M40 245H596Q610 245 610 259V396Q610 410 624 410H790" fill="none" stroke="#d99455" strokeOpacity=".38" strokeWidth="10" strokeLinejoin="round" />
-        <path d="M828 410H930" fill="none" stroke="#d99455" strokeOpacity=".16" strokeWidth="10" />
-        <path d="M146 240L151 245L146 250M376 240L381 245L376 250M605 286L610 291L615 286M696 405L701 410L696 415" fill="none" stroke="#d99455" strokeWidth="2.2" />
+        {/* ego trajectory (in its lane): through lane to the stop line, turn, collision, off-road drift, red light */}
+        <path d="M40 217.5H276Q290 217.5 290 232V368Q290 390 312 390H540C556 390 562 404 580 404C598 404 604 390 620 390H852" fill="none" stroke="#f2c18f" strokeOpacity=".85" strokeWidth="2" />
 
-        {/* ego trajectory */}
-        <path d="M40 237.5H592Q610 237.5 610 256V295C610 306 597 311 597 320C597 329 610 334 610 345V396Q610 410 624 410H790" fill="none" stroke="#f2c18f" strokeOpacity=".85" strokeWidth="2" />
+        <circle cx="40" cy="210" r="6" fill="#76b98a" />
+        <text x="40" y="258" textAnchor="middle" className="penalty-svg-note">START</text>
+        <circle cx="930" cy="380" r="6" fill="#e9c47c" />
+        <text x="944" y="352" textAnchor="end" className="penalty-svg-note">GOAL</text>
 
-        <circle cx="40" cy="245" r="6" fill="#76b98a" />
-        <text x="40" y="280" textAnchor="middle" className="penalty-svg-note">START</text>
-        <circle cx="930" cy="410" r="6" fill="#e9c47c" />
-        <text x="944" y="370" textAnchor="end" className="penalty-svg-note">GOAL</text>
+        {/* 1. P_PLC: stop line before the right turn; route-compatible (outer) lane in green, ego crosses in the through lane */}
+        <path d="M278 210V225" stroke="#e7d1ba" strokeWidth="2.5" />
+        <path d="M278 225V240" stroke="#a5cb9d" strokeWidth="2.5" />
+        <circle cx="278" cy="217.5" r="7" fill="none" stroke="#ef5147" strokeWidth="2.2" />
+        <text x="278" y="160" textAnchor="middle" className="penalty-svg-alert">P<tspan dy="3" fontSize="8">PLC</tspan><tspan dy="-3"> ×0.7</tspan></text>
+        <text x="278" y="173" textAnchor="middle" className="penalty-svg-note">WRONG LANE AT STOP LINE</text>
 
-        {/* P_TL: red light at intersection A */}
-        <path d="M248 230V260" stroke="#e7d1ba" strokeWidth="2.5" />
-        <rect x="230" y="266" width="12" height="26" rx="3" fill="#2a211b" stroke="#6a5747" />
-        <circle cx="236" cy="272" r="3" fill="#ef5147" />
-        <circle cx="236" cy="279" r="3" fill="#4a3d33" />
-        <circle cx="236" cy="286" r="3" fill="#4a3d33" />
-        <circle cx="270" cy="237.5" r="7" fill="none" stroke="#ef5147" strokeWidth="2.2" />
-        <text x="240" y="314" textAnchor="end" className="penalty-svg-alert">P<tspan dy="3" fontSize="8">TL</tspan><tspan dy="-3"> ×0.7</tspan></text>
-        <text x="240" y="327" textAnchor="end" className="penalty-svg-note">RED LIGHT</text>
+        {/* 2. P_SD: entering the off-route branch would give P_SD = 0 */}
+        <text x="140" y="342" textAnchor="middle" className="penalty-svg-alert">P<tspan dy="3" fontSize="8">SD</tspan><tspan dy="-3"> = 0</tspan></text>
+        <text x="140" y="355" textAnchor="middle" className="penalty-svg-note">IF THE EGO ENTERS AN OFF-ROUTE ROAD</text>
 
-        {/* P_col: at-fault contact with the vehicle ahead */}
-        <rect x="436" y="231" width="30" height="13" fill="#c8b8a8" opacity=".48" />
-        <circle cx="436" cy="237.5" r="7" fill="none" stroke="#ef5147" strokeWidth="2.2" />
-        <text x="436" y="180" textAnchor="middle" className="penalty-svg-alert">P<tspan dy="3" fontSize="8">col</tspan><tspan dy="-3"> ×0.6</tspan></text>
-        <text x="436" y="193" textAnchor="middle" className="penalty-svg-note">AT-FAULT COLLISION</text>
+        {/* 3. P_col: at-fault contact with the vehicle ahead */}
+        <rect x="432" y="383.5" width="30" height="13" fill="#c8b8a8" opacity=".48" />
+        <circle cx="432" cy="390" r="7" fill="none" stroke="#ef5147" strokeWidth="2.2" />
+        <text x="432" y="342" textAnchor="middle" className="penalty-svg-alert">P<tspan dy="3" fontSize="8">col</tspan><tspan dy="-3"> ×0.6</tspan></text>
+        <text x="432" y="355" textAnchor="middle" className="penalty-svg-note">AT-FAULT COLLISION</text>
 
-        {/* P_PLC: stop line at B; compatible (outer) lane in green, ego crosses in the inner lane */}
-        <path d="M598 230V245" stroke="#e7d1ba" strokeWidth="2.5" />
-        <path d="M598 245V260" stroke="#a5cb9d" strokeWidth="2.5" />
-        <circle cx="598" cy="237.5" r="7" fill="none" stroke="#ef5147" strokeWidth="2.2" />
-        <text x="598" y="180" textAnchor="middle" className="penalty-svg-alert">P<tspan dy="3" fontSize="8">PLC</tspan><tspan dy="-3"> ×0.7</tspan></text>
-        <text x="598" y="193" textAnchor="middle" className="penalty-svg-note">WRONG LANE AT STOP LINE</text>
+        {/* 4. P_off: trajectory drifts over the road edge */}
+        <circle cx="580" cy="402" r="7" fill="none" stroke="#ef5147" strokeWidth="2.2" />
+        <text x="560" y="428" textAnchor="middle" className="penalty-svg-alert">P<tspan dy="3" fontSize="8">off</tspan></text>
+        <text x="560" y="441" textAnchor="middle" className="penalty-svg-note">OFF-ROAD DISTANCE</text>
 
-        {/* P_off: trajectory drifts over the road edge */}
-        <circle cx="598" cy="320" r="7" fill="none" stroke="#ef5147" strokeWidth="2.2" />
-        <text x="582" y="316" textAnchor="end" className="penalty-svg-alert">P<tspan dy="3" fontSize="8">off</tspan></text>
-        <text x="582" y="329" textAnchor="end" className="penalty-svg-note">OFF-ROAD DISTANCE</text>
+        {/* 5. P_TL: red light at the last intersection */}
+        <path d="M738 380V400" stroke="#e7d1ba" strokeWidth="2.5" />
+        <rect x="722" y="406" width="12" height="26" rx="3" fill="#2a211b" stroke="#6a5747" />
+        <circle cx="728" cy="412" r="3" fill="#ef5147" />
+        <circle cx="728" cy="419" r="3" fill="#4a3d33" />
+        <circle cx="728" cy="426" r="3" fill="#4a3d33" />
+        <circle cx="760" cy="390" r="7" fill="none" stroke="#ef5147" strokeWidth="2.2" />
+        <text x="714" y="420" textAnchor="end" className="penalty-svg-alert">P<tspan dy="3" fontSize="8">TL</tspan><tspan dy="-3"> ×0.7</tspan></text>
+        <text x="714" y="433" textAnchor="end" className="penalty-svg-note">RED LIGHT</text>
 
-        {/* P_SD: entering any off-route road gives P_SD = 0 */}
-        <text x="800" y="180" textAnchor="middle" className="penalty-svg-alert">P<tspan dy="3" fontSize="8">SD</tspan><tspan dy="-3"> = 0</tspan></text>
-        <text x="800" y="193" textAnchor="middle" className="penalty-svg-note">IF THE EGO ENTERS AN OFF-ROUTE ROAD</text>
-
-        {/* ego at the end of the rollout */}
-        <rect x="790" y="403" width="30" height="14" fill="#f2c18f" stroke="#ef5147" strokeWidth="2" />
-        <text x="660" y="442" className="rds-route">RC<tspan dy="3" fontSize="8">SD</tspan><tspan dy="-3"> = COMPLETED ÷ TOTAL SD ROUTE</tspan></text>
+        {/* ego at the end of the rollout; RC_SD = completed part of the route */}
+        <rect x="852" y="383" width="30" height="14" fill="#f2c18f" stroke="#ef5147" strokeWidth="2" />
+        <text x="944" y="446" textAnchor="end" className="rds-route">RC<tspan dy="3" fontSize="8">SD</tspan><tspan dy="-3"> = COMPLETED ÷ TOTAL SD ROUTE</tspan></text>
 
         <g transform="translate(24 440)">
           <path d="M0 0H18" stroke="#d99455" strokeOpacity=".6" strokeWidth="8" />
@@ -185,7 +190,24 @@ const MetricFigure = ({ ko }) => (
   </figure>
 );
 
+// Ordered as the penalty factors in RouteDS: P_PLC, P_SD, P_col, P_off, P_TL
 const penaltyCases = [
+  {
+    key: 'PLCA/S',
+    koTitle: '사전 차로 변경(Pre-Lane Change) 실패',
+    enTitle: 'Fails the pre-lane change',
+    koBody: '경로에 맞는 차로는 우회전 차로입니다. 마지막 10 m(주행 거리) 전에 들어오면 1점, 그 안에서 들어오면 0.5점, 다른 차로로 정지선에 닿으면 0점입니다. 자차는 직진 차로로 정지선에 닿은 뒤에야 방향을 틀어 0점입니다.',
+    enBody: 'The right-turn lane fits the route. Entering it before the last 10 m of driving scores 1, within it 0.5, and reaching the stop line in another lane 0. The ego only turns at the stop line, still in the through lane, so it scores 0.',
+    video: { src: 'metric-plca-bev.mp4', poster: 'metric-plca-poster.jpg', koDetail: '잘못된 차로로 진입 · 107.0초 · sim step 1070', enDetail: 'Wrong lane at entry · 107.0 s · sim step 1070' },
+  },
+  {
+    key: 'SDC',
+    koTitle: '지정 경로 이탈',
+    enTitle: 'Departs from the SD route',
+    koBody: 'SD 경로는 분기로 우회전합니다. 자차는 분기를 놓치고 직진해, 경로에 없는 도로 구간(빨간색)을 주행합니다.',
+    enBody: 'The SD route turns right into the branch. The ego misses the turn and continues straight onto a road segment outside the route (red).',
+    video: { src: 'metric-sdc-bev.mp4', poster: 'metric-sdc-poster.jpg', koDetail: '경로와 궤적이 갈라지는 시점 · sim step 120', enDetail: 'Route and rollout diverge · sim step 120' },
+  },
   {
     key: 'NC',
     koTitle: '과실 충돌',
@@ -201,22 +223,6 @@ const penaltyCases = [
     koBody: '자차가 도로 경계에 걸쳐 차체 일부가 주행 가능 영역 밖으로 나간 상황입니다.',
     enBody: 'The ego straddles the road edge, with part of its footprint outside the drivable area.',
     video: { src: 'metric-dac-bev.mp4', poster: 'metric-dac-poster.jpg', koDetail: '비주행 영역 flag · sim step 358', enDetail: 'Non-drivable area flag · sim step 358' },
-  },
-  {
-    key: 'SDC',
-    koTitle: '지정 경로 이탈',
-    enTitle: 'Departs from the SD route',
-    koBody: 'SD 경로는 분기로 우회전합니다. 자차는 분기를 놓치고 직진해, 경로에 없는 도로 구간(빨간색)을 주행합니다.',
-    enBody: 'The SD route turns right into the branch. The ego misses the turn and continues straight onto a road segment outside the route (red).',
-    video: { src: 'metric-sdc-bev.mp4', poster: 'metric-sdc-poster.jpg', koDetail: '경로와 궤적이 갈라지는 시점 · sim step 120', enDetail: 'Route and rollout diverge · sim step 120' },
-  },
-  {
-    key: 'PLCA/S',
-    koTitle: '사전 차로 변경(Pre-Lane Change) 실패',
-    enTitle: 'Fails the pre-lane change',
-    koBody: '경로에 맞는 차로는 우회전 차로입니다. 마지막 10 m(주행 거리) 전에 들어오면 1점, 그 안에서 들어오면 0.5점, 다른 차로로 정지선에 닿으면 0점입니다. 자차는 직진 차로로 정지선에 닿은 뒤에야 방향을 틀어 0점입니다.',
-    enBody: 'The right-turn lane fits the route. Entering it before the last 10 m of driving scores 1, within it 0.5, and reaching the stop line in another lane 0. The ego only turns at the stop line, still in the through lane, so it scores 0.',
-    video: { src: 'metric-plca-bev.mp4', poster: 'metric-plca-poster.jpg', koDetail: '잘못된 차로로 진입 · 107.0초 · sim step 1070', enDetail: 'Wrong lane at entry · 107.0 s · sim step 1070' },
   },
   {
     key: 'TLC',
