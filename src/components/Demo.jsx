@@ -109,20 +109,20 @@ const MetricFigure = ({ ko }) => (
           P_PLC (stop line before the right turn) -> P_SD (off-route branch) -> P_col -> P_off -> P_TL (last intersection).
           Roads: H1 (2 lanes each way) -> right turn into V2 -> left turn onto H2 -> goal; V3 crosses H2 at the signal. */}
       <g clipPath="url(#rds-scene)">
-        {/* the wider under-stroke draws the edge lines */}
-        <g fill="none" stroke="#6a5747" strokeLinejoin="miter">
-          <path d="M0 210H960" strokeWidth="63" />
-          <path d="M300 210V400" strokeWidth="43" />
-          <path d="M0 300H300" strokeWidth="43" />
-          <path d="M300 380H960" strokeWidth="43" />
-          <path d="M760 128V460" strokeWidth="43" />
+        {/* asphalt = lanes + 4 px shoulder each side; the wider under-stroke draws the asphalt edge (square caps close the corners) */}
+        <g fill="none" stroke="#6a5747" strokeLinecap="square">
+          <path d="M0 210H960" strokeWidth="71" />
+          <path d="M300 210V380" strokeWidth="51" />
+          <path d="M0 300H300" strokeWidth="51" />
+          <path d="M300 380H960" strokeWidth="51" />
+          <path d="M760 128V460" strokeWidth="51" />
         </g>
-        <g fill="none" stroke="#40362e" strokeLinejoin="miter">
-          <path d="M0 210H960" strokeWidth="60" />
-          <path d="M300 210V400" strokeWidth="40" />
-          <path d="M0 300H300" strokeWidth="40" />
-          <path d="M300 380H960" strokeWidth="40" />
-          <path d="M760 128V460" strokeWidth="40" />
+        <g fill="none" stroke="#40362e" strokeLinecap="square">
+          <path d="M0 210H960" strokeWidth="68" />
+          <path d="M300 210V380" strokeWidth="48" />
+          <path d="M0 300H300" strokeWidth="48" />
+          <path d="M300 380H960" strokeWidth="48" />
+          <path d="M760 128V460" strokeWidth="48" />
         </g>
         {/* off-route branch (red, faint) and SD route on the road center lines, both under the lane markings */}
         <path d="M0 300H280" fill="none" stroke="#ef5147" strokeOpacity=".22" strokeWidth="8" />
@@ -130,10 +130,12 @@ const MetricFigure = ({ ko }) => (
         <path d="M867 380H930" fill="none" stroke="#d99455" strokeOpacity=".16" strokeWidth="8" />
         <path d="M0 208H280M320 208H740M780 208H960M0 212H280M320 212H740M780 212H960M298 240V360M302 240V360M0 298H280M0 302H280M320 378H740M780 378H960M320 382H740M780 382H960M758 128V180M762 128V180M758 240V360M762 240V360M758 400V460M762 400V460" fill="none" stroke="#a18e7d" strokeOpacity=".55" strokeWidth="1.2" />
         <path d="M0 195H280M320 195H740M780 195H960M0 225H278M320 225H740M780 225H960" fill="none" stroke="#a18e7d" strokeOpacity=".4" strokeWidth="1.2" strokeDasharray="8 8" />
+        {/* solid outer lane marks (broken at junction mouths, turning the V2/H2 corner) */}
+        <path d="M0 180H740M780 180H960M0 240H280M320 240H740M780 240H960M0 280H280M0 320H280M280 240V280M280 320V400H740M320 240V360H740M780 360H960M780 400H960M740 128V180M780 128V180M740 240V360M780 240V360M740 400V460M780 400V460" fill="none" stroke="#a18e7d" strokeOpacity=".55" strokeWidth="1.2" />
         <path d="M146 205L151 210L146 215M295 330L300 335L305 330M516 375L521 380L516 385M656 375L661 380L656 385" fill="none" stroke="#d99455" strokeWidth="2.2" />
 
         {/* ego trajectory (in its lane): through lane to the stop line, turn, collision, off-road drift, red light */}
-        <path d="M40 217.5H276Q290 217.5 290 232V368Q290 390 312 390H540C556 390 562 404 580 404C598 404 604 390 620 390H852" fill="none" stroke="#f2c18f" strokeOpacity=".85" strokeWidth="2" />
+        <path d="M40 217.5H276Q290 217.5 290 232V368Q290 390 312 390H540C556 390 562 407 580 407C598 407 604 390 620 390H852" fill="none" stroke="#f2c18f" strokeOpacity=".85" strokeWidth="2" />
 
         <circle cx="40" cy="210" r="6" fill="#76b98a" />
         <text x="40" y="258" textAnchor="middle" className="penalty-svg-note">START</text>
@@ -158,12 +160,12 @@ const MetricFigure = ({ ko }) => (
         <text x="432" y="355" textAnchor="middle" className="penalty-svg-note">AT-FAULT COLLISION</text>
 
         {/* 4. P_off: trajectory drifts over the road edge */}
-        <circle cx="580" cy="402" r="7" fill="none" stroke="#ef5147" strokeWidth="2.2" />
+        <circle cx="580" cy="404" r="7" fill="none" stroke="#ef5147" strokeWidth="2.2" />
         <text x="560" y="428" textAnchor="middle" className="penalty-svg-alert">P<tspan dy="3" fontSize="8">off</tspan></text>
         <text x="560" y="441" textAnchor="middle" className="penalty-svg-note">OFF-ROAD DISTANCE</text>
 
         {/* 5. P_TL: red light at the last intersection */}
-        <path d="M738 380V400" stroke="#e7d1ba" strokeWidth="2.5" />
+        <path d="M732 380V400" stroke="#e7d1ba" strokeWidth="2.5" />
         <rect x="722" y="406" width="12" height="26" rx="3" fill="#2a211b" stroke="#6a5747" />
         <circle cx="728" cy="412" r="3" fill="#ef5147" />
         <circle cx="728" cy="419" r="3" fill="#4a3d33" />
