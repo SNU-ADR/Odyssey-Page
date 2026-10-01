@@ -185,6 +185,7 @@ const penaltyCases = [
     enTitle: 'At-fault collision',
     koBody: '자차가 앞차를 뒤에서 추돌한 과실 충돌입니다.',
     enBody: 'The ego rear-ends the vehicle ahead, an at-fault collision.',
+    video: { src: 'metric-nc-bev.mp4', poster: 'metric-nc-poster.jpg', koDetail: '실제 접촉 기록 · sim step 182', enDetail: 'Recorded contact · sim step 182' },
   },
   {
     key: 'DAC',
@@ -192,6 +193,7 @@ const penaltyCases = [
     enTitle: 'Leaves the drivable area',
     koBody: '자차가 도로 경계에 걸쳐 차체 일부가 주행 가능 영역 밖으로 나간 상황입니다.',
     enBody: 'The ego straddles the road edge, with part of its footprint outside the drivable area.',
+    video: { src: 'metric-dac-bev.mp4', poster: 'metric-dac-poster.jpg', koDetail: '비주행 영역 flag · sim step 358', enDetail: 'Non-drivable area flag · sim step 358' },
   },
   {
     key: 'SDC',
@@ -199,6 +201,7 @@ const penaltyCases = [
     enTitle: 'Departs from the SD route',
     koBody: 'SD 경로는 분기로 우회전합니다. 자차는 분기를 놓치고 직진해, 경로에 없는 도로 구간(빨간색)을 주행합니다.',
     enBody: 'The SD route turns right into the branch. The ego misses the turn and continues straight onto a road segment outside the route (red).',
+    video: { src: 'metric-sdc-bev.mp4', poster: 'metric-sdc-poster.jpg', koDetail: '경로와 궤적이 갈라지는 시점 · sim step 120', enDetail: 'Route and rollout diverge · sim step 120' },
   },
   {
     key: 'PLCA/S',
@@ -206,25 +209,47 @@ const penaltyCases = [
     enTitle: 'Fails the pre-lane change',
     koBody: '경로에 맞는 차로는 2차로입니다. 마지막 10 m(주행 거리) 전에 들어오면 1점, 그 안에서 들어오면 0.5점, 다른 차로로 정지선에 닿으면 0점입니다. 자차는 정지선에서야 방향을 틀어 0점입니다.',
     enBody: 'Lane 2 fits the route. Entering it before the last 10 m of driving scores 1, within it 0.5, and reaching the stop line in another lane 0. The ego only turns at the stop line, so it scores 0.',
+    video: { src: 'metric-plca-bev.mp4', poster: 'metric-plca-poster.jpg', koDetail: '잘못된 차로로 진입 · 107.0초 · sim step 1070', enDetail: 'Wrong lane at entry · 107.0 s · sim step 1070' },
   },
 ];
 
-const PenaltyCaseGrid = ({ ko }) => (
+// One row per metric: concept diagram | recorded BEV replay
+const PenaltyCaseRows = ({ ko }) => (
   <>
     <div className="metric-diagram-intro">
-      <h4>{ko ? '감점 상황 개념도' : 'Penalty cases'}</h4>
-      <p>{ko ? '빨간 테두리 차량이 자차이고, 흐린 차량은 주변 차량 또는 자차의 이전 위치입니다. 노란색은 예정 경로, 빨간 원은 감점이 발생한 지점입니다.' : 'The red-outlined box is the ego; faded boxes are other traffic or earlier ego positions. Yellow shows the expected route, and the red circle marks where the penalty occurs.'}</p>
+      <h4>{ko ? '감점 상황' : 'Penalty cases'}</h4>
+      <p>{ko ? '왼쪽은 개념도, 오른쪽은 실제 rollout 기록입니다. 개념도에서 빨간 테두리 차량이 자차이고, 흐린 차량은 주변 차량 또는 자차의 이전 위치입니다. 노란색은 예정 경로, 빨간 원은 감점이 발생한 지점입니다.' : 'Left: concept diagram. Right: recorded rollout. In the diagrams, the red-outlined box is the ego; faded boxes are other traffic or earlier ego positions. Yellow shows the expected route, and the red circle marks where the penalty occurs.'}</p>
     </div>
-    <div className="penalty-diagrams">
+    <div className="penalty-rows">
       {penaltyCases.map((item) => (
-        <article className="penalty-case-card" key={item.key}>
-          <div className="penalty-case-heading">
+        <section className="penalty-row" key={item.key}>
+          <div className="penalty-row-heading">
             <span>{item.key}</span>
             <h4>{ko ? item.koTitle : item.enTitle}</h4>
           </div>
-          <PenaltyDiagram kind={item.key} />
-          <p>{ko ? item.koBody : item.enBody}</p>
-        </article>
+          <div className="penalty-row-panels">
+            <figure className="penalty-row-panel">
+              <PenaltyDiagram kind={item.key} />
+              <figcaption>{ko ? item.koBody : item.enBody}</figcaption>
+            </figure>
+            <figure className="penalty-row-panel">
+              <video
+                className="metric-video"
+                poster={`${process.env.PUBLIC_URL}/videos/${item.video.poster}?v=20261001d`}
+                controls
+                playsInline
+                loop
+                muted
+                preload="metadata"
+                aria-label={`${item.key} ${ko ? '재생' : 'replay'}`}
+              >
+                <source src={`${process.env.PUBLIC_URL}/videos/${item.video.src}?v=20261001d`} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+              <figcaption>{ko ? item.video.koDetail : item.video.enDetail}</figcaption>
+            </figure>
+          </div>
+        </section>
       ))}
     </div>
   </>
@@ -291,7 +316,6 @@ const Demo = () => {
           subtitle={ko ? '지표 그림 → 장면 이미지 예시 → BEV 재생 데모 순서로 구성합니다.' : 'Metric figure → scenario image examples → BEV playback.'}
         />
         <MetricFigure ko={ko} />
-        <PenaltyCaseGrid ko={ko} />
         <div className="metric-cards">
           {metrics.map((metric) => (
             <section className="metric-card" key={metric.key}>
@@ -301,45 +325,7 @@ const Demo = () => {
             </section>
           ))}
         </div>
-        <div className="metric-video-grid">
-          {[
-            {
-              key: 'NC',
-              title: ko ? '충돌 이벤트' : 'Collision event',
-              detail: ko ? '실제 접촉 기록 · sim step 182' : 'Recorded contact · sim step 182',
-              src: 'metric-nc-bev.mp4', poster: 'metric-nc-poster.jpg',
-            },
-            {
-              key: 'DAC',
-              title: ko ? '주행 가능 영역 위반' : 'Drivable area violation',
-              detail: ko ? '비주행 영역 flag · sim step 358' : 'Non-drivable area flag · sim step 358',
-              src: 'metric-dac-bev.mp4', poster: 'metric-dac-poster.jpg',
-            },
-            {
-              key: 'SDC',
-              title: ko ? 'SD 경로 이탈' : 'SD route departure',
-              detail: ko ? '경로와 궤적이 갈라지는 시점 · sim step 120' : 'Route and rollout diverge · sim step 120',
-              src: 'metric-sdc-bev.mp4', poster: 'metric-sdc-poster.jpg',
-            },
-            {
-              key: 'PLCA/S',
-              title: ko ? '우회전 전 차로 변경 지연' : 'Missed pre-turn lane change',
-              detail: ko ? '잘못된 차로 진입 · 107.0초 · sim step 1070' : 'Wrong lane at entry · 107.0 s · sim step 1070',
-              src: 'metric-plca-bev.mp4', poster: 'metric-plca-poster.jpg',
-            },
-          ].map((item) => (
-            <article className="metric-video-card" key={item.key}>
-              <div className="metric-video-heading">
-                <span>{item.key}</span>
-                <div><h4>{item.title}</h4><p>{item.detail}</p></div>
-              </div>
-              <video className="metric-video" poster={`${process.env.PUBLIC_URL}/videos/${item.poster}?v=20261001d`} controls playsInline loop muted preload="metadata" aria-label={item.title}>
-                <source src={`${process.env.PUBLIC_URL}/videos/${item.src}?v=20261001d`} type={item.src.endsWith('.webm') ? 'video/webm' : 'video/mp4'} />
-                Your browser does not support the video tag.
-              </video>
-            </article>
-          ))}
-        </div>
+        <PenaltyCaseRows ko={ko} />
       </article>
 
       <article className="demo-chapter" id="rendering-comparison">
