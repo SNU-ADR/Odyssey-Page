@@ -203,8 +203,8 @@ const penaltyCases = [
     key: 'PLCA/S',
     koTitle: '우회전 전 차로 변경 지연',
     enTitle: 'Missed pre-turn lane change',
-    koBody: 'SD 경로가 우회전하므로 우회전 포켓인 3차로만 경로에 맞는 차로입니다. 정지선 전 10 m 동안 3차로를 유지해야 하지만, 자차는 2차로로 정지선을 통과합니다.',
-    enBody: 'The SD route turns right, so only lane 3, the right-turn pocket, is route-compatible. The ego must hold lane 3 for the 10 m before the stop line, but crosses it in lane 2.',
+    koBody: 'SD 경로가 우회전하므로, 갈라져 나가는 2차로만 경로에 맞는 차로입니다. 정지선 전 10 m 동안 2차로를 유지해야 하지만, 자차는 1차로로 정지선을 통과합니다.',
+    enBody: 'The SD route turns right, so only lane 2, which splits off toward the turn, is route-compatible. The ego must hold lane 2 for the 10 m before the stop line, but crosses it in lane 1.',
   },
 ];
 
@@ -263,29 +263,35 @@ const PenaltyDiagram = ({ kind }) => (
     )}
     {kind === 'PLCA/S' && (
       <>
-        {/* main road: 4 lanes two-way (2 each way, double center line); lower side widens 2 -> 3 with a right-turn pocket; cross road below */}
+        {/* main road: 2 lanes each way (double center line); lower lane 2 splits off behind a hatched gore as the right-turn lane; cross road below */}
+        <defs>
+          <pattern id="plc-gore" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <path d="M0 0V8" stroke="#a18e7d" strokeOpacity=".45" strokeWidth="2" />
+          </pattern>
+        </defs>
         <path d="M0 62H480V158H300V230H240V182H100L60 158H0Z" fill="#40362e" />
+        <path d="M60 134L100 158H240V134Z" fill="url(#plc-gore)" />
         <path d="M0 62H480M0 158H60L100 182H240V230M300 230V158H480" fill="none" stroke="#8d7865" strokeOpacity=".48" strokeWidth="2" />
         {/* SD route on the road center: straight, then right at the intersection */}
         <path d="M0 110H270V230" fill="none" stroke="#d99455" strokeOpacity=".38" strokeWidth="12" strokeLinejoin="round" />
         <path d="M0 108H480M0 112H480M268 182V230M272 182V230" fill="none" stroke="#a18e7d" strokeOpacity=".55" strokeWidth="1.5" />
-        <path d="M0 86H240M300 86H480M0 134H240M300 134H480M100 158H240" fill="none" stroke="#a18e7d" strokeOpacity=".4" strokeWidth="1.2" strokeDasharray="8 8" />
+        <path d="M0 86H240M300 86H480M0 134H60M300 134H480" fill="none" stroke="#a18e7d" strokeOpacity=".4" strokeWidth="1.2" strokeDasharray="8 8" />
+        <path d="M60 134H240M60 134L100 158H240" fill="none" stroke="#a18e7d" strokeOpacity=".6" strokeWidth="1.5" />
         <path d="M56 104L62 110L56 116M146 104L152 110L146 116M264 206L270 212L276 206" fill="none" stroke="#d99455" strokeWidth="2.5" />
         <text x="14" y="125" className="penalty-svg-note">LANE 1</text>
         <text x="14" y="149" className="penalty-svg-note">LANE 2</text>
-        <text x="106" y="173" className="penalty-svg-note">LANE 3</text>
-        {/* 10 m before the stop line: lane 3 (right-turn pocket) is the route-compatible lane */}
+        {/* 10 m before the stop line: lane 2 (split-off right-turn lane) is the route-compatible lane */}
         <rect x="156" y="158" width="84" height="24" fill="#a5cb9d" opacity=".2" />
         <path d="M156 190V198M240 190V198M156 194H240" fill="none" stroke="#b9a99a" strokeWidth="1.2" />
         <text x="236" y="212" textAnchor="end" className="penalty-svg-note">10 m BEFORE STOP LINE</text>
-        <path d="M240 110V158" stroke="#e7d1ba" strokeWidth="3" />
+        <path d="M240 110V134" stroke="#e7d1ba" strokeWidth="3" />
         <path d="M240 158V182" stroke="#a5cb9d" strokeWidth="3" />
         <g fill="#d0c0b0" opacity=".22">
-          <rect x="84" y="136" width="36" height="20" />
+          <rect x="84" y="112" width="36" height="20" />
           <rect x="360" y="64" width="36" height="20" />
         </g>
-        <rect x="202" y="136" width="38" height="20" fill="#f2c18f" stroke="#ef5147" strokeWidth="2" />
-        <circle cx="240" cy="146" r="11" fill="none" stroke="#ef5147" strokeWidth="3" />
+        <rect x="202" y="112" width="38" height="20" fill="#f2c18f" stroke="#ef5147" strokeWidth="2" />
+        <circle cx="240" cy="122" r="11" fill="none" stroke="#ef5147" strokeWidth="3" />
         <text x="240" y="48" textAnchor="middle" className="penalty-svg-alert">WRONG LANE AT STOP LINE</text>
       </>
     )}
