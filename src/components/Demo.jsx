@@ -54,33 +54,126 @@ const PlannerVideoPlaceholder = ({ label, ko }) => (
 
 const plannerScenarios = ['Collision', 'Pre-Lane Change', 'Traffic Light', 'Pedestrian'];
 
+// RouteDS = 100 · RC_SD · P_PLC · P_SD · P_col · P_off · P_TL (paper appendix, "RouteDS Components")
+const routeDsTerms = [
+  { sym: 'RC', sub: 'SD', name: 'Route completion', rule: 'completed ÷ total', route: true },
+  { sym: 'P', sub: 'PLC', name: 'Pre-lane change', rule: '×0.9 late · ×0.7 wrong' },
+  { sym: 'P', sub: 'SD', name: 'SD route', rule: '0 if off route' },
+  { sym: 'P', sub: 'col', name: 'At-fault collision', rule: '×0.6 veh · ×0.5 ped' },
+  { sym: 'P', sub: 'off', name: 'Off-road driving', rule: <>1 − D<tspan dy="3" fontSize="8">off</tspan><tspan dy="-3"> ÷ D</tspan><tspan dy="3" fontSize="8">total</tspan></> },
+  { sym: 'P', sub: 'TL', name: 'Red light', rule: '×0.7 per violation' },
+];
+
 const MetricFigure = ({ ko }) => (
   <figure className="metric-figure">
-    <svg viewBox="0 0 960 280" role="img" aria-labelledby="metric-figure-title metric-figure-desc">
-      <title id="metric-figure-title">{ko ? 'BEV 경로 평가 개요' : 'BEV route evaluation overview'}</title>
-      <desc id="metric-figure-desc">{ko ? '자차 궤적, 주행 가능 영역, SD 경로와 교차로 차로 준비를 위에서 본 예시입니다.' : 'Top-down schematic of the ego trajectory, drivable area, SD route, and lane preparation at an intersection.'}</desc>
+    <svg viewBox="0 0 960 460" role="img" aria-labelledby="metric-figure-title metric-figure-desc">
+      <title id="metric-figure-title">{ko ? 'RouteDS 개요' : 'RouteDS overview'}</title>
+      <desc id="metric-figure-desc">{ko ? 'RouteDS는 SD 경로 완료율에 감점 계수를 곱합니다. 하나의 rollout 위에 각 계수가 적용되는 위치를 표시했습니다.' : 'RouteDS multiplies SD-route completion by penalty factors, shown where each applies along one rollout.'}</desc>
       <defs>
-        <marker id="metric-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#e69351" /></marker>
-        <pattern id="metric-grid" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" fill="none" stroke="#8e6b50" strokeOpacity=".12" strokeWidth="1" /></pattern>
+        <pattern id="rds-grid" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" fill="none" stroke="#8e6b50" strokeOpacity=".12" strokeWidth="1" /></pattern>
+        <clipPath id="rds-scene"><rect x="0" y="128" width="960" height="332" /></clipPath>
       </defs>
-      <rect width="960" height="280" rx="16" fill="#17120f" />
-      <rect width="960" height="280" rx="16" fill="url(#metric-grid)" />
-      <path d="M0 160H960M596 0V280" stroke="#55463b" strokeWidth="94" />
-      <path d="M0 160H960M596 0V280" stroke="#a9907b" strokeOpacity=".42" strokeWidth="2" strokeDasharray="15 13" />
-      <path d="M52 160H562Q615 160 615 105V47" fill="none" stroke="#d29354" strokeOpacity=".24" strokeWidth="36" />
-      <path d="M52 160H562Q615 160 615 105V47" fill="none" stroke="#e69351" strokeWidth="5" strokeDasharray="12 9" markerEnd="url(#metric-arrow)" />
-      <circle cx="52" cy="160" r="9" fill="#76b98a" /><text x="35" y="205" className="metric-svg-label">START</text>
-      <circle cx="615" cy="47" r="9" fill="#e9c47c" /><text x="634" y="43" className="metric-svg-label">ROUTE GOAL</text>
-      <rect x="328" y="145" width="38" height="25" rx="7" fill="#efad73" stroke="#ffe0bd" strokeWidth="2" />
-      <path d="M495 117V203" stroke="#d6b58f" strokeWidth="3" />
-      <text x="405" y="220" className="metric-svg-label">STOP LINE</text>
-      <path d="M426 123L481 123M426 197L481 197" stroke="#a5cb9d" strokeWidth="5" strokeLinecap="round" />
-      <text x="654" y="88" className="metric-svg-label">DRIVABLE AREA</text>
-      <text x="654" y="115" className="metric-svg-sub">NC · DAC · SDC · PLCA/S</text>
-      <text x="654" y="180" className="metric-svg-label">BEV EVALUATION</text>
-      <text x="654" y="207" className="metric-svg-sub">Trajectory + route + lane context</text>
+      <rect width="960" height="460" rx="16" fill="#17120f" />
+      <rect width="960" height="460" rx="16" fill="url(#rds-grid)" />
+
+      {/* Formula: RouteDS = 100 x RC_SD x penalty factors */}
+      <text x="24" y="68" className="rds-title">RouteDS</text>
+      <text x="24" y="96" className="rds-eq">= 100 ×</text>
+      {routeDsTerms.map((term, i) => {
+        const x = 160 + i * 133;
+        return (
+          <g key={term.sym + term.sub}>
+            <g transform={`translate(${x} 36)`}>
+              <rect width="119" height="74" rx="8" fill="#221a15" stroke={term.route ? '#d99455' : '#ef5147'} strokeOpacity={term.route ? '.7' : '.45'} />
+              <text x="12" y="26" className="rds-sym" fill={term.route ? '#e6a765' : '#ff8379'}>{term.sym}<tspan dy="4" fontSize="11">{term.sub}</tspan></text>
+              <text x="12" y="48" className="rds-name">{term.name}</text>
+              <text x="12" y="64" className="rds-rule">{term.rule}</text>
+            </g>
+            {i < routeDsTerms.length - 1 && <text x={x + 126} y="78" textAnchor="middle" className="rds-times">×</text>}
+          </g>
+        );
+      })}
+
+      <path d="M16 128H944" stroke="#8d7865" strokeOpacity=".3" strokeWidth="1" />
+
+      {/* BEV scene: one SD-route rollout */}
+      <g clipPath="url(#rds-scene)">
+        {/* roads: H1 (4 lanes), V1 and V2/H2 (2 lanes); the wider under-stroke draws the edge lines */}
+        <g fill="none" stroke="#6a5747" strokeLinejoin="miter">
+          <path d="M0 230H960" strokeWidth="63" />
+          <path d="M270 128V460" strokeWidth="43" />
+          <path d="M620 230V400H960" strokeWidth="43" />
+        </g>
+        <g fill="none" stroke="#40362e" strokeLinejoin="miter">
+          <path d="M0 230H960" strokeWidth="60" />
+          <path d="M270 128V460" strokeWidth="40" />
+          <path d="M620 230V400H960" strokeWidth="40" />
+        </g>
+        {/* off-route roads (red, faint), under the lane markings */}
+        <path d="M270 200V128M270 260V460M640 245H960" fill="none" stroke="#ef5147" strokeOpacity=".22" strokeWidth="10" />
+        <path d="M0 228H250M290 228H600M640 228H960M0 232H250M290 232H600M640 232H960M268 128V200M272 128V200M268 260V460M272 260V460M618 260V380M622 260V380M640 398H960M640 402H960" fill="none" stroke="#a18e7d" strokeOpacity=".55" strokeWidth="1.2" />
+        <path d="M0 215H250M290 215H600M640 215H960M0 245H250M290 245H600M640 245H960" fill="none" stroke="#a18e7d" strokeOpacity=".4" strokeWidth="1.2" strokeDasharray="8 8" />
+
+        {/* SD route: completed part stronger, remaining part faint */}
+        <path d="M40 245H596Q610 245 610 259V396Q610 410 624 410H790" fill="none" stroke="#d99455" strokeOpacity=".38" strokeWidth="10" strokeLinejoin="round" />
+        <path d="M828 410H930" fill="none" stroke="#d99455" strokeOpacity=".16" strokeWidth="10" />
+        <path d="M146 240L151 245L146 250M376 240L381 245L376 250M605 286L610 291L615 286M696 405L701 410L696 415" fill="none" stroke="#d99455" strokeWidth="2.2" />
+
+        {/* ego trajectory */}
+        <path d="M40 237.5H592Q610 237.5 610 256V295C610 306 597 311 597 320C597 329 610 334 610 345V396Q610 410 624 410H790" fill="none" stroke="#f2c18f" strokeOpacity=".85" strokeWidth="2" />
+
+        <circle cx="40" cy="245" r="6" fill="#76b98a" />
+        <text x="40" y="280" textAnchor="middle" className="penalty-svg-note">START</text>
+        <circle cx="930" cy="410" r="6" fill="#e9c47c" />
+        <text x="944" y="370" textAnchor="end" className="penalty-svg-note">GOAL</text>
+
+        {/* P_TL: red light at intersection A */}
+        <path d="M248 230V260" stroke="#e7d1ba" strokeWidth="2.5" />
+        <rect x="230" y="266" width="12" height="26" rx="3" fill="#2a211b" stroke="#6a5747" />
+        <circle cx="236" cy="272" r="3" fill="#ef5147" />
+        <circle cx="236" cy="279" r="3" fill="#4a3d33" />
+        <circle cx="236" cy="286" r="3" fill="#4a3d33" />
+        <circle cx="270" cy="237.5" r="9" fill="none" stroke="#ef5147" strokeWidth="2.5" />
+        <text x="240" y="314" textAnchor="end" className="penalty-svg-alert">P<tspan dy="3" fontSize="8">TL</tspan><tspan dy="-3"> ×0.7</tspan></text>
+        <text x="240" y="327" textAnchor="end" className="penalty-svg-note">RED LIGHT</text>
+
+        {/* P_col: at-fault contact with the vehicle ahead */}
+        <rect x="436" y="231" width="30" height="13" fill="#c8b8a8" opacity=".48" />
+        <circle cx="436" cy="237.5" r="9" fill="none" stroke="#ef5147" strokeWidth="2.5" />
+        <text x="436" y="180" textAnchor="middle" className="penalty-svg-alert">P<tspan dy="3" fontSize="8">col</tspan><tspan dy="-3"> ×0.6</tspan></text>
+        <text x="436" y="193" textAnchor="middle" className="penalty-svg-note">AT-FAULT COLLISION</text>
+
+        {/* P_PLC: stop line at B; compatible (outer) lane in green, ego crosses in the inner lane */}
+        <path d="M598 230V245" stroke="#e7d1ba" strokeWidth="2.5" />
+        <path d="M598 245V260" stroke="#a5cb9d" strokeWidth="2.5" />
+        <circle cx="598" cy="237.5" r="9" fill="none" stroke="#ef5147" strokeWidth="2.5" />
+        <text x="598" y="180" textAnchor="middle" className="penalty-svg-alert">P<tspan dy="3" fontSize="8">PLC</tspan><tspan dy="-3"> ×0.7</tspan></text>
+        <text x="598" y="193" textAnchor="middle" className="penalty-svg-note">WRONG LANE AT STOP LINE</text>
+
+        {/* P_off: trajectory drifts over the road edge */}
+        <circle cx="598" cy="320" r="9" fill="none" stroke="#ef5147" strokeWidth="2.5" />
+        <text x="582" y="316" textAnchor="end" className="penalty-svg-alert">P<tspan dy="3" fontSize="8">off</tspan></text>
+        <text x="582" y="329" textAnchor="end" className="penalty-svg-note">OFF-ROAD DISTANCE</text>
+
+        {/* P_SD: entering any off-route road gives P_SD = 0 */}
+        <text x="800" y="180" textAnchor="middle" className="penalty-svg-alert">P<tspan dy="3" fontSize="8">SD</tspan><tspan dy="-3"> = 0</tspan></text>
+        <text x="800" y="193" textAnchor="middle" className="penalty-svg-note">IF THE EGO ENTERS AN OFF-ROUTE ROAD</text>
+
+        {/* ego at the end of the rollout */}
+        <rect x="790" y="403" width="30" height="14" fill="#f2c18f" stroke="#ef5147" strokeWidth="2" />
+        <text x="660" y="442" className="rds-route">RC<tspan dy="3" fontSize="8">SD</tspan><tspan dy="-3"> = COMPLETED ÷ TOTAL SD ROUTE</tspan></text>
+
+        <g transform="translate(24 440)">
+          <path d="M0 0H18" stroke="#d99455" strokeOpacity=".6" strokeWidth="8" />
+          <text x="24" y="3" className="penalty-svg-note">SD ROUTE</text>
+          <path d="M86 0H104" stroke="#f2c18f" strokeWidth="2" />
+          <text x="110" y="3" className="penalty-svg-note">EGO PATH</text>
+          <path d="M0 14H18" stroke="#ef5147" strokeOpacity=".4" strokeWidth="8" />
+          <text x="24" y="17" className="penalty-svg-note">OFF-ROUTE ROAD</text>
+        </g>
+      </g>
     </svg>
-    <figcaption>{ko ? '개념 설명용 도식. 아래 영상은 실제 rollout 기록을 재생합니다.' : 'Concept schematic. The clips below replay real rollout records.'}</figcaption>
+    <figcaption>{ko ? 'RouteDS는 SD 경로 완료율에 감점 계수를 곱합니다. 표시는 하나의 rollout에서 각 계수가 적용되는 위치이며, 주행 가능 영역 이탈 거리에는 역방향 주행도 포함됩니다.' : 'RouteDS multiplies SD-route completion by penalty factors. Markers show where each factor applies along one rollout; off-road distance also counts driving against traffic.'}</figcaption>
   </figure>
 );
 
@@ -110,15 +203,15 @@ const penaltyCases = [
     key: 'PLCA/S',
     koTitle: '우회전 전 차로 변경 지연',
     enTitle: 'Missed pre-turn lane change',
-    koBody: '예정 경로는 우회전 전에 2차로에서 3차로로 변경합니다. 실제 궤적은 2차로를 유지하다 교차로에서 늦게 꺾어 감점됩니다.',
-    enBody: 'The expected path changes from lane 2 to lane 3 before turning right. The rollout stays in lane 2 and turns late, incurring a penalty.',
+    koBody: 'SD 경로가 우회전하므로 우회전 포켓인 3차로만 경로에 맞는 차로입니다. 정지선 전 10 m 동안 3차로를 유지해야 하지만, 자차는 2차로로 정지선을 통과합니다.',
+    enBody: 'The SD route turns right, so only lane 3, the right-turn pocket, is route-compatible. The ego must hold lane 3 for the 10 m before the stop line, but crosses it in lane 2.',
   },
 ];
 
 const PenaltyDiagram = ({ kind }) => (
   <svg viewBox="0 0 480 230" role="img" aria-label={`${kind} penalty example`}>
     <rect width="480" height="230" rx="12" fill="#17120f" />
-    {/* NC / DAC / SDC share one layout: two-way two-lane road, event circle at x=240, label centered above the road */}
+    {/* All cases share one layout: two-way road with a double center line, event circle (no X) at x=240, label centered above the road */}
     {kind === 'NC' && (
       <>
         <rect x="0" y="62" width="480" height="112" fill="#40362e" />
@@ -131,7 +224,6 @@ const PenaltyDiagram = ({ kind }) => (
         <rect x="240" y="136" width="38" height="20" fill="#c8b8a8" opacity=".48" />
         <rect x="202" y="136" width="38" height="20" fill="#f2c18f" stroke="#ef5147" strokeWidth="2" />
         <circle cx="240" cy="146" r="11" fill="none" stroke="#ef5147" strokeWidth="3" />
-        <path d="M234.5 140.5L245.5 151.5M245.5 140.5L234.5 151.5" stroke="#ef5147" strokeWidth="3" />
         <text x="240" y="48" textAnchor="middle" className="penalty-svg-alert">CONTACT</text>
       </>
     )}
@@ -171,29 +263,30 @@ const PenaltyDiagram = ({ kind }) => (
     )}
     {kind === 'PLCA/S' && (
       <>
-        <rect x="0" y="46" width="480" height="132" fill="#40362e" />
-        <rect x="296" y="0" width="96" height="230" fill="#40362e" />
-        <path d="M0 46H480M0 178H296M392 178H480M296 0V46M392 0V46M296 178V230M392 178V230" fill="none" stroke="#8d7865" strokeOpacity=".48" strokeWidth="2" />
-        <path d="M0 90H296M0 134H296M392 112H480M344 0V46M344 178V230" fill="none" stroke="#a18e7d" strokeOpacity=".48" strokeWidth="1.5" strokeDasharray="8 8" />
-        <path d="M296 46V178" stroke="#e7d1ba" strokeWidth="3" />
-        <text x="245" y="34" className="penalty-svg-note">ENTRY CHECK</text>
-        <text x="18" y="71" className="penalty-svg-note">LANE 1</text>
-        <text x="18" y="115" className="penalty-svg-note">LANE 2</text>
-        <text x="18" y="159" className="penalty-svg-note">LANE 3</text>
-        <text x="344" y="32" className="penalty-svg-alert">RIGHT TURN AHEAD</text>
-        <path d="M72 112C115 112 118 156 166 156H296C338 156 328 196 328 228" fill="none" stroke="#d99455" strokeWidth="4" strokeDasharray="10 8" />
-        <text x="78" y="186" className="penalty-svg-note" fill="#d99455">PRE-LANE CHANGE</text>
-        <path d="M72 112H296C319 112 319 137 326 156S328 192 328 228" fill="none" stroke="#ef5147" strokeWidth="5" />
-        <g fill="#d0c0b0" opacity=".24">
-          <rect x="63" y="104" width="34" height="20" rx="6" />
-          <rect x="201" y="146" width="34" height="20" rx="6" />
+        {/* main road: 4 lanes two-way (2 each way, double center line); lower side widens 2 -> 3 with a right-turn pocket; cross road below */}
+        <path d="M0 62H480V158H300V230H240V182H100L60 158H0Z" fill="#40362e" />
+        <path d="M0 62H480M0 158H60L100 182H240V230M300 230V158H480" fill="none" stroke="#8d7865" strokeOpacity=".48" strokeWidth="2" />
+        {/* SD route on the road center: straight, then right at the intersection */}
+        <path d="M0 110H270V230" fill="none" stroke="#d99455" strokeOpacity=".38" strokeWidth="12" strokeLinejoin="round" />
+        <path d="M0 108H480M0 112H480M268 182V230M272 182V230" fill="none" stroke="#a18e7d" strokeOpacity=".55" strokeWidth="1.5" />
+        <path d="M0 86H240M300 86H480M0 134H240M300 134H480M100 158H240" fill="none" stroke="#a18e7d" strokeOpacity=".4" strokeWidth="1.2" strokeDasharray="8 8" />
+        <path d="M56 104L62 110L56 116M146 104L152 110L146 116M264 206L270 212L276 206" fill="none" stroke="#d99455" strokeWidth="2.5" />
+        <text x="14" y="125" className="penalty-svg-note">LANE 1</text>
+        <text x="14" y="149" className="penalty-svg-note">LANE 2</text>
+        <text x="106" y="173" className="penalty-svg-note">LANE 3</text>
+        {/* 10 m before the stop line: lane 3 (right-turn pocket) is the route-compatible lane */}
+        <rect x="156" y="158" width="84" height="24" fill="#a5cb9d" opacity=".2" />
+        <path d="M156 190V198M240 190V198M156 194H240" fill="none" stroke="#b9a99a" strokeWidth="1.2" />
+        <text x="236" y="212" textAnchor="end" className="penalty-svg-note">10 m BEFORE STOP LINE</text>
+        <path d="M240 110V158" stroke="#e7d1ba" strokeWidth="3" />
+        <path d="M240 158V182" stroke="#a5cb9d" strokeWidth="3" />
+        <g fill="#d0c0b0" opacity=".22">
+          <rect x="84" y="136" width="36" height="20" />
+          <rect x="360" y="64" width="36" height="20" />
         </g>
-        <rect x="276" y="102" width="38" height="20" rx="6" fill="#f2c18f" stroke="#ef5147" strokeWidth="2" />
-        <circle cx="296" cy="112" r="17" fill="none" stroke="#ef5147" strokeWidth="3" />
-        <rect x="108" y="70" width="122" height="28" rx="4" fill="#401411" stroke="#ef5147" strokeWidth="1.5" />
-        <text x="116" y="82" className="penalty-svg-alert">LANE 2 AT ENTRY</text>
-        <text x="20" y="211" className="penalty-svg-note">LANE 3 · RIGHT-TURN LANE</text>
-        <text x="347" y="121" className="penalty-svg-alert">LATE LANE CHANGE</text>
+        <rect x="202" y="136" width="38" height="20" fill="#f2c18f" stroke="#ef5147" strokeWidth="2" />
+        <circle cx="240" cy="146" r="11" fill="none" stroke="#ef5147" strokeWidth="3" />
+        <text x="240" y="48" textAnchor="middle" className="penalty-svg-alert">WRONG LANE AT STOP LINE</text>
       </>
     )}
     <text x="20" y="24" className="penalty-svg-note">PENALTY CASE</text>
