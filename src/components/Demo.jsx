@@ -125,7 +125,7 @@ const MetricFigure = ({ ko }) => (
           <path d="M760 128V460" strokeWidth="48" />
         </g>
         {/* off-route branch (red, faint) and SD route on the road center lines, both under the lane markings */}
-        <path d="M0 300H280" fill="none" stroke="#ef5147" strokeOpacity=".22" strokeWidth="8" />
+        <path d="M0 300H300" fill="none" stroke="#ef5147" strokeOpacity=".22" strokeWidth="8" />
         <path d="M40 210H300V380H867" fill="none" stroke="#d99455" strokeOpacity=".38" strokeWidth="8" strokeLinejoin="round" />
         <path d="M867 380H930" fill="none" stroke="#d99455" strokeOpacity=".16" strokeWidth="8" />
         <path d="M0 208H280M320 208H740M780 208H960M0 212H280M320 212H740M780 212H960M298 240V360M302 240V360M0 298H280M0 302H280M320 378H740M780 378H960M320 382H740M780 382H960M758 128V180M762 128V180M758 240V360M762 240V360M758 400V460M762 400V460" fill="none" stroke="#a18e7d" strokeOpacity=".55" strokeWidth="1.2" />
@@ -263,7 +263,7 @@ const PenaltyCaseRows = ({ ko }) => (
             <figure className="penalty-row-panel">
               <video
                 className="metric-video"
-                poster={`${process.env.PUBLIC_URL}/videos/${item.video.poster}?v=20261001l`}
+                poster={`${process.env.PUBLIC_URL}/videos/${item.video.poster}?v=20261001m`}
                 controls
                 playsInline
                 loop
@@ -271,7 +271,7 @@ const PenaltyCaseRows = ({ ko }) => (
                 preload="metadata"
                 aria-label={`${item.key} ${ko ? '재생' : 'replay'}`}
               >
-                <source src={`${process.env.PUBLIC_URL}/videos/${item.video.src}?v=20261001l`} type="video/mp4" />
+                <source src={`${process.env.PUBLIC_URL}/videos/${item.video.src}?v=20261001m`} type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
               <figcaption>{ko ? item.video.koDetail : item.video.enDetail}</figcaption>
