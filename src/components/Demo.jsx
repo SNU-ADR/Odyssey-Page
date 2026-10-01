@@ -75,8 +75,8 @@ const penaltyCases = [
     key: 'PLC',
     koTitle: '사전 차로 변경',
     enTitle: 'Pre-Lane Change',
-    koBody: '정지선에서 자차가 경로에 맞는 차로(여기서는 우회전 차로)에 있는지 확인하고, 정지선 10 m 전에서 미리 그 차로로 옮겼는지 확인합니다.',
-    enBody: 'At the stop line, it checks that the ego is in a route-compatible lane (here, the right-turn lane). 10 m before the stop line, it checks that the ego already changed into it.',
+    koBody: '정지선에서 자차가 경로에 맞는 차로(여기서는 우회전 차로)에 있는지 확인하고, 정지선 10 m 전에서 사전 차로 변경에 성공했는지 확인합니다.',
+    enBody: 'At the stop line, it checks that the ego is in a route-compatible lane (here, the right-turn lane). 10 m before the stop line, it checks whether the pre-lane change has succeeded.',
     video: { src: 'metric-plca-bev.mp4', poster: 'metric-plca-poster.jpg', wide: true },
   },
   {
