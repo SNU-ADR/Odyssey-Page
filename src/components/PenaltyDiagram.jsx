@@ -230,9 +230,9 @@ const SDC = () => {
 };
 
 /**
- * PLCA/S: 2 lanes each way; lane 2 leads into a right turn at the stop line (x = CX).
- * Lane 2 before the last 10 m of driving = on time (1), within the last 10 m = late (0.5),
- * any other lane at the stop line = 0. The ego reaches the stop line still in lane 1.
+ * PLCA/S: 2 lanes each way; the right-turn lane (lane 2) leads into the turn at the stop line (x = CX).
+ * In it before the last 10 m of driving = on time (1), within the last 10 m = late (0.5),
+ * any other lane at the stop line = 0. The ego reaches the stop line still in the through lane (lane 1).
  */
 const PLCA = () => {
   const r = road(2);
@@ -254,8 +254,8 @@ const PLCA = () => {
         <path d={t.marks} {...MarkStroke} />
         <path d={dividers([r.dividersUp[0]], xr.left, xr.right) + dividers([r.dividersDown[0]], CX, xr.right)} {...DividerStroke} />
         <path d={`${chevron(60, r.center)}${chevron(150, r.center)}${chevron(xr.center, end - 26, 'down')}`} fill="none" stroke={C.route} strokeWidth="2.2" />
-        <text x="14" y={r.down(1) + 3} className="penalty-svg-note">LANE 1</text>
-        <text x="14" y={r.down(2) + 3} className="penalty-svg-note">LANE 2</text>
+        <text x="14" y={r.down(1) + 3} className="penalty-svg-note">THROUGH LANE</text>
+        <text x="14" y={r.down(2) + 3} className="penalty-svg-note">RIGHT-TURN LANE</text>
         {/* scoring zones on lane 2 (the route-compatible lane) */}
         <rect x="0" y={r.dividersDown[0]} width={lateFrom} height={LANE} fill={C.onTime} opacity=".2" />
         <rect x={lateFrom} y={r.dividersDown[0]} width={CX - lateFrom} height={LANE} fill={C.late} opacity=".34" />
@@ -266,7 +266,7 @@ const PLCA = () => {
         {/* stop line: lane 1 plain, lane 2 (compatible) green */}
         <path d={`M${CX} ${r.center + GAP / 2}V${r.dividersDown[0]}`} stroke={C.stopLine} strokeWidth="3" />
         <path d={`M${CX} ${r.dividersDown[0]}V${r.markBottom}`} stroke={C.onTime} strokeWidth="3" />
-        <Car x={100} y={r.down(1)} />
+        <Car x={140} y={r.down(1)} />
         <Car x={376} y={r.up(2)} />
         {/* ego center on the stop line, still in lane 1, heading turned toward lane 2 */}
         <Car x={CX} y={egoY} angle={18} kind="ego" />

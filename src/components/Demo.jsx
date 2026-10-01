@@ -207,8 +207,8 @@ const penaltyCases = [
     key: 'PLCA/S',
     koTitle: '사전 차로 변경(Pre-Lane Change) 실패',
     enTitle: 'Fails the pre-lane change',
-    koBody: '경로에 맞는 차로는 2차로입니다. 마지막 10 m(주행 거리) 전에 들어오면 1점, 그 안에서 들어오면 0.5점, 다른 차로로 정지선에 닿으면 0점입니다. 자차는 정지선에서야 방향을 틀어 0점입니다.',
-    enBody: 'Lane 2 fits the route. Entering it before the last 10 m of driving scores 1, within it 0.5, and reaching the stop line in another lane 0. The ego only turns at the stop line, so it scores 0.',
+    koBody: '경로에 맞는 차로는 우회전 차로입니다. 마지막 10 m(주행 거리) 전에 들어오면 1점, 그 안에서 들어오면 0.5점, 다른 차로로 정지선에 닿으면 0점입니다. 자차는 직진 차로로 정지선에 닿은 뒤에야 방향을 틀어 0점입니다.',
+    enBody: 'The right-turn lane fits the route. Entering it before the last 10 m of driving scores 1, within it 0.5, and reaching the stop line in another lane 0. The ego only turns at the stop line, still in the through lane, so it scores 0.',
     video: { src: 'metric-plca-bev.mp4', poster: 'metric-plca-poster.jpg', koDetail: '잘못된 차로로 진입 · 107.0초 · sim step 1070', enDetail: 'Wrong lane at entry · 107.0 s · sim step 1070' },
   },
 ];
