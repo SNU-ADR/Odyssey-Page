@@ -255,7 +255,7 @@ const PenaltyCaseRows = ({ ko }) => (
             <figure className="penalty-row-panel">
               <video
                 className="metric-video"
-                poster={`${process.env.PUBLIC_URL}/videos/${item.video.poster}?v=20261001h`}
+                poster={`${process.env.PUBLIC_URL}/videos/${item.video.poster}?v=20261001i`}
                 controls
                 playsInline
                 loop
@@ -263,7 +263,7 @@ const PenaltyCaseRows = ({ ko }) => (
                 preload="metadata"
                 aria-label={`${item.key} ${ko ? '재생' : 'replay'}`}
               >
-                <source src={`${process.env.PUBLIC_URL}/videos/${item.video.src}?v=20261001h`} type="video/mp4" />
+                <source src={`${process.env.PUBLIC_URL}/videos/${item.video.src}?v=20261001i`} type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
               <figcaption>{ko ? item.video.koDetail : item.video.enDetail}</figcaption>
