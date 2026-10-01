@@ -1,7 +1,7 @@
 import React from 'react';
 
 /*
- * Penalty case diagrams (NC, DAC, SDC, PLCA/S).
+ * Penalty case diagrams (PLC, SDC, NC, DAC, TLC).
  *
  * Every case is built from the same geometry, expressed in meters and converted to px:
  *   - lane 3.5 m, car 4.8 m x 2.0 m; edge / dashed dividers / center line evenly spaced one lane apart
@@ -20,7 +20,7 @@ const m = (meters) => meters * PX_PER_M;
 const W = 480;
 const CX = W / 2; // event x
 const ROAD_TOP = 62; // asphalt top, below the two label rows (before centering)
-const CANVAS_H = 214; // shared height = tallest case (PLCA/S)
+const CANVAS_H = 214; // shared height = tallest case (PLC)
 export const DIAGRAM_ASPECT = W / CANVAS_H;
 
 // ---- Road ----
@@ -165,7 +165,7 @@ const NC = (dy = 0) => {
   const y = r.down(1);
   return {
     height: r.bottom + 24,
-    label: 'CONTACT',
+    label: 'COLLISION EVENT',
     body: (
       <>
         <StraightRoad r={r} />
@@ -189,7 +189,7 @@ const DAC = (dy = 0) => {
   const ego = { x: CX - fx, y: r.bottom + out - fy };
   return {
     height: r.bottom + 28,
-    label: 'OFF-ROAD',
+    label: 'NON-DRIVABLE AREA',
     body: (
       <>
         <StraightRoad r={r} />
@@ -210,7 +210,7 @@ const SDC = (dy = 0, bottom) => {
   const t = tee(r, b, end);
   return {
     height: end,
-    label: 'MISSED BRANCH',
+    label: 'ROUTE DEPARTURE',
     body: (
       <>
         <path d={t.asphalt} fill={C.asphalt} />
@@ -231,7 +231,7 @@ const SDC = (dy = 0, bottom) => {
 };
 
 /**
- * PLCA/S: 2 lanes each way; the right-turn lane (lane 2) leads into the turn at the stop line (x = CX).
+ * PLC: 2 lanes each way; the right-turn lane (lane 2) leads into the turn at the stop line (x = CX).
  * In it before the last 10 m of driving = on time (1), within the last 10 m = late (0.5),
  * any other lane at the stop line = 0. The ego reaches the stop line still in the through lane (lane 1).
  */
@@ -313,7 +313,7 @@ const TLC = (dy = 0, bottom) => {
   };
 };
 
-const CASES = { NC, DAC, SDC, 'PLCA/S': PLCA, TLC };
+const CASES = { NC, DAC, SDC, PLC: PLCA, TLC };
 
 const PenaltyDiagram = ({ kind }) => {
   // center the case (event label + road) on the shared canvas

@@ -219,25 +219,11 @@
   letter-spacing: 0.4px;
 }
 
-.rds-rule {
-  fill: #b7a89b;
-  font-family: Arial, sans-serif;
-  font-size: 10px;
-}
-
 .rds-times {
   fill: #8f7b6b;
   font-family: Arial, sans-serif;
   font-size: 14px;
   font-weight: 700;
-}
-
-.rds-route {
-  fill: #e6a765;
-  font-family: Arial, sans-serif;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 1px;
 }
 
 .metric-media-grid,
@@ -286,13 +272,6 @@
   margin: 0;
   color: var(--color-text);
   font-size: 1.12rem;
-}
-
-.metric-diagram-intro p {
-  margin: 6px 0 0;
-  color: var(--color-text-muted);
-  font-size: 0.84rem;
-  line-height: 1.55;
 }
 
 .penalty-rows {
@@ -353,7 +332,7 @@
   aspect-ratio: 16 / 9;
 }
 
-/* PLCA triptych (three passes side by side, 1280x480) */
+/* PLC triptych (three passes side by side, 1280x480) */
 .penalty-row-panel > .metric-video-wide {
   aspect-ratio: 8 / 3;
 }
