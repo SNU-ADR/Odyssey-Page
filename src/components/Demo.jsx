@@ -245,19 +245,19 @@ const PenaltyDiagram = ({ kind }) => (
     {kind === 'SDC' && (
       <>
         <rect x="0" y="62" width="480" height="112" fill="#40362e" />
-        <rect x="212" y="174" width="112" height="56" fill="#40362e" />
-        <path d="M0 62H480M0 174H212V230M324 230V174H480" fill="none" stroke="#8d7865" strokeOpacity=".48" strokeWidth="2" />
-        <path d="M0 116H480M0 120H480M266 174V230M270 174V230" fill="none" stroke="#a18e7d" strokeOpacity=".55" strokeWidth="1.5" />
-        {/* SD route on the eastbound edge, then right into the branch; red = edge taken after missing it */}
-        <path d="M0 146H240V230" fill="none" stroke="#d99455" strokeOpacity=".38" strokeWidth="12" strokeLinejoin="round" />
-        <path d="M240 146H480" fill="none" stroke="#ef5147" strokeOpacity=".38" strokeWidth="12" />
-        <path d="M46 140L52 146L46 152M166 140L172 146L166 152M234 196L240 202L246 196" fill="none" stroke="#d99455" strokeWidth="2.5" />
+        <rect x="184" y="174" width="112" height="56" fill="#40362e" />
+        <path d="M0 62H480M0 174H184V230M296 230V174H480" fill="none" stroke="#8d7865" strokeOpacity=".48" strokeWidth="2" />
+        {/* SD route on the road center (no direction split, as in PLCA/S), then right into the branch; red = road taken after missing it */}
+        <path d="M0 118H240V230" fill="none" stroke="#d99455" strokeOpacity=".38" strokeWidth="12" strokeLinejoin="round" />
+        <path d="M240 118H480" fill="none" stroke="#ef5147" strokeOpacity=".38" strokeWidth="12" />
+        <path d="M0 116H480M0 120H480M238 174V230M242 174V230" fill="none" stroke="#a18e7d" strokeOpacity=".55" strokeWidth="1.5" />
+        <path d="M86 112L92 118L86 124M166 112L172 118L166 124M234 196L240 202L246 196" fill="none" stroke="#d99455" strokeWidth="2.5" />
         <g fill="#d0c0b0" opacity=".22">
           <rect x="84" y="136" width="36" height="20" />
           <rect x="360" y="80" width="36" height="20" />
         </g>
         <rect x="311" y="136" width="38" height="20" fill="#f2c18f" stroke="#ef5147" strokeWidth="2" />
-        <circle cx="240" cy="146" r="11" fill="none" stroke="#ef5147" strokeWidth="3" />
+        <circle cx="240" cy="118" r="11" fill="none" stroke="#ef5147" strokeWidth="3" />
         <text x="240" y="48" textAnchor="middle" className="penalty-svg-alert">MISSED BRANCH</text>
       </>
     )}
