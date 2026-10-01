@@ -265,33 +265,33 @@ const PenaltyDiagram = ({ kind }) => (
     )}
     {kind === 'PLCA/S' && (
       <>
-        {/* main road: 2 lanes each way (double center line); lane 2 diverges into the right turn at the stop line; cross road below */}
-        <path d="M0 62H480V158H316Q300 158 300 174V230H240V174Q240 158 224 158H0Z" fill="#40362e" />
-        <path d="M0 62H480M0 158H224Q240 158 240 174V230M300 230V174Q300 158 316 158H480" fill="none" stroke="#8d7865" strokeOpacity=".48" strokeWidth="2" />
+        {/* main road: 2 lanes each way (22 px = 3.5 m), double center line, solid outer lane marks + shoulders like the other cases;
+            lane 2 leads into the right turn at the stop line (x=240); two-way cross road below */}
+        <path d="M0 58H480V166H328Q312 166 312 182V230H248V182Q248 166 232 166H0Z" fill="#40362e" />
+        <path d="M0 58H480M0 166H232Q248 166 248 182V230M312 230V182Q312 166 328 166H480" fill="none" stroke="#8d7865" strokeOpacity=".48" strokeWidth="2" />
         {/* SD route on the road center: straight, then right at the intersection */}
-        <path d="M0 110H270V230" fill="none" stroke="#d99455" strokeOpacity=".38" strokeWidth="8" strokeLinejoin="round" />
-        <path d="M0 108H480M0 112H480M268 174V230M272 174V230" fill="none" stroke="#a18e7d" strokeOpacity=".55" strokeWidth="1.5" />
-        <path d="M0 86H240M300 86H480M0 134H240M300 134H480" fill="none" stroke="#a18e7d" strokeOpacity=".4" strokeWidth="1.2" strokeDasharray="8 8" />
-        <path d="M56 104L62 110L56 116M146 104L152 110L146 116M264 206L270 212L276 206" fill="none" stroke="#d99455" strokeWidth="2.5" />
-        <text x="14" y="125" className="penalty-svg-note">LANE 1</text>
-        <text x="14" y="149" className="penalty-svg-note">LANE 2</text>
-        {/* lane 2 is route-compatible: in it before the last 10 m (driven distance) = 1, entering within the last 10 m = 0.5 (late) */}
-        <rect x="0" y="134" width="156" height="24" fill="#a5cb9d" opacity=".2" />
-        <rect x="156" y="134" width="84" height="24" fill="#e6a765" opacity=".34" />
-        <path d="M20 172H240M20 168V176M156 168V176M240 168V176" fill="none" stroke="#b9a99a" strokeWidth="1.2" />
-        <text x="88" y="190" textAnchor="middle" className="penalty-svg-note" style={{ fill: '#a5cb9d' }}>ON TIME · 1</text>
-        <text x="198" y="190" textAnchor="middle" className="penalty-svg-note" style={{ fill: '#e6a765' }}>LATE · 0.5</text>
-        <text x="198" y="203" textAnchor="middle" className="penalty-svg-note">LAST 10 m</text>
-        <path d="M240 110V134" stroke="#e7d1ba" strokeWidth="3" />
-        <path d="M240 134V158" stroke="#a5cb9d" strokeWidth="3" />
-        {/* vehicles to scale: lane 24 px = 3.5 m, so a ~2 m x 4.8 m car is 13 x 33 px */}
+        <path d="M0 112H280V230" fill="none" stroke="#d99455" strokeOpacity=".38" strokeWidth="8" strokeLinejoin="round" />
+        <path d="M0 66H480M0 158H240Q256 158 256 174V230M304 230V174Q304 158 320 158H480M0 110H480M0 114H480M278 166V230M282 166V230" fill="none" stroke="#a18e7d" strokeOpacity=".55" strokeWidth="1.5" />
+        <path d="M0 88H248M312 88H480M0 136H240M312 136H480" fill="none" stroke="#a18e7d" strokeOpacity=".4" strokeWidth="1.2" strokeDasharray="8 8" />
+        <path d="M56 107L61 112L56 117M146 107L151 112L146 117M275 200L280 205L285 200" fill="none" stroke="#d99455" strokeWidth="2.2" />
+        <text x="14" y="128" className="penalty-svg-note">LANE 1</text>
+        <text x="14" y="150" className="penalty-svg-note">LANE 2</text>
+        {/* lane 2 is route-compatible: in it before the last 10 m (driven distance, 63 px) = 1, entering within the last 10 m = 0.5 (late) */}
+        <rect x="0" y="136" width="177" height="22" fill="#a5cb9d" opacity=".2" />
+        <rect x="177" y="136" width="63" height="22" fill="#e6a765" opacity=".34" />
+        <path d="M20 184H240M20 180V188M177 180V188M240 180V188" fill="none" stroke="#b9a99a" strokeWidth="1.2" />
+        <text x="98" y="202" textAnchor="middle" className="penalty-svg-note" style={{ fill: '#a5cb9d' }}>ON TIME · 1</text>
+        <text x="208" y="202" textAnchor="middle" className="penalty-svg-note" style={{ fill: '#e6a765' }}>LATE · 0.5</text>
+        <text x="208" y="215" textAnchor="middle" className="penalty-svg-note">LAST 10 m</text>
+        <path d="M240 114V136" stroke="#e7d1ba" strokeWidth="3" />
+        <path d="M240 136V158" stroke="#a5cb9d" strokeWidth="3" />
         <g fill="#d0c0b0" opacity=".22">
-          <rect x="84" y="116.5" width="33" height="13" />
-          <rect x="360" y="67.5" width="33" height="13" />
+          <rect x="84" y="118.5" width="33" height="13" />
+          <rect x="360" y="70.5" width="33" height="13" />
         </g>
         {/* ego center on the stop line, still in lane 1, heading turned toward lane 2: the entry comes too late (score 0) */}
-        <rect x="223.5" y="118.5" width="33" height="13" transform="rotate(20 240 125)" fill="#f2c18f" stroke="#ef5147" strokeWidth="2" />
-        <circle cx="240" cy="125" r="7" fill="none" stroke="#ef5147" strokeWidth="2.5" />
+        <rect x="223.5" y="119.5" width="33" height="13" transform="rotate(18 240 126)" fill="#f2c18f" stroke="#ef5147" strokeWidth="2" />
+        <circle cx="240" cy="126" r="7" fill="none" stroke="#ef5147" strokeWidth="2.5" />
         <text x="240" y="48" textAnchor="middle" className="penalty-svg-alert">WRONG LANE AT STOP LINE</text>
       </>
     )}
