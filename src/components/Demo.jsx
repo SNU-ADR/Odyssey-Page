@@ -89,8 +89,8 @@ const penaltyCases = [
     key: 'NC',
     koTitle: '과실 충돌',
     enTitle: 'At-fault collision',
-    koBody: '자차가 같은 차로의 앞차와 접촉한 지점을 표시합니다.',
-    enBody: 'Marks where the ego makes at-fault contact with the vehicle ahead in its lane.',
+    koBody: '자차가 앞차를 뒤에서 추돌한 과실 충돌입니다.',
+    enBody: 'The ego rear-ends the vehicle ahead, an at-fault collision.',
   },
   {
     key: 'DAC',
