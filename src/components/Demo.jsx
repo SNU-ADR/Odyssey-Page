@@ -209,8 +209,8 @@ const penaltyCases = [
     key: 'TLC',
     koTitle: '교통신호 준수',
     enTitle: 'Traffic Light Compliance',
-    koBody: '적색 신호에서 정지선을 통과하면 감점됩니다.',
-    enBody: 'Crossing a stop line under a red signal incurs a penalty.',
+    koBody: '적색 신호가 적용되는 교차로의 lane connector에 진입하면 감점됩니다.',
+    enBody: 'Entering an intersection via a lane connector governed by a red signal incurs a penalty.',
     video: {
       src: 'metric-tlc-bev.mp4',
       poster: 'metric-tlc-poster.jpg',
