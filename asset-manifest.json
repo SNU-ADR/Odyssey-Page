@@ -1,0 +1,21 @@
+{
+  "files": {
+    "main.css": "/Odyssey-Page/static/css/main.b7e9bef7.css",
+    "main.js": "/Odyssey-Page/static/js/main.b32b7536.js",
+    "static/js/453.6c05f8f2.chunk.js": "/Odyssey-Page/static/js/453.6c05f8f2.chunk.js",
+    "static/media/intro1_Page-no-labels.svg": "/Odyssey-Page/static/media/intro1_Page-no-labels.49bb95d61deb25e139dbcd5a65547e08.svg",
+    "static/media/odyssey_head.png": "/Odyssey-Page/static/media/odyssey_head.5567c1e3cb3d84eb3cc2.png",
+    "static/media/results-collision.svg": "/Odyssey-Page/static/media/results-collision.6d57ba86923bc6d601932e7b1d375a8f.svg",
+    "static/media/results-lane.svg": "/Odyssey-Page/static/media/results-lane.0729582dc9e1b8867021a0cb4d7787fb.svg",
+    "static/media/results-horizon.svg": "/Odyssey-Page/static/media/results-horizon.5bdeb7e6e5c1ea01893aa3ec4d7700a5.svg",
+    "static/media/hero-navigation.svg": "/Odyssey-Page/static/media/hero-navigation.88cb03da492673fc5fbdb1ff0a32799a.svg",
+    "index.html": "/Odyssey-Page/index.html",
+    "main.b7e9bef7.css.map": "/Odyssey-Page/static/css/main.b7e9bef7.css.map",
+    "main.b32b7536.js.map": "/Odyssey-Page/static/js/main.b32b7536.js.map",
+    "453.6c05f8f2.chunk.js.map": "/Odyssey-Page/static/js/453.6c05f8f2.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.b7e9bef7.css",
+    "static/js/main.b32b7536.js"
+  ]
+}

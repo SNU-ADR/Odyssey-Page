@@ -1,0 +1,17 @@
+{
+  "short_name": "Odyssey",
+  "name": "Odyssey \u2014 Long-Horizon Closed-Loop Driving Benchmark",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "lang": "en",
+  "theme_color": "#100d0b",
+  "background_color": "#100d0b"
+}
