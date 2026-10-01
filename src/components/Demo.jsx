@@ -27,12 +27,13 @@ const plannerScenarios = ['Collision', 'Pre-Lane Change', 'Traffic Light', 'Pede
 
 // RouteDS = 100 · RC_SD · P_PLC · P_SD · P_col · P_off · P_TL (paper appendix, "RouteDS Components")
 const routeDsTerms = [
-  { sym: 'RC', sub: 'SD', name: 'Route completion', route: true },
-  { sym: 'P', sub: 'PLC', name: 'Pre-lane change' },
-  { sym: 'P', sub: 'SD', name: 'SD route' },
-  { sym: 'P', sub: 'col', name: 'At-fault collision' },
-  { sym: 'P', sub: 'off', name: 'Off-road driving' },
-  { sym: 'P', sub: 'TL', name: 'Red light' },
+  // names match the penalty-case rows below (metric names); one or two lines per box
+  { sym: 'RC', sub: 'SD', name: ['Route Completion'], route: true },
+  { sym: 'P', sub: 'PLC', name: ['Pre-Lane Change'] },
+  { sym: 'P', sub: 'SD', name: ['SD Route', 'Compliance'] },
+  { sym: 'P', sub: 'col', name: ['No Collision'] },
+  { sym: 'P', sub: 'off', name: ['Drivable Area', 'Compliance'] },
+  { sym: 'P', sub: 'TL', name: ['Traffic Light', 'Compliance'] },
 ];
 
 const RdsGrid = ({ id }) => (
@@ -42,23 +43,25 @@ const RdsGrid = ({ id }) => (
 // Formula strip (top of the section): RouteDS = 100 x RC_SD x penalty factors
 const MetricFormula = ({ ko }) => (
   <figure className="metric-figure">
-    <svg viewBox="0 12 960 106" role="img" aria-labelledby="metric-formula-title">
+    <svg viewBox="0 12 960 118" role="img" aria-labelledby="metric-formula-title">
       <title id="metric-formula-title">{ko ? 'RouteDS = 100 × SD 경로 완료율 × 감점 계수' : 'RouteDS = 100 × SD-route completion × penalty factors'}</title>
       <defs><RdsGrid id="rds-grid-formula" /></defs>
-      <rect y="12" width="960" height="106" rx="16" fill="#17120f" />
-      <rect y="12" width="960" height="106" rx="16" fill="url(#rds-grid-formula)" />
-      <text x="24" y="60" className="rds-title">RouteDS</text>
-      <text x="24" y="88" className="rds-eq">= 100 ×</text>
+      <rect y="12" width="960" height="118" rx="16" fill="#17120f" />
+      <rect y="12" width="960" height="118" rx="16" fill="url(#rds-grid-formula)" />
+      <text x="24" y="66" className="rds-title">RouteDS</text>
+      <text x="24" y="94" className="rds-eq">= 100 ×</text>
       {routeDsTerms.map((term, i) => {
         const x = 160 + i * 133;
         return (
           <g key={term.sym + term.sub}>
             <g transform={`translate(${x} 36)`}>
-              <rect width="119" height="58" rx="8" fill="#221a15" stroke={term.route ? '#d99455' : '#ef5147'} strokeOpacity={term.route ? '.7' : '.45'} />
+              <rect width="119" height="70" rx="8" fill="#221a15" stroke={term.route ? '#d99455' : '#ef5147'} strokeOpacity={term.route ? '.7' : '.45'} />
               <text x="12" y="26" className="rds-sym" fill={term.route ? '#e6a765' : '#ff8379'}>{term.sym}<tspan dy="4" fontSize="11">{term.sub}</tspan></text>
-              <text x="12" y="46" className="rds-name">{term.name}</text>
+              <text x="12" y="46" className="rds-name">
+                {term.name.map((line, k) => <tspan key={line} x="12" dy={k ? 15 : 0}>{line}</tspan>)}
+              </text>
             </g>
-            {i < routeDsTerms.length - 1 && <text x={x + 126} y="70" textAnchor="middle" className="rds-times">×</text>}
+            {i < routeDsTerms.length - 1 && <text x={x + 126} y="76" textAnchor="middle" className="rds-times">×</text>}
           </g>
         );
       })}
