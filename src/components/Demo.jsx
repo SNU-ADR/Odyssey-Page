@@ -203,8 +203,8 @@ const penaltyCases = [
     key: 'PLCA/S',
     koTitle: '사전 차로 변경(Pre-Lane Change) 실패',
     enTitle: 'Fails the pre-lane change',
-    koBody: 'SD 경로가 우회전하므로 2차로만 경로에 맞는 차로입니다. 자차는 정지선 전 10 m 확인 구간을 거치지 않고, 1차로로 정지선을 넘어 우회전합니다.',
-    enBody: 'The SD route turns right, so only lane 2 is route-compatible. The ego skips the 10 m check zone and crosses the stop line in lane 1 while turning right.',
+    koBody: '경로에 맞는 차로는 2차로입니다. 마지막 10 m(주행 거리) 전에 들어오면 1점, 그 안에서 들어오면 0.5점, 다른 차로로 정지선에 닿으면 0점입니다. 자차는 정지선에서야 방향을 틀어 0점입니다.',
+    enBody: 'Lane 2 fits the route. Entering it before the last 10 m of driving scores 1, within it 0.5, and reaching the stop line in another lane 0. The ego only turns at the stop line, so it scores 0.',
   },
 ];
 
@@ -273,19 +273,22 @@ const PenaltyDiagram = ({ kind }) => (
         <path d="M56 104L62 110L56 116M146 104L152 110L146 116M264 206L270 212L276 206" fill="none" stroke="#d99455" strokeWidth="2.5" />
         <text x="14" y="125" className="penalty-svg-note">LANE 1</text>
         <text x="14" y="149" className="penalty-svg-note">LANE 2</text>
-        {/* pre-lane change check zone (final 10 m before the stop line) on lane 2, the route-compatible lane */}
-        <rect x="156" y="134" width="84" height="24" fill="#a5cb9d" opacity=".2" />
-        <path d="M156 178V186M240 178V186M156 182H240" fill="none" stroke="#b9a99a" strokeWidth="1.2" />
-        <text x="236" y="200" textAnchor="end" className="penalty-svg-note">PRE-LANE CHANGE CHECK ZONE · 10 m</text>
+        {/* lane 2 is route-compatible: in it before the last 10 m (driven distance) = 1, entering within the last 10 m = 0.5 (late) */}
+        <rect x="0" y="134" width="156" height="24" fill="#a5cb9d" opacity=".2" />
+        <rect x="156" y="134" width="84" height="24" fill="#e6a765" opacity=".34" />
+        <path d="M20 172H240M20 168V176M156 168V176M240 168V176" fill="none" stroke="#b9a99a" strokeWidth="1.2" />
+        <text x="88" y="190" textAnchor="middle" className="penalty-svg-note" style={{ fill: '#a5cb9d' }}>ON TIME · 1</text>
+        <text x="198" y="190" textAnchor="middle" className="penalty-svg-note" style={{ fill: '#e6a765' }}>LATE · 0.5</text>
+        <text x="198" y="203" textAnchor="middle" className="penalty-svg-note">LAST 10 m</text>
         <path d="M240 110V134" stroke="#e7d1ba" strokeWidth="3" />
         <path d="M240 134V158" stroke="#a5cb9d" strokeWidth="3" />
         <g fill="#d0c0b0" opacity=".22">
           <rect x="84" y="112" width="36" height="20" />
           <rect x="360" y="64" width="36" height="20" />
         </g>
-        {/* ego crossed the stop line in lane 1 and is turning right at ~45 deg, never touching the check zone */}
-        <rect x="241" y="128" width="38" height="20" transform="rotate(45 260 138)" fill="#f2c18f" stroke="#ef5147" strokeWidth="2" />
-        <circle cx="240" cy="122" r="11" fill="none" stroke="#ef5147" strokeWidth="3" />
+        {/* ego center on the stop line, still in lane 1, heading turned toward lane 2: the entry comes too late (score 0) */}
+        <rect x="221" y="114" width="38" height="20" transform="rotate(30 240 124)" fill="#f2c18f" stroke="#ef5147" strokeWidth="2" />
+        <circle cx="240" cy="124" r="11" fill="none" stroke="#ef5147" strokeWidth="3" />
         <text x="240" y="48" textAnchor="middle" className="penalty-svg-alert">WRONG LANE AT STOP LINE</text>
       </>
     )}
