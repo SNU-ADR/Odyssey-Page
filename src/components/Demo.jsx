@@ -34,6 +34,13 @@ const metrics = [
     koBody: '교차로 진입 전 경로에 맞는 차로에 있었는지 평가합니다. PLCS는 도달하지 못한 교차로도 0점으로 포함합니다.',
     enBody: 'Evaluates route-compatible lane choice before intersections. PLCS also counts unencountered intersections as zero.',
   },
+  {
+    key: 'TLC',
+    koTitle: '교통신호 준수',
+    enTitle: 'Traffic Light Compliance',
+    koBody: '적색 신호에서 정지선을 넘어 교차로에 진입하는지 평가합니다.',
+    enBody: 'Checks whether the ego crosses a stop line against a red signal.',
+  },
 ];
 
 const PlannerVideoPlaceholder = ({ label, ko }) => (
@@ -210,6 +217,19 @@ const penaltyCases = [
     koBody: '경로에 맞는 차로는 우회전 차로입니다. 마지막 10 m(주행 거리) 전에 들어오면 1점, 그 안에서 들어오면 0.5점, 다른 차로로 정지선에 닿으면 0점입니다. 자차는 직진 차로로 정지선에 닿은 뒤에야 방향을 틀어 0점입니다.',
     enBody: 'The right-turn lane fits the route. Entering it before the last 10 m of driving scores 1, within it 0.5, and reaching the stop line in another lane 0. The ego only turns at the stop line, still in the through lane, so it scores 0.',
     video: { src: 'metric-plca-bev.mp4', poster: 'metric-plca-poster.jpg', koDetail: '잘못된 차로로 진입 · 107.0초 · sim step 1070', enDetail: 'Wrong lane at entry · 107.0 s · sim step 1070' },
+  },
+  {
+    key: 'TLC',
+    koTitle: '적색 신호 정지선 통과',
+    enTitle: 'Red-light crossing',
+    koBody: '적색 신호에서 정지선을 통과하면 감점됩니다. 오른쪽 영상은 c092의 실제 직진 위반 기록입니다.',
+    enBody: 'Crossing a stop line under a red signal incurs a penalty. The replay shows the recorded straight-through violation in c092.',
+    video: {
+      src: 'metric-tlc-bev.mp4',
+      poster: 'metric-tlc-poster.jpg',
+      koDetail: '실제 위반: c092 / SafeDrive Safety Scoring · 78.2–81.9초 · 위반 2회',
+      enDetail: 'Recorded red-light violation · c092 / SafeDrive Safety Scoring · 78.2–81.9 s · 2 flags',
+    },
   },
 ];
 

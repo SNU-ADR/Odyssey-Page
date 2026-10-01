@@ -276,7 +276,41 @@ const PLCA = () => {
   };
 };
 
-const CASES = { NC, DAC, SDC, 'PLCA/S': PLCA };
+/** TLC: the ego continues through a stop line while the signal is red. */
+const TLC = () => {
+  const r = road(1);
+  const xr = crossRoad(CX + 46);
+  const end = r.bottom + 60;
+  const t = tee(r, xr, end);
+  const y = r.down(1);
+  return {
+    height: end,
+    label: 'RED-LIGHT CROSSING',
+    body: (
+      <>
+        <path d={t.asphalt} fill={C.asphalt} />
+        <path d={t.edges} {...AsphaltStroke} />
+        <path d={`M0 ${r.center}H${W}`} stroke={C.route} {...BandStroke} />
+        <path d={`M${CX} ${y}H${CX + 73}`} stroke={C.alert} {...BandStroke} />
+        <path d={t.marks} {...MarkStroke} />
+        <path d={`M${CX} ${r.center + GAP / 2}V${r.markBottom}`} stroke={C.stopLine} strokeWidth="3" />
+        <path d={`${chevron(88, r.center)}${chevron(180, r.center)}${chevron(380, r.center)}`} fill="none" stroke={C.route} strokeWidth="2.2" />
+        <Car x={100} y={y} />
+        <Car x={376} y={r.up(1)} />
+        <Car x={CX + CAR_L / 2} y={y} kind="ego" />
+        <EventMark x={CX} y={y} />
+        <path d={`M${CX - 26} ${r.bottom + 32}V${r.bottom + 3}`} stroke={C.edge} strokeWidth="2" />
+        <rect x={CX - 34} y={r.bottom + 3} width="16" height="32" rx="3" fill="#2a211b" stroke={C.edge} />
+        <circle cx={CX - 26} cy={r.bottom + 10} r="4" fill={C.alert} />
+        <circle cx={CX - 26} cy={r.bottom + 19} r="4" fill="#54473c" />
+        <circle cx={CX - 26} cy={r.bottom + 28} r="4" fill="#54473c" />
+        <text x={CX + 5} y={r.bottom + 29} className="penalty-svg-note">STOP LINE</text>
+      </>
+    ),
+  };
+};
+
+const CASES = { NC, DAC, SDC, 'PLCA/S': PLCA, TLC };
 
 const PenaltyDiagram = ({ kind }) => {
   const { height, label, body } = CASES[kind]();
