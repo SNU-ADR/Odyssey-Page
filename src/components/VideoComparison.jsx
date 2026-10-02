@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import useVideoLifecycle from '../hooks/useVideoLifecycle';
 import '../styles/components/VideoComparison.css';
 
 const formatTime = (seconds) => `${Math.floor(seconds / 60)}:${String(Math.floor(seconds % 60)).padStart(2, '0')}`;
@@ -15,21 +16,15 @@ const VideoComparison = ({ beforeSrc, afterSrc, beforePoster, afterPoster, ko, l
   const [time, setTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [error, setError] = useState(false);
-  const [active, setActive] = useState(false);
+  const [ready, setReady] = useState(false);
+  const sources = useMemo(() => [
+    { ref: beforeRef, src: beforeSrc },
+    { ref: afterRef, src: afterSrc },
+  ], [beforeSrc, afterSrc]);
+
+  useVideoLifecycle(containerRef, sources, () => controlsRef.current?.stop());
 
   useEffect(() => {
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) {
-        setActive(true);
-        observer.disconnect();
-      }
-    }, { rootMargin: '300px' });
-    observer.observe(containerRef.current);
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    if (!active) return;
     const before = beforeRef.current;
     const after = afterRef.current;
     const videos = [before, after];
@@ -68,8 +63,9 @@ const VideoComparison = ({ beforeSrc, afterSrc, beforePoster, afterPoster, ko, l
     };
     const metadata = () => {
       applyPlaybackRate();
-      if (videos.every(video => Number.isFinite(video.duration))) {
+      if (videos.every(video => video.readyState >= 1 && Number.isFinite(video.duration))) {
         setDuration(Math.min(before.duration, after.duration));
+        setReady(true);
       }
     };
     const sync = () => {
@@ -82,11 +78,13 @@ const VideoComparison = ({ beforeSrc, afterSrc, beforePoster, afterPoster, ko, l
       }
     };
     const failed = () => { stop(); setError(true); };
-    const updateTime = () => setTime(before.currentTime);
-    const events = { loadedmetadata: metadata, play: applyPlaybackRate, canplay: resume, seeked: resume, waiting: pause, ended: stop, error: failed };
+    const updateTime = () => { if (before.readyState >= 1) setTime(before.currentTime); };
+    const emptied = () => { stop(); setReady(false); };
+    const events = { loadedmetadata: metadata, emptied, play: applyPlaybackRate, canplay: resume, seeked: resume, waiting: pause, ended: stop, error: failed };
     videos.forEach(video => Object.entries(events).forEach(([event, handler]) => video.addEventListener(event, handler)));
     before.addEventListener('timeupdate', updateTime);
     controlsRef.current = {
+      stop,
       toggle: () => {
         if (wantsPlayback) return stop();
         setError(false);
@@ -117,7 +115,7 @@ const VideoComparison = ({ beforeSrc, afterSrc, beforePoster, afterPoster, ko, l
       before.removeEventListener('timeupdate', updateTime);
       controlsRef.current = null;
     };
-  }, [beforeSrc, afterSrc, active]);
+  }, [beforeSrc, afterSrc]);
 
   const updateSplit = (value) => {
     const split = Math.max(0, Math.min(100, value));
@@ -152,8 +150,8 @@ const VideoComparison = ({ beforeSrc, afterSrc, beforePoster, afterPoster, ko, l
           moveSplit(event);
         }}
       >
-        <video ref={beforeRef} src={active ? beforeSrc : undefined} poster={beforePoster} muted playsInline preload="metadata" aria-label="3DGS Only" />
-        <video ref={afterRef} src={active ? afterSrc : undefined} poster={afterPoster} muted playsInline preload="metadata" className="video-comparison-after" aria-label="Diffusion refinement" />
+        <video ref={beforeRef} poster={beforePoster} muted playsInline preload="metadata" aria-label="3DGS Only" />
+        <video ref={afterRef} poster={afterPoster} muted playsInline preload="metadata" className="video-comparison-after" aria-label="Diffusion refinement" />
         <span className="video-comparison-label video-comparison-label--left">3DGS Only</span>
         <span className="video-comparison-label video-comparison-label--right">Diff. Refine</span>
         <div className="video-comparison-divider" aria-hidden="true">
@@ -173,13 +171,13 @@ const VideoComparison = ({ beforeSrc, afterSrc, beforePoster, afterPoster, ko, l
         />
       </div>
       <div className="video-comparison-controls">
-        <button type="button" onClick={() => controlsRef.current?.toggle()} disabled={!duration}>
+        <button type="button" onClick={() => controlsRef.current?.toggle()} disabled={!ready}>
           {playing ? (ko ? '일시정지' : 'Pause') : (ko ? '재생' : 'Play')}
         </button>
         <input
           type="range" min="0" max={duration || 1} step="0.01" value={Math.min(time, duration)}
           style={{ '--playback-progress': `${duration ? Math.min(time / duration * 100, 100) : 0}%` }}
-          disabled={!duration}
+          disabled={!ready}
           aria-label={ko ? '비교 영상 재생 위치' : 'Comparison playback position'}
           onChange={event => controlsRef.current?.seek(Number(event.target.value))}
         />

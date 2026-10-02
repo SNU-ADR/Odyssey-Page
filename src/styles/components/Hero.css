@@ -245,6 +245,7 @@
 
 .hero-actions {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   gap: 10px;
   animation: heroFadeUp 0.8s ease-out 0.3s both;
@@ -273,8 +274,8 @@
   transition: color 90ms ease-out, background-color 90ms ease-out, border-color 90ms ease-out, box-shadow 90ms ease-out, transform 90ms ease-out;
 }
 
-.hero-action:hover,
-.hero-action:focus-visible {
+.hero-action:not(:disabled):hover,
+.hero-action:not(:disabled):focus-visible {
   color: #f2dfd0;
   border-color: #ac8265;
   background-color: #805d45;
@@ -287,10 +288,28 @@
   outline-offset: 3px;
 }
 
-.hero-action:active {
+.hero-action:not(:disabled):active {
   transform: translateY(0);
   background-color: #624735;
   box-shadow: inset 0 2px 4px rgba(32, 18, 10, 0.35), 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.hero-action:disabled {
+  flex-direction: column;
+  gap: 2px;
+  min-width: 110px;
+  padding: 7px 16px;
+  color: #ab9685;
+  background: #261e18;
+  border-color: rgba(181, 135, 105, 0.24);
+  cursor: not-allowed;
+}
+
+.hero-action-status {
+  font-size: 0.65rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: #938172;
 }
 
 .hero-divider {

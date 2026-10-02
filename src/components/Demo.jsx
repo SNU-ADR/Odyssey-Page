@@ -2,6 +2,7 @@ import React from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import SectionTitle from './common/SectionTitle';
 import VideoComparison from './VideoComparison';
+import ViewportVideo from './common/ViewportVideo';
 import PenaltyDiagram, { DIAGRAM_ASPECT } from './PenaltyDiagram';
 import renderingComparisons from '../data/rendering-comparisons.json';
 import '../styles/components/Demo.css';
@@ -13,7 +14,8 @@ const PlannerStack = ({ items, ko }) => (
       <figure className="planner-stack-item" id={item.id} key={item.src}>
         <figcaption className="planner-stack-label">{item.label}</figcaption>
         <div className="demo-video-frame">
-          <video
+          <ViewportVideo
+            src={`${process.env.PUBLIC_URL}/videos/${item.src}`}
             className="demo-video"
             controls
             playsInline
@@ -21,10 +23,7 @@ const PlannerStack = ({ items, ko }) => (
             muted
             preload="metadata"
             aria-label={`${item.label} — ${ko ? '비교 영상' : 'comparison clip'}`}
-          >
-            <source src={`${process.env.PUBLIC_URL}/videos/${item.src}`} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
+          />
         </div>
       </figure>
     ))}
@@ -155,7 +154,8 @@ const PenaltyCaseRows = ({ ko }) => (
               <figcaption>{ko ? item.koBody : item.enBody}</figcaption>
             </figure>
             <figure className="penalty-row-panel">
-              <video
+              <ViewportVideo
+                src={`${process.env.PUBLIC_URL}/videos/${item.video.src}?v=20261004h`}
                 className={item.video.wide ? 'metric-video metric-video-wide' : 'metric-video'}
                 poster={`${process.env.PUBLIC_URL}/videos/${item.video.poster}?v=20261004h`}
                 controls
@@ -164,10 +164,7 @@ const PenaltyCaseRows = ({ ko }) => (
                 muted
                 preload="metadata"
                 aria-label={`${item.key} ${ko ? '재생' : 'replay'}`}
-              >
-                <source src={`${process.env.PUBLIC_URL}/videos/${item.video.src}?v=20261004h`} type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
+              />
             </figure>
           </div>
         </section>
@@ -194,10 +191,8 @@ const Demo = () => {
           title={ko ? 'Odyssey 컨셉' : 'Odyssey Concept'}
         />
         <div className="demo-video-frame">
-          <video controls playsInline preload="metadata" className="demo-video">
-            <source src={`${process.env.PUBLIC_URL}/videos/1_benchmark_overview.mp4`} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
+          <ViewportVideo controls playsInline className="demo-video"
+            src={`${process.env.PUBLIC_URL}/videos/1_benchmark_overview.mp4`} />
         </div>
       </article>
 

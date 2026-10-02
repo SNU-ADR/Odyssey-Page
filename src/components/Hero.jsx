@@ -54,8 +54,8 @@ const Hero = () => {
           <p className="hero-author-notes"><span>* Equal contribution</span><span>† Corresponding author</span></p>
         </div>
         <div className="hero-actions">
-          {affiliation && <button type="button" className="hero-action">{affiliation}</button>}
-          <button type="button" className="hero-action">Code</button>
+          {affiliation && <button type="button" className="hero-action" disabled>{affiliation}<span className="hero-action-status">Coming soon</span></button>}
+          <button type="button" className="hero-action" disabled>Code<span className="hero-action-status">Coming soon</span></button>
         </div>
         <div className="hero-divider" aria-hidden="true" />
         {stats && stats.length > 0 && (
