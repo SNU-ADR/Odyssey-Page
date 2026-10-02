@@ -55,7 +55,7 @@ const Hero = () => {
         </div>
         <div className="hero-actions">
           {affiliation && <button type="button" className="hero-action" disabled>{affiliation}<span className="hero-action-status">Coming soon</span></button>}
-          <button type="button" className="hero-action" disabled>Code<span className="hero-action-status">Coming soon</span></button>
+          <a className="hero-action" href="https://github.com/SNU-ADR/Odyssey" target="_blank" rel="noopener noreferrer">Code</a>
         </div>
         <div className="hero-divider" aria-hidden="true" />
         {stats && stats.length > 0 && (

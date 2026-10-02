@@ -270,6 +270,7 @@
   background: #35281f;
   box-shadow: none;
   text-shadow: none;
+  text-decoration: none;
   cursor: pointer;
   transition: color 90ms ease-out, background-color 90ms ease-out, border-color 90ms ease-out, box-shadow 90ms ease-out, transform 90ms ease-out;
 }
