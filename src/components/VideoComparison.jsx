@@ -9,7 +9,8 @@ const VideoComparison = ({ beforeSrc, afterSrc, beforePoster, afterPoster, ko, l
   const beforeRef = useRef(null);
   const afterRef = useRef(null);
   const controlsRef = useRef(null);
-  const [split, setSplit] = useState(50);
+  const stageRef = useRef(null);
+  const splitInputRef = useRef(null);
   const [playing, setPlaying] = useState(false);
   const [time, setTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -39,11 +40,13 @@ const VideoComparison = ({ beforeSrc, afterSrc, beforePoster, afterPoster, ko, l
     applyPlaybackRate();
     let wantsPlayback = false;
     let disposed = false;
-    let frame;
+    let syncTimer;
     let starting = false;
     const pause = () => videos.forEach(video => video.pause());
     const stop = () => {
       wantsPlayback = false;
+      clearInterval(syncTimer);
+      syncTimer = undefined;
       pause();
       setPlaying(false);
     };
@@ -72,12 +75,11 @@ const VideoComparison = ({ beforeSrc, afterSrc, beforePoster, afterPoster, ko, l
     const sync = () => {
       if (disposed) return;
       if (wantsPlayback) {
-        if (!before.seeking && !after.seeking && Math.abs(before.currentTime - after.currentTime) > 0.06) {
+        if (videos.every(video => !video.paused && !video.seeking && video.readyState >= 3) && Math.abs(before.currentTime - after.currentTime) > 0.06) {
           after.currentTime = before.currentTime;
         }
         resume();
       }
-      frame = requestAnimationFrame(sync);
     };
     const failed = () => { stop(); setError(true); };
     const updateTime = () => setTime(before.currentTime);
@@ -95,6 +97,9 @@ const VideoComparison = ({ beforeSrc, afterSrc, beforePoster, afterPoster, ko, l
         // Metadata is sufficient until playback is requested. Setting auto here
         // lets canplay resume both streams together once their frames are ready.
         videos.forEach(video => { video.preload = 'auto'; });
+        // The source runs at 10 fps. Avoid a permanent animation loop for every
+        // card, including paused cards, when many comparisons are on the page.
+        if (syncTimer === undefined) syncTimer = setInterval(sync, 100);
         resume();
       },
       seek: (value) => {
@@ -104,33 +109,45 @@ const VideoComparison = ({ beforeSrc, afterSrc, beforePoster, afterPoster, ko, l
       },
     };
     metadata();
-    frame = requestAnimationFrame(sync);
     return () => {
       disposed = true;
       pause();
-      cancelAnimationFrame(frame);
+      clearInterval(syncTimer);
       videos.forEach(video => Object.entries(events).forEach(([event, handler]) => video.removeEventListener(event, handler)));
       before.removeEventListener('timeupdate', updateTime);
       controlsRef.current = null;
     };
   }, [beforeSrc, afterSrc, active]);
 
+  const updateSplit = (value) => {
+    const split = Math.max(0, Math.min(100, value));
+    const stage = stageRef.current;
+    // Keep pointer feedback independent of React's playback/time updates. Only
+    // the clipping boundary changes; neither video needs to render again.
+    stage.style.setProperty('--comparison-split', `${split}%`);
+    if (split === 0 || split === 100) {
+      stage.style.setProperty('--comparison-clip', split === 0 ? 'inset(0)' : 'inset(0 0 0 100%)');
+    } else {
+      stage.style.removeProperty('--comparison-clip');
+    }
+    stage.style.setProperty('--comparison-divider-opacity', split === 0 || split === 100 ? '0' : '1');
+    splitInputRef.current.value = split;
+    splitInputRef.current.setAttribute('aria-valuetext', `${Math.round(split)}% 3DGS, ${Math.round(100 - split)}% diffusion`);
+  };
+
   const moveSplit = (event) => {
     const bounds = event.currentTarget.getBoundingClientRect();
-    setSplit(Math.max(0, Math.min(100, (event.clientX - bounds.left) / bounds.width * 100)));
+    if (bounds.width) updateSplit((event.clientX - bounds.left) / bounds.width * 100);
   };
 
   return (
     <div ref={containerRef} className="video-comparison" role="group" aria-label={label}>
       <div
+        ref={stageRef}
         className="video-comparison-stage"
-        style={{
-          '--comparison-split': `${split}%`,
-          '--comparison-clip': split === 0 ? 'inset(0)' : split === 100 ? 'inset(0 0 0 100%)' : undefined,
-          '--comparison-divider-opacity': split === 0 || split === 100 ? 0 : 1,
-        }}
         onPointerMove={event => { if (event.pointerType === 'mouse' || event.buttons) moveSplit(event); }}
         onPointerDown={event => {
+          splitInputRef.current.focus({ preventScroll: true });
           event.currentTarget.setPointerCapture(event.pointerId);
           moveSplit(event);
         }}
@@ -147,11 +164,12 @@ const VideoComparison = ({ beforeSrc, afterSrc, beforePoster, afterPoster, ko, l
           </span>
         </div>
         <input
+          ref={splitInputRef}
           className="video-comparison-split"
-          type="range" min="0" max="100" step="0.1" value={split}
+          type="range" min="0" max="100" step="0.1" defaultValue={50}
           aria-label={ko ? '3DGS와 Diffusion 비교 경계' : '3DGS and diffusion comparison boundary'}
-          aria-valuetext={`${Math.round(split)}% 3DGS, ${Math.round(100 - split)}% diffusion`}
-          onChange={event => setSplit(Number(event.target.value))}
+          aria-valuetext="50% 3DGS, 50% diffusion"
+          onChange={event => updateSplit(Number(event.target.value))}
         />
       </div>
       <div className="video-comparison-controls">

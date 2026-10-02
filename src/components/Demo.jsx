@@ -6,8 +6,7 @@ import PenaltyDiagram, { DIAGRAM_ASPECT } from './PenaltyDiagram';
 import renderingComparisons from '../data/rendering-comparisons.json';
 import '../styles/components/Demo.css';
 
-// Every clip laid out at once, each at full width. A grid of small panes made
-// each 2x2 planner comparison too small to read the per-panel detail it is about.
+// Show each group in two columns, with a single column on small screens.
 const PlannerStack = ({ items, ko }) => (
   <div className="planner-stack">
     {items.map((item) => (

@@ -15,7 +15,8 @@ const Navbar = () => {
     { label: lang === 'ko' ? '주행 모델 평가' : 'Planner Evaluation', href: '#planner-demos' },
     { label: lang === 'ko' ? '평가 지표' : 'Metrics', href: '#evaluation-metrics' },
     { label: lang === 'ko' ? '렌더링' : 'Rendering', href: '#rendering-comparison' },
-    { label: content.results.sectionTitle, href: '#results' },
+    // Restore with the Results section after its content is revised.
+    // { label: content.results.sectionTitle, href: '#results' },
   ];
 
   const closeMenu = () => {

@@ -94,14 +94,14 @@
   border-bottom: 1px solid rgba(181, 139, 107, 0.18);
 }
 
-/* Every planner clip at once, stacked at full width. */
+/* Two clips per row, preserving the scenario order. */
 .planner-stack {
-  display: flex;
-  flex-direction: column;
-  gap: 28px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px 20px;
 }
 
-.planner-stack-item { margin: 0; }
+.planner-stack-item { min-width: 0; margin: 0; }
 
 .planner-stack-label {
   margin: 0 0 8px;
@@ -266,6 +266,7 @@
   .rendering-comparison { width: 100%; margin-left: 0; }
   .demo-video-frame { border-radius: 10px; }
   .planner-video-grid { grid-template-columns: 1fr; gap: 22px; }
+  .planner-stack { grid-template-columns: 1fr; }
   .planner-concept-title { font-size: 0.95rem; }
   .metric-figure { padding: 6px; }
   .metric-media-grid,

@@ -8,6 +8,7 @@
 .video-comparison { min-width: 0; }
 
 .video-comparison-stage {
+  --comparison-split: 50%;
   position: relative;
   aspect-ratio: 16 / 9;
   overflow: hidden;
@@ -104,6 +105,9 @@
   height: 100%;
   margin: 0;
   opacity: 0;
+  /* Pointer input belongs to the stage. Keep this native slider for keyboard
+     and assistive input without its invisible thumb intercepting drags. */
+  pointer-events: none;
   cursor: ew-resize;
   touch-action: pan-y;
 }

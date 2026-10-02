@@ -67,6 +67,23 @@
   opacity: 0.6;
 }
 
+.footer-attribution {
+  max-width: 800px;
+  color: var(--color-text-muted);
+  font-size: 0.78rem;
+  line-height: 1.8;
+}
+
+.footer-attribution p { margin: 3px 0; }
+.footer-attribution a {
+  color: #b89475;
+  text-decoration: underline;
+  text-decoration-color: rgba(184, 148, 117, 0.4);
+  text-underline-offset: 3px;
+}
+.footer-attribution a:hover { color: #e5b68f; }
+.footer-attribution a:focus-visible { outline: 2px solid #b89475; outline-offset: 3px; }
+
 .footer-brand { display:flex; align-items:center; gap:10px; }
 .footer-emblem { display:block; width:32px; height:38px; object-fit:contain; }
 .footer-logo { color:#9b603d; font-family:'Bodoni 72','Didot',Georgia,'Times New Roman',serif; font-size:1.4rem; font-style:italic; letter-spacing:-.04em; opacity:1; }
