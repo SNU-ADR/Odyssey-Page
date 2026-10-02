@@ -11,6 +11,9 @@
 
 .demo-chapter:last-child { margin-bottom: 0; }
 
+.planner-stack-item[id], .planner-route-comparison[id],
+.metric-figure[id], .penalty-row[id] { scroll-margin-top: 88px; }
+
 .demo-chapter > .section-title { margin-bottom: 24px; }
 
 .demo-video-frame {

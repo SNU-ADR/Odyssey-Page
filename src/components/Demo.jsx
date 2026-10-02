@@ -10,7 +10,7 @@ import '../styles/components/Demo.css';
 const PlannerStack = ({ items, ko }) => (
   <div className="planner-stack">
     {items.map((item) => (
-      <figure className="planner-stack-item" key={item.src}>
+      <figure className="planner-stack-item" id={item.id} key={item.src}>
         <figcaption className="planner-stack-label">{item.label}</figcaption>
         <div className="demo-video-frame">
           <video
@@ -41,10 +41,10 @@ const routeScenarios = [
 // "Collision" had no matching clip -- c031 is wrong-way and off-road -- so the
 // last slot is the whole run being judged rather than a single failure mode.
 const plannerScenarios = [
-  { label: 'Pre-Lane Change', src: '4_right_turn_lane_selection.mp4' },
-  { label: 'Traffic Light', src: '6_signalized_intersection.mp4' },
-  { label: 'Pedestrian', src: '7_crossing_pedestrian.mp4' },
-  { label: 'Overall Evaluation', src: '5_passing_parked_vehicles.mp4' },
+  { id: 'planner-pre-lane-change', label: 'Pre-Lane Change', src: '4_right_turn_lane_selection.mp4' },
+  { id: 'planner-traffic-light', label: 'Traffic Light', src: '6_signalized_intersection.mp4' },
+  { id: 'planner-pedestrian', label: 'Pedestrian', src: '7_crossing_pedestrian.mp4' },
+  { id: 'planner-overall-evaluation', label: 'Overall Evaluation', src: '5_passing_parked_vehicles.mp4' },
 ];
 
 // RouteDS = 100 · RC_SD · P_PLC · P_SD · P_col · P_off · P_TL (paper appendix, "RouteDS Components")
@@ -64,7 +64,7 @@ const RdsGrid = ({ id }) => (
 
 // Formula strip (top of the section): RouteDS = 100 x RC_SD x penalty factors
 const MetricFormula = ({ ko }) => (
-  <figure className="metric-figure">
+  <figure className="metric-figure" id="metric-formula">
     <svg viewBox="0 12 960 118" role="img" aria-labelledby="metric-formula-title">
       <title id="metric-formula-title">{ko ? 'RouteDS = 100 × SD 경로 완료율 × 감점 계수' : 'RouteDS = 100 × SD-route completion × penalty factors'}</title>
       <defs><RdsGrid id="rds-grid-formula" /></defs>
@@ -143,7 +143,7 @@ const PenaltyCaseRows = ({ ko }) => (
     </div>
     <div className="penalty-rows">
       {penaltyCases.map((item) => (
-        <section className="penalty-row" key={item.key}>
+        <section className="penalty-row" id={`metric-${item.key.toLowerCase()}`} key={item.key}>
           <div className="penalty-row-heading">
             <span>{item.key}</span>
             <h4>{ko ? item.koTitle : item.enTitle}</h4>
@@ -206,7 +206,7 @@ const Demo = () => {
           title="Closed-Loop Planner Evaluation"
         />
         <div className="planner-demos">
-          <div className="planner-route-comparison">
+          <div className="planner-route-comparison" id="command-vs-sd-route">
             <h3 className="planner-concept-title">Command vs SD Route</h3>
             <PlannerStack items={routeScenarios} ko={ko} />
           </div>
