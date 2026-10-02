@@ -70,7 +70,12 @@ to `src/App.jsx`; deployments always use the content in the pushed commit.
 `analytics/` contains a Cloudflare Worker and D1 schema. The page sends one
 record per page load; it has no counter or statistics display. The collector
 stores a UTC server timestamp, page path, referring hostname, country, browser
-family, and device category. It does not store IP addresses, raw user agents,
+family, device category, and Cloudflare's approximate city/region/coordinates.
+Latitude and longitude are rounded to two decimals and are IP-location estimates,
+not GPS or a person's exact location; VPNs and network routing can affect accuracy.
+Missing coordinates remain null, including historical records collected before
+the location update. No browser location permission is requested.
+It does not store IP addresses, raw user agents,
 referrer paths/query strings, cookies, or persistent visitor IDs. Reloads count
 as additional page views, not unique visitors. An event ID prevents duplicate
 inserts of the same request.

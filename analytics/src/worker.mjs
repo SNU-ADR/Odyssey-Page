@@ -1,6 +1,20 @@
 const MAX_BODY_BYTES = 2048;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
+function approximateLocation(cf = {}) {
+  const coordinate = (value, limit) => {
+    if (!['string', 'number'].includes(typeof value) || String(value).trim() === '') return null;
+    const number = Number(value);
+    return Number.isFinite(number) && Math.abs(number) <= limit ? Math.round(number * 100) / 100 : null;
+  };
+  const latitude = coordinate(cf.latitude, 90);
+  const longitude = coordinate(cf.longitude, 180);
+  const label = value => typeof value === 'string' ? value.trim().slice(0, 120) : '';
+  return { city: label(cf.city), region: label(cf.region),
+    latitude: latitude !== null && longitude !== null ? latitude : null,
+    longitude: latitude !== null && longitude !== null ? longitude : null };
+}
+
 function clientInfo(userAgent) {
   const ua = userAgent.slice(0, 512);
   const browser = /Edg(?:e|A|iOS)?\//.test(ua) ? 'Edge'
@@ -71,16 +85,18 @@ export default {
     }
     const { browser, device } = clientInfo(request.headers.get('User-Agent') || '');
     const country = /^[A-Z]{2}$/.test(request.cf?.country || '') ? request.cf.country : '';
+    // Only trusted Cloudflare metadata; never client-submitted coordinates or GPS.
+    const { city, region, latitude, longitude } = approximateLocation(request.cf || {});
     try {
       // A per-location global guard; no IP or persistent visitor identifier is
       // needed. This is best-effort spam control, not an authentication check.
       const { success } = await env.VISIT_LIMITER.limit({ key: 'visits' });
       if (!success) return reply(429);
       await env.DB.prepare(`
-        INSERT INTO visits (event_id, page_path, referrer_host, country, browser, device_type)
-        VALUES (?, ?, ?, ?, ?, ?)
+        INSERT INTO visits (event_id, page_path, referrer_host, country, browser, device_type, city, region, latitude, longitude)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(event_id) DO NOTHING
-      `).bind(event.eventId, event.path, referrerHost, country, browser, device).run();
+      `).bind(event.eventId, event.path, referrerHost, country, browser, device, city, region, latitude, longitude).run();
       return reply(204);
     } catch {
       // Do not expose SQL, account details, or request data in public errors.

@@ -28,9 +28,29 @@ test('stores a bounded event, server country and coarse device information, with
   const result = await worker.fetch(req, env);
   assert.equal(result.status, 204);
   assert.equal(result.headers.get('Access-Control-Allow-Origin'), origin);
-  assert.deepEqual(env.rows[0].values, [event.eventId, event.path, 'example.com', 'KR', 'Safari', 'mobile']);
+  assert.deepEqual(env.rows[0].values, [event.eventId, event.path, 'example.com', 'KR', 'Safari', 'mobile', '', '', null, null]);
   assert.match(env.rows[0].sql, /ON CONFLICT\(event_id\) DO NOTHING/);
   assert.equal(result.headers.get('Cache-Control'), 'no-store');
+});
+
+test('uses approximate Cloudflare coordinates only, rounds them and handles missing or invalid values', async () => {
+  for (const [metadata, expected] of [
+    [{ city: ' Seoul ', region: 'Seoul', latitude: '37.56650', longitude: '126.97800' }, ['Seoul', 'Seoul', 37.57, 126.98]],
+    [{ latitude: '0', longitude: '0' }, ['', '', 0, 0]],
+    [{ latitude: '', longitude: '126' }, ['', '', null, null]],
+    [{ latitude: null, longitude: '126' }, ['', '', null, null]],
+    [{ latitude: true, longitude: '126' }, ['', '', null, null]],
+    [{ latitude: '91', longitude: '126' }, ['', '', null, null]],
+    [{ latitude: '37', longitude: '181' }, ['', '', null, null]],
+    [{ latitude: 'NaN', longitude: '126' }, ['', '', null, null]],
+    [{}, ['', '', null, null]],
+  ]) {
+    const env = environment();
+    const req = request({ ...event, city: 'Forged', latitude: 10, longitude: 20 });
+    Object.defineProperty(req, 'cf', { value: metadata });
+    assert.equal((await worker.fetch(req, env)).status, 204);
+    assert.deepEqual(env.rows[0].values.slice(6), expected);
+  }
 });
 
 test('rejects foreign origins, read requests, invalid events and oversized bodies without writing', async () => {
