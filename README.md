@@ -43,15 +43,24 @@ npm run build
 
 Site address: https://snu-adr.github.io/Odyssey-Page/
 
-Publish the current production build to the `gh-pages` branch:
+Every push to `main` runs `.github/workflows/pages.yml`, builds the React app,
+and deploys the resulting `build/` directory to GitHub Pages. No separate
+`gh-pages` branch or local build is needed.
+
+After committing your changes, publish them with:
 
 ```bash
-DISABLE_ESLINT_PLUGIN=true npm run deploy
+git push origin main
 ```
 
-The environment variable bypasses the existing local ESLint dependency error during the build.
+`npm run deploy` is an alias for this push. Deployment progress appears in
+**Actions → Deploy Odyssey to GitHub Pages**. The public site updates only
+after the workflow succeeds.
 
-For initial setup, a repository administrator must enable **Settings → Pages →
-Deploy from a branch**, selecting **gh-pages** and **/ (root)**. Publishing the
-branch alone does not enable GitHub Pages. The source repository can remain
-private if the organization's GitHub plan supports Pages for private repositories.
+For initial setup, select **Settings → Pages → Source → GitHub Actions**.
+The workflow selects `main` as its source branch. If the `github-pages`
+environment restricts deployment branches, allow `main`.
+
+The build disables the ESLint plugin to bypass the existing dependency error
+and omits source maps from the published files. Results stays hidden according
+to `src/App.jsx`; deployments always use the content in the pushed commit.
