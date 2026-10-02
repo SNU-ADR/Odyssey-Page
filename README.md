@@ -64,3 +64,64 @@ environment restricts deployment branches, allow `main`.
 The build disables the ESLint plugin to bypass the existing dependency error
 and omits source maps from the published files. Results stays hidden according
 to `src/App.jsx`; deployments always use the content in the pushed commit.
+
+## Private visit records
+
+`analytics/` contains a Cloudflare Worker and D1 schema. The page sends one
+record per page load; it has no counter or statistics display. The collector
+stores a UTC server timestamp, page path, referring hostname, country, browser
+family, and device category. It does not store IP addresses, raw user agents,
+referrer paths/query strings, cookies, or persistent visitor IDs. Reloads count
+as additional page views, not unique visitors. An event ID prevents duplicate
+inserts of the same request.
+
+`src/data/analytics.json` points to the deployed HTTPS `/visit` endpoint.
+Set its `endpoint` to an empty string and redeploy the page to disable collection.
+Collection runs only in production on
+`https://snu-adr.github.io/Odyssey-Page/`; local previews do not send records.
+Hidden tabs wait until visible, and DNT/GPC opt-outs are honored. Network errors
+or blockers can prevent records from arriving without affecting the page.
+
+The existing collector uses the D1 database configured in
+`analytics/wrangler.jsonc`. Use Node 22 or newer. For updates, log in and run
+`npm run deploy` inside `analytics/`. The Cloudflare account email must be verified.
+To create a separate installation:
+
+```bash
+cd analytics
+npm ci
+npx wrangler login --scopes account:read user:read workers:write workers_scripts:write d1:write
+npx wrangler d1 create odyssey-visits
+```
+
+Replace `database_id` in `analytics/wrangler.jsonc` with the
+ID returned by D1, then initialize and deploy:
+
+```bash
+npx wrangler d1 migrations apply odyssey-visits --remote
+npm run deploy
+```
+
+Put the printed Worker URL plus `/visit` into `src/data/analytics.json`, then
+commit and push `main` to deploy the page. The endpoint and database ID are
+public configuration, not credentials. Cloudflare authentication stays outside
+the repository. Deploying the GitHub page does not deploy the separate Worker.
+
+The Worker exposes only `POST /visit` and CORS preflight; there is no public read
+or SQL endpoint. Read records in **Cloudflare → D1 → odyssey-visits → Console**.
+Example private aggregation queries are in `analytics/queries.sql`. To back up
+the raw records locally:
+
+```bash
+cd analytics
+mkdir -p exports
+npx wrangler d1 export odyssey-visits --remote --output=exports/visits.sql
+```
+
+Exports and local DB state are Git-ignored. Keep them outside `public/` and
+`build/`. Exporting does not delete records. Records remain until explicitly deleted; monitor D1's
+storage and write limits in the Cloudflare dashboard. Origin checks and a
+per-Cloudflare-location rate limit reduce unwanted writes but cannot prove that
+each event is a human visit. No paid-plan upgrade is required by these scripts.
+
+Run collector/client tests with `npm --prefix analytics test`.

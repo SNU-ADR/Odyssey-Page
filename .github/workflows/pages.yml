@@ -22,6 +22,8 @@ jobs:
           node-version: '22'
           cache: npm
       - run: npm ci
+      - name: Check private visit logging
+        run: npm --prefix analytics test
       - name: Build the current main branch
         run: npm run build
         env:

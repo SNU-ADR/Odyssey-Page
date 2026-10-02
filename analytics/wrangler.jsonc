@@ -1,0 +1,27 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "odyssey-visit-log",
+  "main": "src/worker.mjs",
+  "compatibility_date": "2026-10-02",
+  "workers_dev": true,
+  "observability": { "enabled": false },
+  "vars": {
+    "ALLOWED_ORIGIN": "https://snu-adr.github.io",
+    "ALLOWED_PATH": "/Odyssey-Page/"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "odyssey-visits",
+      "database_id": "55f813ac-d2b4-425a-9574-82bd180a2df5",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "ratelimits": [
+    {
+      "name": "VISIT_LIMITER",
+      "namespace_id": "20261002",
+      "simple": { "limit": 300, "period": 60 }
+    }
+  ]
+}
