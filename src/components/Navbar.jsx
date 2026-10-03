@@ -31,7 +31,7 @@ const Navbar = () => {
         { id: 'metric-plc', label: ko ? '사전 차로 변경' : 'Pre-Lane Change' },
         { id: 'metric-sdc', label: ko ? 'SD 경로 준수' : 'SD Route Compliance' },
         { id: 'metric-nc', label: ko ? '충돌 회피' : 'No Collision' },
-        { id: 'metric-dac', label: ko ? '주행 가능 영역 준수' : 'Drivable Area Compliance' },
+        { id: 'metric-dac', label: ko ? '주행 가능 영역 및 주행 방향 준수' : 'Drivable Area & Driving Direction Compliance' },
         { id: 'metric-tlc', label: ko ? '교통신호 준수' : 'Traffic Light Compliance' },
       ],
     },

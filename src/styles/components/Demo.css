@@ -1,15 +1,20 @@
 .demo-section {
-  padding: 0 24px 84px;
-  background: linear-gradient(180deg, rgba(20, 15, 12, 0.12), rgba(11, 9, 8, 0.72));
+  max-width: none;
+  padding: 0;
+  background: var(--color-bg);
 }
 
 .demo-chapter {
-  width: min(100%, 1120px);
-  margin: 0 auto 56px;
+  --chapter-bg: var(--color-bg);
+  width: 100%;
+  margin: 0;
+  padding: 40px max(24px, calc((100% - 1120px) / 2));
+  background: var(--chapter-bg);
   scroll-margin-top: 88px;
 }
 
-.demo-chapter:last-child { margin-bottom: 0; }
+.demo-chapter:nth-child(odd) { --chapter-bg: #171310; }
+.demo-chapter:last-child { padding-bottom: 84px; }
 
 .planner-stack-item[id], .planner-route-comparison[id],
 .metric-figure[id], .penalty-row[id] { scroll-margin-top: 88px; }
@@ -20,10 +25,10 @@
   width: 100%;
   margin: 0;
   overflow: hidden;
-  border: 1px solid rgba(211, 132, 69, 0.25);
+  border: 1px solid var(--chapter-bg, var(--color-bg));
   border-radius: 16px;
   background: #080706;
-  box-shadow: 0 24px 72px rgba(0, 0, 0, 0.32);
+  box-shadow: none;
 }
 
 .demo-video {
@@ -63,7 +68,7 @@
 .planner-concept-title {
   margin: 0 0 14px;
   color: var(--color-text);
-  font-size: 1rem;
+  font-size: 1.5rem;
   font-weight: 600;
 }
 
@@ -99,24 +104,33 @@
   border-bottom: 1px solid rgba(181, 139, 107, 0.18);
 }
 
-/* Two clips per row, preserving the scenario order. */
+/* Full-width headings with centered, slightly narrower clips. */
 .planner-stack {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 28px 20px;
+  width: 100%;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 32px;
 }
 
 .planner-stack-item { min-width: 0; margin: 0; }
 
+.planner-stack .demo-video-frame {
+  width: 90%;
+  margin-inline: auto;
+}
+
 .planner-stack-label {
   margin: 0 0 8px;
+  text-align: center;
   color: #c9ae95;
-  font-size: 0.85rem;
+  font-size: 1.275rem;
   font-weight: 600;
   letter-spacing: 0.04em;
 }
 
 .planner-scenarios > .planner-concept-title { margin-top: 0; }
+
+.planner-stack .demo-video { max-height: none; }
 
 .planner-video-placeholder {
   position: relative;
@@ -262,8 +276,8 @@
 .rendering-comparison .demo-placeholder { min-height: 260px; }
 
 @media (max-width: 640px) {
-  .demo-section { padding: 0 16px 60px; }
-  .demo-chapter { margin-bottom: 44px; }
+  .demo-chapter { padding: 28px 16px; }
+  .demo-chapter:last-child { padding-bottom: 60px; }
   .demo-video-frame,
   .planner-demos,
   .metric-figure,
@@ -272,7 +286,7 @@
   .demo-video-frame { border-radius: 10px; }
   .planner-video-grid { grid-template-columns: 1fr; gap: 22px; }
   .planner-stack { grid-template-columns: 1fr; }
-  .planner-concept-title { font-size: 0.95rem; }
+  .planner-concept-title { font-size: 1.425rem; }
   .metric-figure { padding: 6px; }
   .metric-media-grid,
   .rendering-comparison { grid-template-columns: 1fr; gap: 10px; }

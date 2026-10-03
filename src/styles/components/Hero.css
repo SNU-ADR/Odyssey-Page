@@ -43,23 +43,6 @@
   to { opacity: 1; }
 }
 
-/* ─── 스캔 라인 효과 ─── */
-.hero::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to bottom,
-    transparent 0%,
-    rgba(211, 132, 69, 0.03) 50%,
-    transparent 100%
-  );
-  background-size: 100% 6px;
-  background-repeat: repeat;
-  pointer-events: none;
-  opacity: 0.4;
-}
-
 /* ─── 센서 그리드 배경 ─── */
 .hero-grid {
   position: absolute;
@@ -213,7 +196,7 @@
   color: #e5b68f;
   text-decoration-color: rgba(229, 182, 143, 0.6);
 }
-.hero-author sup { margin-left: 3px; color: #e5b68f; font-size: 0.8em; font-weight: 600; }
+.hero-author sup { margin-left: 3px; color: #e5b68f; font-size: 0.8em; font-weight: 600; line-height: 0; }
 .hero-author .hero-equal-mark { position: relative; top: 4px; font-size: 1.05em; line-height: 0; }
 
 .hero-author-affiliation {
@@ -225,11 +208,12 @@
 }
 
 .hero-author-notes {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  width: max-content;
+  max-width: 100%;
   gap: 8px 12px;
-  margin-top: 16px;
+  margin: 16px auto 0;
   color: #d9b99d;
   font-size: 0.8rem;
   font-weight: 500;
@@ -237,6 +221,10 @@
 }
 
 .hero-author-notes > span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
   padding: 3px 10px;
   border: 1px solid rgba(185, 143, 110, 0.2);
   border-radius: 5px;
@@ -256,7 +244,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 34px;
+  width: 96px;
+  height: 48px;
+  flex-shrink: 0;
   font-family: inherit;
   font-size: 0.8rem;
   font-weight: 500;
@@ -264,7 +254,7 @@
   letter-spacing: 0.5px;
   margin-top: 0;
   margin-bottom: 0;
-  padding: 5px 16px;
+  padding: 5px 10px;
   border: 1px solid rgba(181, 135, 105, 0.38);
   border-radius: 20px;
   background: #35281f;
@@ -298,8 +288,6 @@
 .hero-action:disabled {
   flex-direction: column;
   gap: 2px;
-  min-width: 110px;
-  padding: 7px 16px;
   color: #ab9685;
   background: #261e18;
   border-color: rgba(181, 135, 105, 0.24);
@@ -332,15 +320,18 @@
 
 /* ─── Hero Stats ─── */
 .hero-stats {
-  display: flex;
-  gap: 112px;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  width: min(1200px, calc(100vw - 64px));
+  margin-left: 50%;
+  translate: -50% 0;
   margin-top: 36px;
   animation: heroFadeUp 0.8s ease-out 0.7s both;
 }
 
 .hero-stat {
   position: relative;
+  justify-self: center;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -350,9 +341,9 @@
 .hero-stat-value {
   font-size: 1.6rem;
   font-weight: 800;
-  color: var(--color-accent);
+  color: #da8e57;
   letter-spacing: 1px;
-  text-shadow: 0 0 20px rgba(211, 132, 69, 0.3);
+  text-shadow: 0 0 20px rgba(218, 142, 87, 0.24);
   order: 1;
 }
 
@@ -364,7 +355,7 @@
   transform: translate(var(--tooltip-x), calc(-50% + 10px));
   z-index: 5;
   width: max-content;
-  max-width: min(280px, calc(100vw - 64px));
+  max-width: min(280px, calc((100vw - 64px) / 4 - 20px));
   padding: 14px 20px;
   border: 1px solid rgba(215, 173, 136, 0.2);
   border-radius: 20px;
@@ -472,11 +463,14 @@
   .hero-stats {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+    margin-inline: auto;
+    translate: none;
     gap: 40px;
     margin-top: 28px;
   }
 
-  .hero-stat-tooltip { --tooltip-x: 0%; }
+  .hero-stat-tooltip { --tooltip-x: 0%; max-width: min(280px, calc(100vw - 64px)); }
   .hero-stat:nth-child(odd) .hero-stat-tooltip { left: 0; }
   .hero-stat:nth-child(even) .hero-stat-tooltip { left: auto; right: 0; }
 
@@ -508,9 +502,9 @@
 /* Odyssey wordmark and warm poster lighting */
 .hero::before {
  background:
-  radial-gradient(ellipse 40% 27% at 50% 46%, rgba(221,107,48,.19) 0%, transparent 100%),
-  radial-gradient(ellipse 56% 40% at 50% 48%, rgba(148,62,39,.12) 0%, transparent 100%),
-  radial-gradient(ellipse 68% 55% at 50% 52%, rgba(211,132,69,.035) 0%, transparent 100%);
+  radial-gradient(ellipse 40% 27% at 50% 46%, rgba(221,107,48,.145) 0%, transparent 100%),
+  radial-gradient(ellipse 56% 40% at 50% 48%, rgba(148,62,39,.09) 0%, transparent 100%),
+  radial-gradient(ellipse 68% 55% at 50% 52%, rgba(211,132,69,.026) 0%, transparent 100%);
 }
 .hero-title { margin:76px 0 14px; align-items:center; gap:14px; line-height:1; }
 .hero-emblem { display:block; width:clamp(52px,7vw,86px); height:auto; max-width:none; filter:drop-shadow(0 8px 28px rgba(170,62,41,.2)); }

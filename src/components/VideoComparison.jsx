@@ -153,7 +153,7 @@ const VideoComparison = ({ beforeSrc, afterSrc, beforePoster, afterPoster, ko, l
         <video ref={beforeRef} poster={beforePoster} muted playsInline preload="metadata" aria-label="3DGS Only" />
         <video ref={afterRef} poster={afterPoster} muted playsInline preload="metadata" className="video-comparison-after" aria-label="Diffusion refinement" />
         <span className="video-comparison-label video-comparison-label--left">3DGS Only</span>
-        <span className="video-comparison-label video-comparison-label--right">Diff. Refine</span>
+        <span className="video-comparison-label video-comparison-label--right">Diffusion Refinement</span>
         <div className="video-comparison-divider" aria-hidden="true">
           <span>
             <svg viewBox="0 0 24 16" focusable="false">
@@ -171,8 +171,13 @@ const VideoComparison = ({ beforeSrc, afterSrc, beforePoster, afterPoster, ko, l
         />
       </div>
       <div className="video-comparison-controls">
-        <button type="button" onClick={() => controlsRef.current?.toggle()} disabled={!ready}>
-          {playing ? (ko ? '일시정지' : 'Pause') : (ko ? '재생' : 'Play')}
+        <button type="button" onClick={() => controlsRef.current?.toggle()} disabled={!ready}
+          aria-label={playing ? (ko ? '일시정지' : 'Pause') : (ko ? '재생' : 'Play')}>
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            {playing
+              ? <><rect x="6" y="5" width="4" height="14" rx="1" /><rect x="14" y="5" width="4" height="14" rx="1" /></>
+              : <path d="M8 5L19 12L8 19Z" />}
+          </svg>
         </button>
         <input
           type="range" min="0" max={duration || 1} step="0.01" value={Math.min(time, duration)}

@@ -1,9 +1,28 @@
-.video-comparison-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 28px 20px;
-  margin: 0 0 18px;
+.rendering-carousel {
+  width: 80%;
+  margin: 0 auto 18px;
 }
+
+.rendering-scene-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.rendering-scene-buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 7px; }
+.rendering-scene-nav button {
+  border: 1px solid rgba(181, 139, 107, 0.3);
+  background: #1c1612;
+  color: #c9ae95;
+  font: inherit;
+  cursor: pointer;
+  transition: background-color 120ms ease-out, color 120ms ease-out, border-color 120ms ease-out;
+}
+.rendering-scene-button { width: 34px; height: 34px; border-radius: 8px; font-size: 0.8rem !important; }
+.rendering-scene-nav button:hover { background: #35281f; border-color: #957357; color: #f2dfd0; }
+.rendering-scene-nav button[aria-current="true"] { background: #765239; border-color: #ab805d; color: #fff0de; }
+.rendering-scene-nav button:focus-visible { outline: 2px solid #c49979; outline-offset: 3px; }
 
 .video-comparison { min-width: 0; }
 
@@ -12,7 +31,7 @@
   position: relative;
   aspect-ratio: 16 / 9;
   overflow: hidden;
-  border: 1px solid rgba(181, 139, 107, 0.3);
+  border: 1px solid var(--chapter-bg, var(--color-bg));
   border-radius: 12px;
   background: #080706;
   touch-action: pan-y;
@@ -46,7 +65,9 @@
   border-radius: 6px;
   background: rgba(16, 13, 11, 0.8);
   color: #f2dfd0;
-  font-size: 0.8rem;
+  font-size: 1.2rem;
+  max-width: calc(50% - 20px);
+  line-height: 1.25;
   pointer-events: none;
 }
 
@@ -122,11 +143,14 @@
 }
 
 .video-comparison-controls button {
-  min-width: 72px;
-  min-height: 36px;
-  padding: 5px 12px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  padding: 0;
   border: 1px solid #382b23;
-  border-radius: 6px;
+  border-radius: 8px;
   background: #1c1612;
   color: var(--color-text);
   font: inherit;
@@ -134,6 +158,8 @@
   cursor: pointer;
 }
 
+.video-comparison-controls button svg { width: 20px; height: 20px; fill: currentColor; }
+.video-comparison-controls button:focus-visible { outline: 2px solid #c49979; outline-offset: 3px; }
 .video-comparison-controls button:hover { background: #30231b; }
 .video-comparison-controls button:disabled { opacity: 0.5; cursor: wait; }
 .video-comparison-controls input {
@@ -169,8 +195,9 @@
 .video-comparison-hint { margin: 8px 0 0; color: var(--color-text-muted); font-size: 0.8rem; text-align: center; }
 
 @media (max-width: 640px) {
-  .video-comparison-grid { grid-template-columns: 1fr; margin-left: 0; }
-  .video-comparison-label { top: 8px; padding: 4px 6px; font-size: 0.65rem; }
+  .rendering-scene-buttons { gap: 5px; }
+  .rendering-scene-button { width: 30px; height: 30px; }
+  .video-comparison-label { top: 8px; padding: 4px 6px; font-size: 0.975rem; max-width: calc(50% - 12px); overflow-wrap: anywhere; }
   .video-comparison-label--left { left: 8px; }
   .video-comparison-label--right { right: 8px; }
   .video-comparison-controls { gap: 8px; }

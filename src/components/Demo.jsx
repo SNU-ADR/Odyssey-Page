@@ -1,13 +1,13 @@
 import React from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import SectionTitle from './common/SectionTitle';
-import VideoComparison from './VideoComparison';
+import RenderingCarousel from './RenderingCarousel';
 import ViewportVideo from './common/ViewportVideo';
 import PenaltyDiagram, { DIAGRAM_ASPECT } from './PenaltyDiagram';
 import renderingComparisons from '../data/rendering-comparisons.json';
 import '../styles/components/Demo.css';
 
-// Show each group in two columns, with a single column on small screens.
+// Route examples and scenario comparisons use full-width rows.
 const PlannerStack = ({ items, ko }) => (
   <div className="planner-stack">
     {items.map((item) => (
@@ -53,7 +53,7 @@ const routeDsTerms = [
   { sym: 'P', sub: 'PLC', name: ['Pre-Lane Change'] },
   { sym: 'P', sub: 'SD', name: ['SD Route', 'Compliance'] },
   { sym: 'P', sub: 'col', name: ['No Collision'] },
-  { sym: 'P', sub: 'off', name: ['Drivable Area', 'Compliance'] },
+  { sym: 'P', sub: 'off', name: ['Area & Direction', 'Compliance'] },
   { sym: 'P', sub: 'TL', name: ['Traffic Light', 'Compliance'] },
 ];
 
@@ -118,10 +118,11 @@ const penaltyCases = [
   },
   {
     key: 'DAC',
-    koTitle: '주행 가능 영역 준수',
-    enTitle: 'Drivable Area Compliance',
-    koBody: '자차가 도로 경계에 걸쳐 차체 일부가 주행 가능 영역 밖으로 나간 상황입니다. 역방향 주행 거리도 포함됩니다.',
-    enBody: 'The ego straddles the road edge, with part of its footprint outside the drivable area. Distance driven against traffic also counts.',
+    label: 'DAC & DDC',
+    koTitle: '주행 가능 영역 및 주행 방향 준수',
+    enTitle: 'Drivable Area & Driving Direction Compliance',
+    koBody: '전체 주행 거리 중 주행 가능 영역 밖이나 교통 흐름의 반대 방향으로 주행한 거리의 비율에 따라 감점합니다. 교차로 내부에서는 주행 방향 위반을 집계하지 않습니다.',
+    enBody: 'Penalizes the fraction of distance driven outside drivable areas or against traffic. Driving-direction violations are excluded within intersections.',
     video: { src: 'metric-dac-bev.mp4', poster: 'metric-dac-poster.jpg' },
   },
   {
@@ -144,7 +145,7 @@ const PenaltyCaseRows = ({ ko }) => (
       {penaltyCases.map((item) => (
         <section className="penalty-row" id={`metric-${item.key.toLowerCase()}`} key={item.key}>
           <div className="penalty-row-heading">
-            <span>{item.key}</span>
+            <span>{item.label || item.key}</span>
             <h4>{ko ? item.koTitle : item.enTitle}</h4>
           </div>
           {/* column widths in proportion to the diagram and video aspect ratios, so both panels share one height */}
@@ -163,7 +164,7 @@ const PenaltyCaseRows = ({ ko }) => (
                 loop
                 muted
                 preload="metadata"
-                aria-label={`${item.key} ${ko ? '재생' : 'replay'}`}
+                aria-label={`${item.label || item.key} ${ko ? '재생' : 'replay'}`}
               />
             </figure>
           </div>
@@ -217,8 +218,8 @@ const Demo = () => {
         <SectionTitle
           title={ko ? '평가 지표' : 'Evaluation Metrics'}
           subtitle={ko
-            ? <>RouteDS는 지정된 SD 경로를 따라간 진척도와 주행 품질을 함께 평가합니다. 경로 완료율(RC<sub>SD</sub>)은 완주한 비율을 나타내고, 0~1 범위의 감점 계수 다섯 개가 차로 선택 오류, 경로 이탈, 충돌, 도로 이탈, 신호 위반에 따라 점수를 낮춥니다.</>
-            : <>RouteDS combines progress along the designated SD route with driving quality. Route completion (RC<sub>SD</sub>) measures the fraction completed, while five penalty factors between 0 and 1 reduce the score for lane choice errors, route departures, collisions, off-road driving, and red-light violations.</>}
+            ? <>RouteDS는 지정된 SD 경로를 따라간 진척도와 주행 품질을 함께 평가합니다. 경로 완료율(RC<sub>SD</sub>)은 완주한 비율을 나타내고, 0~1 범위의 감점 계수 다섯 개는 사전 차로 변경, SD 경로 준수, 충돌 회피, 주행 가능 영역 및 주행 방향 준수, 교통신호 준수를 평가합니다.</>
+            : <>RouteDS combines progress along the designated SD route with driving quality. Route completion (RC<sub>SD</sub>) measures the fraction completed, while five penalty factors between 0 and 1 evaluate Pre-Lane Change, SD Route Compliance, No Collision, Drivable Area &amp; Driving Direction Compliance, and Traffic Light Compliance.</>}
         />
         <MetricFormula ko={ko} />
         <PenaltyCaseRows ko={ko} />
@@ -228,19 +229,7 @@ const Demo = () => {
         <SectionTitle
           title="3DGS / Diffusion Refinement"
         />
-        <div className="video-comparison-grid">
-          {renderingComparisons.map((scene) => (
-            <VideoComparison
-              key={scene.id}
-              label={`${ko ? '장면' : 'Scene'} ${scene.id}: 3DGS / Diffusion Refinement`}
-              beforeSrc={`${process.env.PUBLIC_URL}/videos/rendering/${scene.before}`}
-              afterSrc={`${process.env.PUBLIC_URL}/videos/rendering/${scene.after}`}
-              beforePoster={`${process.env.PUBLIC_URL}/videos/rendering/${scene.beforePoster}`}
-              afterPoster={`${process.env.PUBLIC_URL}/videos/rendering/${scene.afterPoster}`}
-              ko={ko}
-            />
-          ))}
-        </div>
+        <RenderingCarousel scenes={renderingComparisons} ko={ko} />
       </article>
     </section>
   );

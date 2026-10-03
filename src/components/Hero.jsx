@@ -1,7 +1,6 @@
 import React from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import odysseyHead from '../assets/images/odyssey_head.png';
-import heroNavigation from '../assets/images/hero-navigation.svg';
 import '../styles/components/Hero.css';
 
 const equalAuthors = ['Jungho Kim', 'Hongjae Shin', 'Seunghoon Yu', 'Heecheol Yoo', 'Myeongjun Kim', 'Jiyong Oh'];
@@ -27,7 +26,6 @@ const Hero = () => {
 
   return (
     <section id="hero" className="hero" aria-label={sectionLabel}>
-      <img className="hero-navigation" src={heroNavigation} alt="" aria-hidden="true" />
       <div className="hero-content">
         <h1 className="hero-title">
           <img src={odysseyHead} alt="" className="hero-emblem" />
