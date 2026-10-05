@@ -156,9 +156,9 @@ const PenaltyCaseRows = ({ ko }) => (
             </figure>
             <figure className="penalty-row-panel">
               <ViewportVideo
-                src={`${process.env.PUBLIC_URL}/videos/${item.video.src}?v=20261004h`}
+                src={`${process.env.PUBLIC_URL}/videos/${item.video.src}?v=20261005a`}
                 className={item.video.wide ? 'metric-video metric-video-wide' : 'metric-video'}
-                poster={`${process.env.PUBLIC_URL}/videos/${item.video.poster}?v=20261004h`}
+                poster={`${process.env.PUBLIC_URL}/videos/${item.video.poster}?v=20261005a`}
                 controls
                 playsInline
                 loop

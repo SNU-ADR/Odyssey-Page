@@ -278,14 +278,14 @@ const PLCA = (dy = 0, bottom) => {
   };
 };
 
-/** TLC: the ego continues through a stop line while the signal is red. */
+/** TLC: the ego has fully crossed the stop line (rear bumper past it) while the signal is red. */
 const TLC = (dy = 0, bottom) => {
   const r = road(1, ROAD_TOP + dy);
   const xr = crossRoad(CX + 46);
   const end = bottom ?? r.bottom + 60;
   const t = tee(r, xr, end);
   const y = r.down(1);
-  const egoX = CX - CAR_L / 4; // front quarter of the car has crossed the stop line
+  const egoX = CX + 2 + CAR_L / 2; // rear bumper just past the stop line = violation
   return {
     height: end,
     label: 'RED-LIGHT VIOLATION',
@@ -294,7 +294,6 @@ const TLC = (dy = 0, bottom) => {
         <path d={t.asphalt} fill={C.asphalt} />
         <path d={t.edges} {...AsphaltStroke} />
         <path d={`M0 ${r.center}H${W}`} stroke={C.route} {...BandStroke} />
-        <path d={`M${CX} ${y}H${CX + CAR_L / 4}`} stroke={C.alert} {...BandStroke} />
         <path d={t.center} {...CenterStroke} />
         {/* red signal: the stop line is red, as in the replay */}
         <path d={`M${CX} ${r.center + GAP / 2}V${r.markBottom}`} stroke={C.alert} strokeWidth="3" />
