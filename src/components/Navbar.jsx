@@ -36,7 +36,7 @@ const Navbar = () => {
       ],
     },
     { id: 'rendering-comparison', label: ko ? '렌더링' : 'Rendering' },
-    // Restore Results here when that section is ready to be shown again.
+    { id: 'results', label: ko ? '결과' : 'Results' },
   ], [ko]);
 
   useEffect(() => {
