@@ -52,7 +52,7 @@ const Hero = () => {
           <p className="hero-author-notes"><span>* Equal contribution</span><span>† Corresponding author</span></p>
         </div>
         <div className="hero-actions">
-          {affiliation && <button type="button" className="hero-action" disabled>{affiliation}<span className="hero-action-status">Coming soon</span></button>}
+          {affiliation && <a className="hero-action" href="https://arxiv.org/abs/2610.06469" target="_blank" rel="noopener noreferrer">{affiliation}</a>}
           <a className="hero-action" href="https://github.com/SNU-ADR/Odyssey" target="_blank" rel="noopener noreferrer">Code</a>
         </div>
         <div className="hero-divider" aria-hidden="true" />
